@@ -13,7 +13,7 @@
     --popover-foreground: 240 10% 3.9%;
     --primary: 82, 63%, 60%;
     --primary-foreground: 82.1 62.4% 67.6%;
-    --secondary: 217 85% 19%;
+    --secondary: 217.1 86% 36.5%;
     --secondary-foreground: 216.7, 85.9%, 30.6%;
     --muted: 240 4.8% 95.9%;
     --muted-foreground: 240 3.8% 46.1%;
@@ -25,6 +25,9 @@
     --input: 240 5.9% 90%;
     --ring: 142.1 76.2% 36.3%;
     --radius: 0.5rem;
+
+    --text-primary: 0 0% 100%;
+    --text-secondary: 212.3, 13.7%, 18.6%;
   }
 
   .dark {
