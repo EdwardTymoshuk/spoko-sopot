@@ -54,7 +54,8 @@ const config = {
         },
         text: {
           primary: 'hsl(var(--text-primary))',
-          secondary: 'hsl(var(--text-secondary))'
+          secondary: 'hsl(var(--text-secondary))',
+          foreground: 'hsl(var(--text-foreground))'
         }
       },
       borderRadius: {
@@ -75,6 +76,11 @@ const config = {
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
+      },
+      fontFamily: {
+        sans: ['Roboto', 'sans-serif'],
+        serif: ['"DM Serif Display"', 'serif'],
+        special: ['Sacramento', 'cursive'],
       },
     },
   },
