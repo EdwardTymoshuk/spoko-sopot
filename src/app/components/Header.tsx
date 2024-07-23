@@ -1,12 +1,11 @@
 'use client'
 
 import { Button } from '@/components/ui/button'
-import { NAVBAR_ITEMS } from '@/config'
-import { cn } from '@/lib/utils'
 import Link from 'next/link'
 import { usePathname, useRouter } from 'next/navigation'
 import { useEffect, useState } from 'react'
 import { FaBars, FaShoppingBasket, FaTimes } from 'react-icons/fa'
+import NavBar from './NavBar'
 
 const Header = () => {
 	const [isMenuOpen, setIsMenuOpen] = useState(false)
@@ -39,22 +38,9 @@ const Header = () => {
 					</Link>
 				</div>
 
-				<nav className='hidden md:flex md:flex-4'>
-					<ul className='flex flex-row gap-2 lg:gap-4'>
-						{NAVBAR_ITEMS.map((item, index) => (
-							<li key={index}>
-								<Link
-									href={item.link}
-									className={cn('text-base lg:text-lg text-text-secondary hover:text-primary transition-colors duration-300', {
-										'text-primary': isActive === item.link
-									})}
-								>
-									{item.label}
-								</Link>
-							</li>
-						))}
-					</ul>
-				</nav>
+				<div className='hidden md:flex md:flex-4'>
+					<NavBar className='flex' itemClassName='text-base lg:text-lg text-text-secondary' />
+				</div>
 
 				<div className='flex justify-end md:flex-1 md:gap-2 items-center'>
 					<FaShoppingBasket className='text-primary hover:text-primary-foreground text-2xl cursor-pointer transition-all duration-300' />
@@ -82,22 +68,7 @@ const Header = () => {
 								</Link>
 							</div>
 						</div>
-						<nav className='mt-8'>
-							<ul className='space-y-4'>
-								{NAVBAR_ITEMS.map((item, index) => (
-									<li key={index}>
-										<Link
-											href={item.link}
-											className={cn('text-2xl text-text-primary hover:text-primary transition-colors duration-300', {
-												'text-primary': isActive === item.link
-											})}
-										>
-											{item.label}
-										</Link>
-									</li>
-								))}
-							</ul>
-						</nav>
+						<NavBar className='mt-8' itemClassName='text-2xl text-text-primary' isColumn />
 						<div className='mt-8 flex flex-col gap-2'>
 							<Button className='w-full text-text-secondary'>ZAMÓW ONLINE</Button>
 							<Button variant='outline' className='w-full'>ŚLEDŹ ZAMÓWIENIE</Button>
