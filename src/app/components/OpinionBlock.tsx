@@ -21,7 +21,7 @@ const OpinionBlock: React.FC<OpinionBlockProps> = ({ opinion }) => {
 				</div>
 			</div>
 			<div>
-				<span className='italic text-xs'>
+				<span className='italic text-xs md:text-base'>
 					{message}
 				</span>
 			</div>

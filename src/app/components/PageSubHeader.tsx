@@ -1,6 +1,8 @@
-const PageSubHeader = ({ title }: { title: string }) => {
+import { cn } from '@/lib/utils'
+
+const PageSubHeader = ({ title, className }: { title: string, className?: string }) => {
 	return (
-		<h3 className='text-4xl text-center font-semibold text-text-secondary py-2 px-2 self-center mx-2'>
+		<h3 className={cn('text-4xl text-center font-semibold text-text-secondary pt-8 pb-4 px-2 self-center mx-2', className)}>
 			{title}
 		</h3>
 	)
