@@ -4,7 +4,7 @@ import { Button } from '@/components/ui/button'
 import Link from 'next/link'
 import { usePathname, useRouter } from 'next/navigation'
 import { useEffect, useState } from 'react'
-import { FaBars, FaShoppingBasket, FaTimes } from 'react-icons/fa'
+import { FaBars, FaTimes } from 'react-icons/fa'
 import NavBar from './NavBar'
 
 const Header = () => {
@@ -43,7 +43,7 @@ const Header = () => {
 				</div>
 
 				<div className='flex justify-end md:flex-1 md:gap-2 items-center'>
-					<FaShoppingBasket className='text-primary hover:text-primary-foreground text-2xl cursor-pointer transition-all duration-300' />
+					<Button className='text-text-secondary'>ZAMÓW ONLINE</Button>
 				</div>
 			</div>
 
