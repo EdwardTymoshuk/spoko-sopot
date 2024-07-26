@@ -42,7 +42,7 @@ const Header = () => {
 					<NavBar className='flex' itemClassName='text-base lg:text-lg text-text-secondary' />
 				</div>
 
-				<div className='flex justify-end md:flex-1 md:gap-2 items-center'>
+				<div className='hidden md:flex md:flex-1 md:gap-2 items-center md:justify-end'>
 					<Button className='text-text-secondary'>ZAMÓW ONLINE</Button>
 				</div>
 			</div>
