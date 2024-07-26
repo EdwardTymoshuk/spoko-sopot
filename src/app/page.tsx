@@ -6,9 +6,7 @@ import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious
 import { CAROUSEL_MAIN_IMAGES, MENU_ITEMS, OPINIONS } from '@/config'
 import Autoplay from 'embla-carousel-autoplay'
 import Image from 'next/image'
-import Link from 'next/link'
 import { FaLocationDot } from "react-icons/fa6"
-import { MdOutlineKeyboardArrowRight } from 'react-icons/md'
 import MainContainer from './components/MainContainer'
 import MaxWidthWrapper from './components/MaxWidthWrapper'
 import MenuItem from './components/MenuItem'
@@ -121,12 +119,6 @@ const Home: React.FC = () => {
               image={menuItem.image}
             />
           ))}
-        </div>
-        <div className='py-2 flex justify-center'>
-          <Link href='/menu' className='flex flex-row gap-1 w-fit items-center hover:text-secondary transition-all'>
-            Zobacz całe menu
-            <MdOutlineKeyboardArrowRight />
-          </Link>
         </div>
       </MaxWidthWrapper>
     </MainContainer>
