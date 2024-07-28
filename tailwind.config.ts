@@ -82,6 +82,9 @@ const config = {
         serif: ['"DM Serif Display"', 'serif'],
         special: ['Sacramento', 'cursive'],
       },
+      screens: {
+        'sm-plus': { 'min': '768px', 'max': '862px' },
+      },
     },
   },
   plugins: [require("tailwindcss-animate")],

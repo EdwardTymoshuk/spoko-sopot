@@ -9,7 +9,7 @@ import NavBar from './NavBar'
 
 const Header = () => {
 	const [isMenuOpen, setIsMenuOpen] = useState(false)
-	const [isActive, setIsActive] = useState('')
+	const [isActive, setIsActive] = useState<string>('')
 	const router = useRouter()
 	const pathName = usePathname()
 
@@ -18,11 +18,15 @@ const Header = () => {
 	}
 
 	useEffect(() => {
-		setIsActive(pathName)
+		if (pathName) {
+			setIsActive(pathName)
+		} else {
+			setIsActive('/')
+		}
 	}, [pathName])
 
 	return (
-		<header className='bg-background p-4 shadow-sm shadow-primary h-auto fixed w-full z-10'>
+		<header className='bg-background p-4 shadow-sm shadow-primary min-h-20 h-auto fixed w-full z-10'>
 			<div className='mx-auto flex justify-between items-center'>
 				<div className='flex justify-start md:hidden'>
 					<FaBars className='text-primary hover:text-primary-foreground text-2xl cursor-pointer transition-all duration-300' onClick={toggleMenu} />

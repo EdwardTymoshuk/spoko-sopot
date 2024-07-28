@@ -26,20 +26,32 @@ export type MenuItemCategory =
 	'Przystawki' |
 	'Zupy' |
 	'Bowle' |
-	'Wege' |
+	'Vege' |
 	'Dania rybne' |
 	'Owoce morza' |
-	'Dania miesne' |
-	'Whiskey' |
+	'Dania mięsne' |
+	'Klasyczne koktaile' |
+	'Na ciepło' |
+	'Herbata' |
+	'Kawa' |
+	'Napoje zimne' |
+	'Piwo butelkowe' |
+	'Piwo bezalkoholowe' |
+	'Wina Białe' |
+	'Wina Czerwone' |
+	'Drinki' |
+	'Whisky' |
 	'Rum' |
 	'Gin' |
-	'Cognat/Brandy' |
+	'Tequila' |
+	'Cognac / Brandy' |
 	'Wódka'
 
-export interface MenuItem {
+export interface MenuItemType {
 	name: string,
 	price: number,
 	description: string,
 	category: MenuItemCategory,
 	image: string,
+	isOrderable?: boolean,
 }	
