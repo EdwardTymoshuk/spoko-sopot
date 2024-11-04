@@ -37,21 +37,33 @@ export type MenuItemCategory =
 	'Napoje zimne' |
 	'Piwo butelkowe' |
 	'Piwo bezalkoholowe' |
+	'Piwo beczkowe' |
+	'Piwo smakowe' |
 	'Wina Białe' |
 	'Wina Czerwone' |
+	'Wina Musujące' |
 	'Drinki' |
 	'Whisky' |
 	'Rum' |
 	'Gin' |
 	'Tequila' |
 	'Cognac / Brandy' |
-	'Wódka'
+	'Wódka' |
+	'Napoje alkoholowe' |
+	'Napoje bezalkoholowe' |
+	'Napoje łekkoprocentowe' |
+	'Inne'
 
+// Тип для позицій меню
 export interface MenuItemType {
+	id: string,
 	name: string,
 	price: number,
-	description: string,
+	description: string | null | undefined,
 	category: MenuItemCategory,
-	image: string,
+	image: string | null | undefined,
 	isOrderable?: boolean,
-}	
+	isRecommended?: boolean,
+	createdAt: Date,
+	updatedAt: Date,
+}

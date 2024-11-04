@@ -36,10 +36,10 @@ const Footer = () => {
 					<div className=''>
 						<p className='text-primary'>Poznaj nas:</p>
 						<div className='flex justify-center space-x-4 transition-all'>
-							<Link href='https://instagram.com' target='_blank' className='text-text-primary hover:text-primary'>
+							<Link href='https://instagram.com/spokosopot' target='_blank' className='text-text-primary hover:text-primary'>
 								<FaInstagram size={24} />
 							</Link>
-							<Link href='https://facebook.com' target='_blank' className='text-text-primary hover:text-primary'>
+							<Link href='https://facebook.com/spokowsopocie' target='_blank' className='text-text-primary hover:text-primary'>
 								<FaFacebook size={24} />
 							</Link>
 						</div>

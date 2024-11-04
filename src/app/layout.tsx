@@ -1,11 +1,16 @@
+import { MenuProvider } from '@/context/MenuContext'
 import type { Metadata } from 'next'
-import { Inter, Roboto } from 'next/font/google'
+import { Inter, Lato, Nunito, Roboto } from 'next/font/google'
 import Footer from './components/Footer'
 import Header from './components/Header'
+import ProgressBar from './components/ProgressBar'
 import './globals.css'
 
+require('dotenv').config()
 const inter = Inter({ subsets: ['latin'] })
 const roboto = Roboto({ weight: '400', subsets: ['latin'] })
+const lato = Lato({ weight: '400', subsets: ['latin'] })
+const nunito = Nunito({ weight: '400', subsets: ['latin'] })
 
 export const metadata: Metadata = {
   title: 'Create Next App',
@@ -19,10 +24,13 @@ export default function RootLayout({
 }>) {
   return (
     <html lang='en'>
-      <body className={roboto.className}>
-        <Header />
-        {children}
-        <Footer />
+      <body className={lato.className}>
+        <MenuProvider>
+          <ProgressBar />
+          <Header />
+          {children}
+          <Footer />
+        </MenuProvider>
       </body>
     </html>
   )
