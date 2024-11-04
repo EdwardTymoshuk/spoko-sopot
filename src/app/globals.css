@@ -3,6 +3,8 @@
 @tailwind utilities;
 
 @import url('https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=Roboto:wght@400;500;700&family=Sacramento&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&family=Sacramento&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&family=Nunito:ital,wght@0,200..1000;1,200..1000&family=Sacramento&display=swap');
 
 
 @layer base {
@@ -40,7 +42,7 @@
     --card-foreground: 0 0% 95%;
     --popover: 0 0% 9%;
     --popover-foreground: 0 0% 95%;
-    --primary: 142.1 70.6% 45.3%;
+    --primary: #aad959;
     --primary-foreground: 144.9 80.4% 10%;
     --secondary: 240 3.7% 15.9%;
     --secondary-foreground: 0 0% 98%;
@@ -80,4 +82,21 @@
     font-weight: 400;
     font-style: normal;
   }
+}
+
+/* styles/globals.css */
+#nprogress .bar {
+  background: #aad959;
+  /* Колір лінії прогресу */
+  height: 4px;
+  /* Висота лінії прогресу */
+}
+
+#nprogress .peg {
+  box-shadow: 0 0 10px #aad959, 0 0 5px #aad959;
+}
+
+#nprogress .spinner-icon {
+  border-top-color: #aad959;
+  border-left-color: #aad959;
 }

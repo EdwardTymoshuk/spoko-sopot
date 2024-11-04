@@ -1,6 +1,11 @@
+// Header.tsx
+
 'use client'
 
-import { Button } from '@/components/ui/button'
+import { Button } from '@/app/components/ui/button'
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/app/components/ui/tooltip'
+import { isDeliveryOpen } from '@/config'
+import { cn } from '@/lib/utils'
 import Link from 'next/link'
 import { usePathname, useRouter } from 'next/navigation'
 import { useEffect, useState } from 'react'
@@ -47,7 +52,33 @@ const Header = () => {
 				</div>
 
 				<div className='hidden md:flex md:flex-1 md:gap-2 items-center md:justify-end'>
-					<Button className='text-text-secondary'>ZAMÓW ONLINE</Button>
+					<TooltipProvider delayDuration={200}>
+						<Tooltip>
+							<TooltipTrigger asChild>
+								<Button
+									variant='default'
+									className={cn(`text-text-primary`, {
+										'text-gray-600 opacity-60 hover:bg-primary cursor-not-allowed': !isDeliveryOpen,
+									})}
+								>
+									{isDeliveryOpen ? (
+										'ZAMÓW ONLINE'
+									) : (
+										<p>
+											<span>ZAMÓW ONLINE</span>
+											<span className="block text-sm">(tymczasowo niedostępne<i className='text-red-800'>*</i> )</span>
+										</p>
+									)}
+								</Button>
+							</TooltipTrigger>
+							{!isDeliveryOpen && (
+								<TooltipContent>
+									<p>Usługa zamawiania online jest tymczasowo niedostępna. </p>
+									<p>W celu słożenia zamówienia prosimy o kontakt telefoniczny.</p>
+								</TooltipContent>
+							)}
+						</Tooltip>
+					</TooltipProvider>
 				</div>
 			</div>
 
@@ -72,11 +103,43 @@ const Header = () => {
 								</Link>
 							</div>
 						</div>
-						<NavBar className='mt-8' itemClassName='text-2xl text-text-primary' isColumn />
-						<div className='mt-8 flex flex-col gap-2'>
-							<Button className='w-full text-text-secondary'>ZAMÓW ONLINE</Button>
-							<Button variant='outline' className='w-full'>ŚLEDŹ ZAMÓWIENIE</Button>
+						<NavBar className='mt-8' itemClassName='text-2xl text-text-primary' isColumn toggleMenu={toggleMenu} />
+						<div className="mt-8 flex flex-col gap-2">
+							<TooltipProvider delayDuration={0}>
+								<Tooltip>
+									<TooltipTrigger asChild>
+										<Button
+											className={cn(
+												'w-full text-text-secondary text-wrap text-center',
+												{
+													'text-gray-600 opacity-60 hover:bg-primary cursor-not-allowed': !isDeliveryOpen,
+												}
+											)}
+										>
+											{isDeliveryOpen ? (
+												'ZAMÓW ONLINE'
+											) : (
+												<p>
+													<span>ZAMÓW ONLINE</span>
+													<span className="block text-sm">(tymczasowo niedostępne<i className='text-red-800'>*</i> )</span>
+												</p>
+											)}
+										</Button>
+									</TooltipTrigger>
+									{!isDeliveryOpen && (
+										<TooltipContent>
+											<p>Usługa zamawiania online jest tymczasowo niedostępna. </p>
+											<p>W celu słożenia zamówienia prosimy o kontakt telefoniczny.</p>
+										</TooltipContent>
+									)}
+								</Tooltip>
+							</TooltipProvider>
+
+							<Button variant="outline" className="w-full">
+								ŚLEDŹ ZAMÓWIENIE
+							</Button>
 						</div>
+
 					</div>
 				</>
 			)}
