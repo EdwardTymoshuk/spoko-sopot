@@ -1,6 +1,6 @@
 import { CarouselImage, NavBarItem, Opinion } from '@/app/types'
 
-export const isDeliveryOpen = false
+export const isOrderingOpen = false
 
 
 export const NAVBAR_ITEMS: NavBarItem[] = [

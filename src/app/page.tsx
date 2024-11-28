@@ -6,7 +6,7 @@ import { Popover, PopoverContent, PopoverTrigger } from '@/app/components/ui/pop
 import { Skeleton } from '@/app/components/ui/skeleton'
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/app/components/ui/tooltip'
 import { MenuItemType, Opinion } from '@/app/types'
-import { CAROUSEL_MAIN_IMAGES, OPINIONS, isDeliveryOpen } from '@/config'
+import { CAROUSEL_MAIN_IMAGES, OPINIONS, isOrderingOpen } from '@/config'
 import { useMenu } from '@/context/MenuContext'
 import { cn } from '@/lib/utils'
 import Autoplay from 'embla-carousel-autoplay'
@@ -96,11 +96,11 @@ const Home: React.FC = () => {
                 <Button
                   size='lg'
                   className={cn('w-full text-lg font-semibold', {
-                    'text-text-secondary': isDeliveryOpen,
-                    'text-gray-400 opacity-60 cursor-not-allowed': !isDeliveryOpen,
+                    'text-text-secondary': isOrderingOpen,
+                    'text-gray-400 opacity-60 cursor-not-allowed': !isOrderingOpen,
                   })}
                 >
-                  {isDeliveryOpen ? (
+                  {isOrderingOpen ? (
                     'ZAMÓW ONLINE'
                   ) : (
                     <p className='leading-none'>
@@ -110,7 +110,7 @@ const Home: React.FC = () => {
                   )}
                 </Button>
               </TooltipTrigger>
-              {!isDeliveryOpen && (
+              {!isOrderingOpen && (
                 <TooltipContent>
                   <p>Usługa zamawiania online jest tymczasowo niedostępna.</p>
                   <p>W celu słożenia zamówienia prosimy o kontakt telefoniczny.</p>

@@ -4,7 +4,6 @@
 
 import { Button } from '@/app/components/ui/button'
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/app/components/ui/tooltip'
-import { isDeliveryOpen } from '@/config'
 import { cn } from '@/lib/utils'
 import Link from 'next/link'
 import { usePathname, useRouter } from 'next/navigation'
@@ -14,6 +13,8 @@ import NavBar from './NavBar'
 
 const Header = () => {
 	const [isMenuOpen, setIsMenuOpen] = useState(false)
+	const [isOrderingOpen, setIsOrderingOpen] = useState(false)
+	const [isLoading, setIsLoading] = useState(true)
 	const [isActive, setIsActive] = useState<string>('')
 	const router = useRouter()
 	const pathName = usePathname()
@@ -21,6 +22,23 @@ const Header = () => {
 	const toggleMenu = () => {
 		setIsMenuOpen(!isMenuOpen)
 	}
+
+	useEffect(() => {
+		const fetchSettings = async () => {
+			try {
+				const response = await fetch('/api/settings')
+				const data = await response.json()
+				console.log(data)
+				setIsOrderingOpen(data.isOrderingOpen)
+			} catch (error) {
+				console.error('Помилка при завантаженні налаштувань:', error)
+			} finally {
+				setIsLoading(false)
+			}
+		}
+
+		fetchSettings()
+	}, [])
 
 	useEffect(() => {
 		if (pathName) {
@@ -58,10 +76,10 @@ const Header = () => {
 								<Button
 									variant='default'
 									className={cn(`text-text-primary`, {
-										'text-gray-600 opacity-60 hover:bg-primary cursor-not-allowed': !isDeliveryOpen,
+										'text-gray-600 opacity-60 hover:bg-primary cursor-not-allowed': !isOrderingOpen,
 									})}
 								>
-									{isDeliveryOpen ? (
+									{isOrderingOpen ? (
 										'ZAMÓW ONLINE'
 									) : (
 										<p>
@@ -71,10 +89,10 @@ const Header = () => {
 									)}
 								</Button>
 							</TooltipTrigger>
-							{!isDeliveryOpen && (
+							{!isOrderingOpen && (
 								<TooltipContent>
 									<p>Usługa zamawiania online jest tymczasowo niedostępna. </p>
-									<p>W celu słożenia zamówienia prosimy o kontakt telefoniczny.</p>
+									<p>W celu złożenia zamówienia prosimy o kontakt telefoniczny.</p>
 								</TooltipContent>
 							)}
 						</Tooltip>
@@ -112,11 +130,11 @@ const Header = () => {
 											className={cn(
 												'w-full text-text-secondary text-wrap text-center',
 												{
-													'text-gray-600 opacity-60 hover:bg-primary cursor-not-allowed': !isDeliveryOpen,
+													'text-gray-600 opacity-60 hover:bg-primary cursor-not-allowed': !isOrderingOpen,
 												}
 											)}
 										>
-											{isDeliveryOpen ? (
+											{isOrderingOpen ? (
 												'ZAMÓW ONLINE'
 											) : (
 												<p>
@@ -126,10 +144,10 @@ const Header = () => {
 											)}
 										</Button>
 									</TooltipTrigger>
-									{!isDeliveryOpen && (
+									{!isOrderingOpen && (
 										<TooltipContent>
 											<p>Usługa zamawiania online jest tymczasowo niedostępna. </p>
-											<p>W celu słożenia zamówienia prosimy o kontakt telefoniczny.</p>
+											<p>W celu złożenia zamówienia prosimy o kontakt telefoniczny.</p>
 										</TooltipContent>
 									)}
 								</Tooltip>
