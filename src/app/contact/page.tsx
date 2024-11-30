@@ -67,6 +67,7 @@ const ContactPage = () => {
 					description="Skontaktuj się z nami, aby uzyskać więcej informacji lub zarezerwować stolik. Nasz zespół jest gotowy do odpowiedzi na wszystkie Twoje pytania."
 					title="Kontakt"
 					image="/img/contact-page.jpg"
+					imageMobile="/img/contact-page-mobile.jpg"
 				/>
 
 				<div className="grid grid-cols-1 md:grid-cols-2 gap-8 py-8 h-full">

@@ -5,12 +5,10 @@ import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious
 import { Popover, PopoverContent, PopoverTrigger } from '@/app/components/ui/popover'
 import { Skeleton } from '@/app/components/ui/skeleton'
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/app/components/ui/tooltip'
-import { MenuItemType, Opinion } from '@/app/types'
-import { CAROUSEL_MAIN_IMAGES, OPINIONS, isOrderingOpen } from '@/config'
+import { MenuItemType } from '@/app/types'
+import { CAROUSEL_MAIN_IMAGES, isOrderingOpen } from '@/config'
 import { useMenu } from '@/context/MenuContext'
 import { cn } from '@/lib/utils'
-import Autoplay from 'embla-carousel-autoplay'
-import Image from 'next/image'
 import { useRouter } from 'next/navigation'
 import { startTransition, useCallback, useEffect, useState } from 'react'
 import { FaLocationDot } from "react-icons/fa6"
@@ -20,7 +18,7 @@ import LoadingButton from './components/LoadingButton'
 import MainContainer from './components/MainContainer'
 import MaxWidthWrapper from './components/MaxWidthWrapper'
 import MenuItem from './components/MenuItem'
-import OpinionBlock from './components/OpinionBlock'
+import Opinions from './components/Opinions'
 import PageContainer from './components/PageContainer'
 import PageSubHeader from './components/PageSubHeader'
 
@@ -63,14 +61,14 @@ const Home: React.FC = () => {
               <CarouselContent className="h-full">
                 {CAROUSEL_MAIN_IMAGES.map((item, index) => (
                   <CarouselItem key={index} className="relative h-full">
-                    <div className="relative h-full">
-                      <Image
+                    <picture className="relative h-full">
+                      <source srcSet={item.srcMobile} media="(max-width: 768px)" />
+                      <img
                         src={item.src}
-                        alt="Carousel image"
-                        fill
-                        style={{ objectFit: 'cover' }}
+                        alt="Responsive image"
+                        className='min-h-full w-full object-cover'
                       />
-                    </div>
+                    </picture>
                   </CarouselItem>
                 ))}
               </CarouselContent>
@@ -81,7 +79,7 @@ const Home: React.FC = () => {
             {/* Пульсуюча кнопка зі стрілкою вниз */}
             <button
               onClick={scrollToSection}
-              className="absolute bottom-8 left-1/2 transform -translate-x-1/2 text-primary animate-bounce"
+              className="absolute opacity-50 bottom-8 left-1/2 transform -translate-x-1/2 text-primary animate-bounce"
               aria-label="Прокрутка вниз"
             >
               <RxDoubleArrowDown size={40} />
@@ -96,11 +94,11 @@ const Home: React.FC = () => {
                 <Button
                   size='lg'
                   className={cn('w-full text-lg font-semibold', {
-                    'text-text-secondary': isOrderingOpen,
-                    'text-gray-400 opacity-60 cursor-not-allowed': !isOrderingOpen,
+                    'text-text-secondary': !isOrderingOpen,
+                    'text-gray-400 opacity-60 cursor-not-allowed': isOrderingOpen,
                   })}
                 >
-                  {isOrderingOpen ? (
+                  {!isOrderingOpen ? (
                     'ZAMÓW ONLINE'
                   ) : (
                     <p className='leading-none'>
@@ -126,7 +124,7 @@ const Home: React.FC = () => {
       </PageContainer>
 
       {/* VISIT US BLOCK */}
-      <div className='w-full flex flex-col md:flex-row-reverse items-stretch'>
+      <div className='w-full md:max-w-screen-2xl md:mx-auto md:px-8 2xl:p-0 flex flex-col md:flex-row-reverse items-stretch'>
         <MaxWidthWrapper className='min-h-full flex-grow'>
           <div className='flex flex-col justify-between items-center h-full py-6 md:py-12'>
             <PageSubHeader title='Odwiedź nas' className='p-0' />
@@ -136,7 +134,7 @@ const Home: React.FC = () => {
                   <FaLocationDot className='text-secondary' /> Hestii 3, 81-731 Sopot
                 </p>
               </div>
-              <div>
+              <div className='text-center'>
                 <p>Pon-pt: 10:00 - 19:00</p>
                 <p>Sob-niedz: 8:00 - 19:00</p>
               </div>
@@ -167,6 +165,7 @@ const Home: React.FC = () => {
             </Popover>
           </div>
         </MaxWidthWrapper>
+
         <div className='w-full py-2 md:px-8'>
           {isMapLoading ? (
             <Skeleton className="w-full h-[450px] rounded-lg flex items-center justify-center">
@@ -184,6 +183,7 @@ const Home: React.FC = () => {
               onLoad={() => setIsMapLoading(false)}
             ></iframe>
           )}
+
           <PageContainer className='px-4 py-4 md:hidden'>
             <Popover>
               <PopoverTrigger asChild>
@@ -206,28 +206,12 @@ const Home: React.FC = () => {
             </Popover>
           </PageContainer>
         </div>
+
       </div>
 
       <MaxWidthWrapper>
 
-        <PageSubHeader title='Nasi goście o nas' />
-
-        <Carousel
-          className='w-full h-full'
-          plugins={[
-            Autoplay({
-              delay: 5000,
-            }),
-          ]}
-        >
-          <CarouselContent className='relative h-full m-0'>
-            {OPINIONS.map((opinion: Opinion, index: number) => (
-              <CarouselItem key={index} className='relative h-full p-0'>
-                <OpinionBlock opinion={opinion} />
-              </CarouselItem>
-            ))}
-          </CarouselContent>
-        </Carousel>
+        <Opinions />
 
         <PageSubHeader title='Nasze specjale' />
 

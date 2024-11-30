@@ -5,15 +5,16 @@ export interface NavBarItem {
 
 export interface CarouselImage {
 	src: string,
+	srcMobile?: string,
 }
 
-export interface Opinion {
-	author: string,
-	date: string,
-	message: string,
-	rate: 1 | 2 | 3 | 4 | 5,
+export interface MongoDBReview {
+	_id: string
+	author: string
+	message: string
+	rating: number
+	date: string // дата у форматі ISO (string)
 }
-
 export type MenuItemCategory =
 	'Dania główne' |
 	'Pizza' |

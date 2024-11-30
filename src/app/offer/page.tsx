@@ -11,6 +11,7 @@ const OfferPage = () => {
 				<PageHeaderContainer
 					title="Nasza Oferta"
 					image="/img/offer-page.jpg"
+					imageMobile="/img/offer-page-mobile.jpg"
 					description="Restauracja Spoko Sopot zaprasza na niezapomniane przyjęcia nad brzegiem Bałtyku! Organizujemy wydarzenia dostosowane do każdej okazji – od kameralnych kolacji po wyjątkowe uroczystości rodzinne i firmowe. Zapraszamy do zapoznania się z naszą bogatą ofertą kulinarną, przygotowaną z myślą o najwyższej jakości i wyjątkowych smakach. Skontaktuj się z nami, aby omówić szczegóły i stworzyć idealne menu na Twoje przyjęcie!"
 				/>
 
