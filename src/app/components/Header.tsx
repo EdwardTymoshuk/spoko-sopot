@@ -84,7 +84,7 @@ const Header = () => {
 									) : (
 										<p>
 											<span>ZAMÓW ONLINE</span>
-											<span className="block text-sm">(tymczasowo niedostępne<i className='text-red-800'>*</i> )</span>
+											<span className="block text-xs">(tymczasowo niedostępne<i className='text-red-800'>*</i> )</span>
 										</p>
 									)}
 								</Button>

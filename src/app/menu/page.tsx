@@ -27,6 +27,7 @@ export default async function MenuPage() {
           Chcemy, aby każda wizyta w naszej restauracji była niezapomnianym doświadczeniem kulinarnym. Serdecznie zapraszamy do zapoznania się z naszym menu i życzymy smacznego!'
 					title='Menu'
 					image='/img/menu-page.jpg'
+					imageMobile='/img/menu-page-mobile.jpg'
 				/>
 
 				<Accordion type="single" collapsible className=''>

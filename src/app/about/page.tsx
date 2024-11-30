@@ -13,6 +13,7 @@ const AboutPage = () => {
 					description='Nasza restauracja położona jest w sercu malowniczego Sopotu, z widokiem na Bałtyk. Tworzymy miejsce, gdzie smak i pasja spotykają się na każdym talerzu. Nasze menu to starannie skomponowane dania, łączące nowoczesną kuchnię europejską z nutą polskich smaków, które przyciągają zarówno miejscowych, jak i turystów.'
 					title='O nas'
 					image='/img/about-page.jpg'
+					imageMobile='/img/about-page-mobile.jpg'
 				/>
 
 				<div className='my-12 flex flex-col md:flex-row-reverse items-center gap-8'>

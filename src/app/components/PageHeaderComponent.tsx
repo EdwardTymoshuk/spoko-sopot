@@ -1,22 +1,21 @@
-import Image from 'next/image'
 import PageContainer from './PageContainer'
 import { Separator } from './ui/separator'
 
-const PageHeaderContainer = ({ title, description, image }: { title: string, description: string, image: string }) => {
+const PageHeaderContainer = ({ title, description, image, imageMobile }: { title: string, description: string, image: string, imageMobile?: string }) => {
 	return (
 		<PageContainer>
 			<h2 className='text-6xl text-center font-semibold text-text-secondary py-4 px-2 self-center mx-2'>
 				{title}
 			</h2>
 			<Separator className='mb-8 mx-auto w-1/2 bg-primary' />
-			<div className='relative w-full h-96 mb-8'>
-				<Image
+			<picture className="relative w-full h-96 mb-8 rounded-lg">
+				<source srcSet={imageMobile} media="(max-width: 768px)" />
+				<img
 					src={image}
-					alt={`${title} image header`}
-					fill
-					className='object-cover rounded-lg'
+					alt="Responsive image"
+					className='w-full h-full object-cover rounded-lg'
 				/>
-			</div>
+			</picture>
 
 			<span className='flex mx-auto text-base md:text-lg lg:text-xl text-justify text-text-seconadry'>
 				{description}

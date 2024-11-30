@@ -1,31 +1,27 @@
 import { FaStar } from "react-icons/fa"
-import { Opinion } from '../types'
+import { MongoDBReview } from '../types'
 
 type OpinionBlockProps = {
-	opinion: Opinion
+	opinion: MongoDBReview
 }
 
 const OpinionBlock: React.FC<OpinionBlockProps> = ({ opinion }) => {
-	const { author, date, message, rate } = opinion
+	const { author, date, message, rating } = opinion
 
-	const stars = Array.from({ length: 5 }, (_, i) => i < rate ? 'text-primary' : 'text-text-secondary')
+	const stars = Array.from({ length: 5 }, (_, i) => (
+		<FaStar key={i} className={i < rating ? 'text-yellow-500' : 'text-gray-300'} />
+	))
 
 	return (
-		<div className='bg-transparent border border-primary p-4 m-2 rounded-xl'>
-			<div className='flex justify-between'>
-				<span className='text-secondary text-xl'>{author}</span>
-				<div className='flex flex-row py-2 justify-end'>
-					{stars.map((colorClass, i) => (
-						<FaStar key={i} className={colorClass} />
-					))}
-				</div>
+		<div className='bg-white border border-gray-200 shadow-md p-4 m-2 rounded-xl'>
+			<div className='flex justify-between items-center'>
+				<span className='font-bold text-lg text-primary'>{author}</span>
+				<div className='flex'>{stars}</div>
 			</div>
-			<div>
-				<span className='italic text-xs md:text-base'>
-					{message}
-				</span>
+			<div className='mt-2 text-sm text-gray-700 italic'>
+				{message}
 			</div>
-			<div className='text-right text-xs text-muted-foreground'>{date}</div>
+			<div className='mt-4 text-right text-xs text-gray-500'>{date}</div>
 		</div>
 	)
 }
