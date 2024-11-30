@@ -20,7 +20,7 @@ const AboutPage = () => {
 					<div className='md:w-1/2'>
 						<h2 className='text-3xl font-bold text-secondary mb-4'>Kilka słów od szefa kuchni</h2>
 						<p className='text-lg text-text-foreground'>
-							"W kuchni staramy się, aby każdy składnik był traktowany z najwyższym szacunkiem, a danie nie tylko smakowało, ale i cieszyło oko. Jesteśmy dumni z naszej oferty, która powstała z myślą o wykorzystaniu lokalnych składników i najlepszych produktów dostępnych na polskim rynku."
+							&quot;W kuchni staramy się, aby każdy składnik był traktowany z najwyższym szacunkiem, a danie nie tylko smakowało, ale i cieszyło oko. Jesteśmy dumni z naszej oferty, która powstała z myślą o wykorzystaniu lokalnych składników i najlepszych produktów dostępnych na polskim rynku.&quot;
 						</p>
 						<p className='mt-4 font-semibold'>— Lesia Voloshyna, Szef Kuchni Restauracji Spoko</p>
 					</div>

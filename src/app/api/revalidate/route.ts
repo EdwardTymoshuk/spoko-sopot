@@ -1,15 +1,22 @@
-//  app/api/revalidate/route.ts
-import { NextApiRequest, NextApiResponse } from 'next'
+import { NextResponse } from 'next/server'
 
-export default async function handler(req: NextApiRequest, res: NextApiResponse) {
-	if (req.query.secret !== process.env.REVALIDATE_SECRET) {
-		return res.status(401).json({ message: 'Invalid token' })
+export async function GET(req: Request) {
+	const { searchParams } = new URL(req.url)
+	const secret = searchParams.get('secret')
+
+	if (secret !== process.env.REVALIDATE_SECRET) {
+		return NextResponse.json({ message: 'Invalid token' }, { status: 401 })
 	}
 
 	try {
-		await res.revalidate('/menu')
-		return res.json({ revalidated: true })
-	} catch (err) {
-		return res.status(500).send('Error revalidating')
+		// Викликаємо ревалідацію для сторінки `/menu`
+		await fetch(`${process.env.NEXT_PUBLIC_SITE_URL}/menu`, {
+			method: 'POST',
+		})
+
+		return NextResponse.json({ revalidated: true })
+	} catch (error) {
+		console.error('Помилка ревалідації:', error)
+		return NextResponse.json({ message: 'Error revalidating' }, { status: 500 })
 	}
 }
