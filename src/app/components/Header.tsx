@@ -28,7 +28,6 @@ const Header = () => {
 			try {
 				const response = await fetch('/api/settings')
 				const data = await response.json()
-				console.log(data)
 				setIsOrderingOpen(data.isOrderingOpen)
 			} catch (error) {
 				console.error('Помилка при завантаженні налаштувань:', error)

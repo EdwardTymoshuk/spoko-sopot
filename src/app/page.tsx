@@ -6,7 +6,7 @@ import { Popover, PopoverContent, PopoverTrigger } from '@/app/components/ui/pop
 import { Skeleton } from '@/app/components/ui/skeleton'
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/app/components/ui/tooltip'
 import { MenuItemType } from '@/app/types'
-import { CAROUSEL_MAIN_IMAGES, isOrderingOpen } from '@/config'
+import { CAROUSEL_MAIN_IMAGES } from '@/config'
 import { useMenu } from '@/context/MenuContext'
 import { cn } from '@/lib/utils'
 import { useRouter } from 'next/navigation'
@@ -25,7 +25,7 @@ import PageSubHeader from './components/PageSubHeader'
 const Home: React.FC = () => {
   const { menuItems, loading, refetch } = useMenu()
   const [isLoading, setIsLoading] = useState(false)
-  const [isMapLoading, setIsMapLoading] = useState(true)
+  const [isOrderingOpen, setIsOrderingOpen] = useState(false)
 
   const router = useRouter()
 
@@ -43,12 +43,21 @@ const Home: React.FC = () => {
     })
   }
 
-  // Додано таймаут на випадок, якщо подія onLoad не спрацює
+
   useEffect(() => {
-    const timer = setTimeout(() => {
-      setIsMapLoading(false)
-    }, 3000) // 3 секунди
-    return () => clearTimeout(timer)
+    const fetchSettings = async () => {
+      try {
+        const response = await fetch('/api/settings')
+        const data = await response.json()
+        setIsOrderingOpen(data.isOrderingOpen)
+      } catch (error) {
+        console.error('Помилка при завантаженні налаштувань:', error)
+      } finally {
+        setIsLoading(false)
+      }
+    }
+
+    fetchSettings()
   }, [])
 
   return (
@@ -80,7 +89,7 @@ const Home: React.FC = () => {
             <button
               onClick={scrollToSection}
               className="absolute opacity-50 bottom-8 left-1/2 transform -translate-x-1/2 text-primary animate-bounce"
-              aria-label="Прокрутка вниз"
+              aria-label="Scroll down"
             >
               <RxDoubleArrowDown size={40} />
             </button>
@@ -94,11 +103,11 @@ const Home: React.FC = () => {
                 <Button
                   size='lg'
                   className={cn('w-full text-lg font-semibold', {
-                    'text-text-secondary': !isOrderingOpen,
-                    'text-gray-400 opacity-60 cursor-not-allowed': isOrderingOpen,
+                    'text-text-secondary': isOrderingOpen,
+                    'text-gray-400 opacity-60 cursor-not-allowed': !isOrderingOpen,
                   })}
                 >
-                  {!isOrderingOpen ? (
+                  {isOrderingOpen ? (
                     'ZAMÓW ONLINE'
                   ) : (
                     <p className='leading-none'>
@@ -167,22 +176,15 @@ const Home: React.FC = () => {
         </MaxWidthWrapper>
 
         <div className='w-full py-2 md:px-8'>
-          {isMapLoading ? (
-            <Skeleton className="w-full h-[450px] rounded-lg flex items-center justify-center">
-              <p className='w-full text-center text-text-foreground'>Ładuję mapę...</p>
-            </Skeleton>
-          ) : (
-            <iframe
-              src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3554.356080609364!2d18.58294595188907!3d54.43213053637157!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x46fd0b6edee7521f%3A0x324a244fefc976ef!2sRestauracja%20Spoko%20Sopot!5e0!3m2!1suk!2spl!4v1721160082108!5m2!1suk!2spl"
-              width="100%"
-              height="450"
-              style={{ border: 0 }}
-              allowFullScreen
-              loading="lazy"
-              referrerPolicy="no-referrer-when-downgrade"
-              onLoad={() => setIsMapLoading(false)}
-            ></iframe>
-          )}
+          <iframe
+            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3554.356080609364!2d18.58294595188907!3d54.43213053637157!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x46fd0b6edee7521f%3A0x324a244fefc976ef!2sRestauracja%20Spoko%20Sopot!5e0!3m2!1suk!2spl!4v1721160082108!5m2!1suk!2spl"
+            width="100%"
+            height="450"
+            style={{ border: 0 }}
+            allowFullScreen
+            loading="lazy"
+            referrerPolicy="no-referrer-when-downgrade"
+          ></iframe>
 
           <PageContainer className='px-4 py-4 md:hidden'>
             <Popover>
