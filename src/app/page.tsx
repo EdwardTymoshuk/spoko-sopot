@@ -158,7 +158,7 @@ const Home: React.FC = () => {
                   </p>
                   <p className='mt-1'>
                     <h3 className='font-bold text-secondary'>Napisz</h3>
-                    <a href="mailto:kontakt@spokosopot.pl" className="text-text-seconadary  hover:underline">info@spokosopot.pl</a>
+                    <a href="mailto:info@spokosopot.pl" className="text-text-seconadary  hover:underline">info@spokosopot.pl</a>
                   </p>
                 </div>
               </PopoverContent>
@@ -199,7 +199,7 @@ const Home: React.FC = () => {
                   </p>
                   <p className='mt-1'>
                     <h3 className='font-bold text-secondary'>Napisz</h3>
-                    <a href="mailto:kontakt@spokosopot.pl" className="text-text-seconadary  hover:underline">info@spokosopot.pl</a>
+                    <a href="mailto:info@spokosopot.pl" className="text-text-seconadary  hover:underline">info@spokosopot.pl</a>
                   </p>
                 </div>
               </PopoverContent>
