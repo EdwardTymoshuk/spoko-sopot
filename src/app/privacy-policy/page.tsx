@@ -48,7 +48,7 @@ const PrivacyPolicy: React.FC = () => {
 				<p>
 					Masz prawo do dostępu do swoich danych, ich poprawienia oraz usunięcia. W przypadku pytań
 					lub wniosków dotyczących Twoich danych osobowych, prosimy o kontakt na adres e-mail:
-					<a href="mailto:kontakt@spokosopot.pl" className="text-primary hover:underline"> info@spokosopot.pl</a>.
+					<a href="mailto:info@spokosopot.pl" className="text-primary hover:underline"> info@spokosopot.pl</a>.
 				</p>
 			</section>
 

@@ -9,6 +9,7 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import Image from 'next/image'
 import Link from 'next/link'
 import { useForm } from 'react-hook-form'
+import { toast } from 'sonner'
 import { z } from 'zod'
 import MainContainer from '../components/MainContainer'
 import MaxWidthWrapper from '../components/MaxWidthWrapper'
@@ -52,13 +53,27 @@ const ContactPage = () => {
 
 	const onSubmit = async (data: ContactFormData) => {
 		try {
-			console.log('Dane formularza:', data)
-			alert('Dziękujemy za kontakt! Twoja wiadomość została wysłana.')
-			form.reset()
+			const response = await fetch('/api/contact', {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json',
+				},
+				body: JSON.stringify(data),
+			})
+
+			if (response.ok) {
+				toast.success('Dziękujemy za kontakt! Twoja wiadomość została wysłana.')
+				form.reset()
+			} else {
+				const error = await response.json()
+				toast.error(`Błąd: ${error.error || 'Nie udało się wysłać wiadomości'}`)
+			}
 		} catch (error) {
 			console.error('Błąd podczas wysyłania wiadomości:', error)
+			toast.error('Wystąpił błąd podczas wysyłania wiadomości.')
 		}
 	}
+
 
 	return (
 		<MainContainer className="pt-20 pb-8">
@@ -76,7 +91,7 @@ const ContactPage = () => {
 						<div>
 							<h2 className="text-2xl font-bold text-secondary">Skontaktuj się z nami:</h2>
 							<p className="text-lg">Telefon: <a href="tel:+48123456789" className="text-primary">+48 123 456 789</a></p>
-							<p className="text-lg">Email: <a href="mailto:kontakt@spokosopot.pl" className="text-primary">kontakt@spokosopot.pl</a></p>
+							<p className="text-lg">Email: <a href="mailto:info@spokosopot.pl" className="text-primary">info@spokosopot.pl</a></p>
 							<p className="text-lg">Adres: Hestii 3, 81-731 Sopot</p>
 						</div>
 						<div>

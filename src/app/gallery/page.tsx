@@ -1,22 +1,48 @@
 'use client'
 
 import 'photoswipe/dist/photoswipe.css'
+import { useEffect, useState } from 'react'
 import { Gallery, Item } from 'react-photoswipe-gallery'
 import MainContainer from '../components/MainContainer'
 import MaxWidthWrapper from '../components/MaxWidthWrapper'
 import PageHeaderContainer from '../components/PageHeaderComponent'
 
-const photos = [
-  { src: '/img/gallery/gallery-image-1.jpg', thumbnail: '/img/gallery/thumb1.jpg', width: 1200, height: 800 },
-  { src: '/img/gallery/gallery-image-2.jpg', thumbnail: '/img/gallery/thumb2.jpg', width: 1200, height: 800 },
-  { src: '/img/gallery/gallery-image-3.jpg', thumbnail: '/img/gallery/thumb3.jpg', width: 1200, height: 800 },
-  { src: '/img/gallery/gallery-image-1.jpg', thumbnail: '/img/gallery/thumb1.jpg', width: 1200, height: 800 },
-  { src: '/img/gallery/gallery-image-2.jpg', thumbnail: '/img/gallery/thumb2.jpg', width: 1200, height: 800 },
-  { src: '/img/gallery/gallery-image-3.jpg', thumbnail: '/img/gallery/thumb3.jpg', width: 1200, height: 800 },
-  // Додайте більше фото за потреби
-]
+interface Photo {
+  src: string
+  thumbnail: string
+  width: number
+  height: number
+}
+
+const thumbnails = Array.from({ length: 12 }, (_, index) => ({
+  src: `/img/gallery/gallery-image-${index + 1}.jpg`,
+  thumbnail: `/img/gallery/thumb${index + 1}.jpg`,
+}))
 
 const GalleryPage = () => {
+  const [photos, setPhotos] = useState<Photo[]>([])
+
+  useEffect(() => {
+    const loadImages = async () => {
+      const loadedPhotos = await Promise.all(
+        thumbnails.map(async (thumb) => {
+          const img = new Image()
+          img.src = thumb.src
+          await img.decode()
+          return {
+            src: thumb.src,
+            thumbnail: thumb.thumbnail,
+            width: img.naturalWidth,
+            height: img.naturalHeight,
+          }
+        })
+      )
+      setPhotos(loadedPhotos)
+    }
+
+    loadImages()
+  }, [])
+
   return (
     <MainContainer className='pt-20 pb-8'>
       <MaxWidthWrapper>
@@ -40,13 +66,17 @@ Ciesz się widokami naszych specjałów, poznaj nasz zespół i poczuj atmosfer�
                 height={photo.height}
               >
                 {({ ref, open }) => (
-                  <img
+                  <div
                     ref={ref}
                     onClick={open}
-                    src={photo.thumbnail}
-                    alt={`Galeria zdjęć ${index + 1}`}
-                    className="w-full h-full cursor-pointer"
-                  />
+                    className="w-full aspect-square overflow-hidden cursor-pointer relative"
+                  >
+                    <img
+                      src={photo.thumbnail}
+                      alt={`Galeria zdjęć ${index + 1}`}
+                      className="w-full h-full object-cover"
+                    />
+                  </div>
                 )}
               </Item>
             ))}

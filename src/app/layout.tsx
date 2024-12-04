@@ -1,6 +1,7 @@
 import { MenuProvider } from '@/context/MenuContext'
 import type { Metadata } from 'next'
 import { Inter, Lato, Nunito, Roboto } from 'next/font/google'
+import { Toaster } from 'sonner'
 import Footer from './components/Footer'
 import Header from './components/Header'
 import ProgressBar from './components/ProgressBar'
@@ -30,6 +31,7 @@ export default function RootLayout({
           <Header />
           {children}
           <Footer />
+          <Toaster position='top-center' richColors />
         </MenuProvider>
       </body>
     </html>
