@@ -215,27 +215,46 @@ const Home: React.FC = () => {
 
         <Opinions />
 
-        <PageSubHeader title='Nasze specjale' />
+        {(() => {
+          if (loading) {
+            // Показуємо скелетони під час завантаження
+            return (
+              <>
+                <PageSubHeader title='Nasze specjale' />
+                <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
+                  {Array.from({ length: 8 }).map((_, i) => (
+                    <Skeleton key={i} className="h-[300px] w-full rounded-lg" />
+                  ))}
+                </div>
+              </>
+            )
+          }
 
-        {loading ? (
-          <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
-            {Array.from({ length: 8 }).map((_, i) => (
-              <Skeleton key={i} className="h-[300px] w-full rounded-lg" />
-            ))}
-          </div>
-        ) : (
-          <div className='grid grid-cols-2 gap-4 md:grid-cols-4'>
-            {menuItems.slice(0, 8).map((menuItem: MenuItemType, index: number) => (
-              <MenuItem
-                key={index}
-                name={menuItem.name}
-                price={menuItem.price}
-                description={menuItem.description}
-                image={menuItem.image}
-              />
-            ))}
-          </div>
-        )}
+          // Коли завантаження завершено:
+          const filteredItems = menuItems.filter(
+            (menuItem: MenuItemType) => menuItem.isOnMainPage === true
+          )
+
+          if (filteredItems.length === 0) {
+            return null
+          }
+          return (
+            <>
+              <PageSubHeader title='Nasze specjale' />
+              <div className='grid grid-cols-2 gap-4 md:grid-cols-4'>
+                {filteredItems.slice(0, 8).map((menuItem: MenuItemType, index: number) => (
+                  <MenuItem
+                    key={index}
+                    name={menuItem.name}
+                    price={menuItem.price}
+                    description={menuItem.description}
+                    image={menuItem.image}
+                  />
+                ))}
+              </div>
+            </>
+          )
+        })()}
 
         <PageContainer className='pt-2 pb-8'>
           <LoadingButton
@@ -245,6 +264,7 @@ const Home: React.FC = () => {
             Sprawdź menu <MdOutlineKeyboardArrowRight />
           </LoadingButton>
         </PageContainer>
+
 
       </MaxWidthWrapper>
     </MainContainer>
