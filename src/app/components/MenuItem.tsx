@@ -7,9 +7,10 @@ import {
 	CardHeader
 } from "@/app/components/ui/card"
 import { MenuItemType } from '@/app/types'
-import { cn } from '@/lib/utils' // імпортуйте функцію для об’єднання класів, якщо це потрібно
+import { cn } from '@/lib/utils'
 import Image from 'next/image'
 import React, { useState } from 'react'
+import { GiMeal } from 'react-icons/gi'
 
 type MenuItemProps = Partial<MenuItemType> & {
 	orientation?: 'vertical' | 'horizontal'
@@ -35,7 +36,7 @@ const MenuItem: React.FC<MenuItemProps> = ({ name, price, description, image, or
 						/>
 					) : (
 						<div className={`${orientation === 'vertical' ? 'w-48 h-48' : 'w-full h-full'} bg-gray-200 rounded-md flex items-center justify-center justify-self-center italic text-text-foreground text-center`}>
-							No image
+							<GiMeal size={32} className="text-gray-600" />
 						</div>
 					)}
 				</div>
