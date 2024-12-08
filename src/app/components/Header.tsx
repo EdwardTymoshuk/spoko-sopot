@@ -30,7 +30,7 @@ const Header = () => {
 				const data = await response.json()
 				setIsOrderingOpen(data.isOrderingOpen)
 			} catch (error) {
-				console.error('Помилка при завантаженні налаштувань:', error)
+				console.error('Error fetching settings:', error)
 			} finally {
 				setIsLoading(false)
 			}
