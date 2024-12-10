@@ -1,6 +1,7 @@
+// /lib/menu.ts
 import { MenuItemType } from '@/app/types'
 
-// /lib/menu.ts
+// Fetch menu items with `isOrderable: true` only
 export async function fetchMenuItems(): Promise<MenuItemType[]> {
 	try {
 		const response = await fetch(`${process.env.NEXT_PUBLIC_SITE_URL}/api/menu`)
@@ -8,7 +9,8 @@ export async function fetchMenuItems(): Promise<MenuItemType[]> {
 			throw new Error('Failed to fetch menu items')
 		}
 		const data = await response.json()
-		return data
+		// Filter items that are orderable
+		return data.filter((item: MenuItemType) => item.isOrderable)
 	} catch (error) {
 		console.error('Error fetching menu:', error)
 		return []

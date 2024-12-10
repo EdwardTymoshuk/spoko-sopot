@@ -2,22 +2,22 @@
 import { MongoClient } from 'mongodb'
 import { NextResponse } from 'next/server'
 
-// Функція для отримання меню з бази даних
+// API route to fetch menu items from the database
 export async function GET() {
 	try {
 		const client = await MongoClient.connect(process.env.MONGODB_URI!)
 		const db = client.db()
 
-		// Отримуємо всі пункти меню з колекції 'menu'
-		const menuItems = await db.collection('MenuItem').find().toArray()
-
-		// Закриваємо клієнт
+		// Fetch menu items from the 'MenuItem' collection
+		const menuItems = await db.collection('MenuItem').find({ isOrderable: true }).toArray()
+		console.log('Menu from api/menu: ', menuItems[1])
+		// Close the database connection
 		client.close()
 
-		// Повертаємо меню як JSON
+		// Return the menu items as JSON
 		return NextResponse.json(menuItems)
 	} catch (error) {
-		console.error('Помилка при завантаженні меню:', error)
-		return NextResponse.json({ message: 'Помилка при завантаженні меню' }, { status: 500 })
+		console.error('Error fetching menu items:', error)
+		return NextResponse.json({ message: 'Error fetching menu items' }, { status: 500 })
 	}
 }

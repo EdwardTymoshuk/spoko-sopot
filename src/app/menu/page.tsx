@@ -8,16 +8,40 @@ import MainContainer from '../components/MainContainer'
 import MenuItem from '../components/MenuItem'
 import PageHeaderContainer from '../components/PageHeaderComponent'
 
+const categoryOrder: Record<string, number> = {
+	'Śniadania': 1,
+	'Przystawki': 2,
+	'Zupy': 3,
+	'Makarony/Ravioli': 4,
+	'Burgery': 5,
+	'Dania mięsne': 6,
+	'Dania rybne': 7,
+	'Owoce morza': 8,
+	'Bowle': 9,
+	'Dla dzieci': 10,
+	'Desery': 11,
+	'Dodatki': Infinity,
+}
+
 // Унікальні категорії з елементів меню
 const getUniqueCategories = (items: MenuItemType[]): MenuItemCategory[] => {
 	const categories = items.map(item => item.category)
 	return Array.from(new Set(categories)) as MenuItemCategory[]
 }
 
-export default async function MenuPage() {
+const sortCategories = (categories: MenuItemCategory[]): MenuItemCategory[] => {
+	return categories.sort((a, b) => {
+		const orderA = categoryOrder[a] || Infinity // Default for undefined categories
+		const orderB = categoryOrder[b] || Infinity
+		return orderA - orderB
+	})
+}
+
+export const MenuPage = async () => {
 	// Отримуємо меню
 	const menuItems: MenuItemType[] = await fetchMenuItems()
-	const categories: MenuItemCategory[] = getUniqueCategories(menuItems)
+	const categoriesData: MenuItemCategory[] = getUniqueCategories(menuItems)
+	const categories = sortCategories(categoriesData)
 
 	return (
 		<MainContainer className='pt-20'>
@@ -59,3 +83,5 @@ export default async function MenuPage() {
 		</MainContainer>
 	)
 }
+
+export default MenuPage
