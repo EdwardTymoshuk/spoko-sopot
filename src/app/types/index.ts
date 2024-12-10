@@ -19,6 +19,7 @@ export type MenuItemCategory =
 	'Dania główne' |
 	'Pizza' |
 	'Burgery' |
+	'Makarony/Ravioli' |
 	'Dla dzieci' |
 	'Dodatki' |
 	'Desery' |
