@@ -37,7 +37,7 @@ const sortCategories = (categories: MenuItemCategory[]): MenuItemCategory[] => {
 	})
 }
 
-export const MenuPage = async () => {
+const MenuPage = async () => {
 	// Отримуємо меню
 	const menuItems: MenuItemType[] = await fetchMenuItems()
 	const categoriesData: MenuItemCategory[] = getUniqueCategories(menuItems)
