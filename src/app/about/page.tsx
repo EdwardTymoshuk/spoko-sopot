@@ -6,7 +6,7 @@ import MainContainer from '../components/MainContainer'
 import MaxWidthWrapper from '../components/MaxWidthWrapper'
 import PageHeaderContainer from '../components/PageHeaderComponent'
 
-// About page component for the restaurant
+// About page component for Spoko Restaurant
 const AboutPage = () => {
 	return (
 		<>
@@ -22,19 +22,26 @@ const AboutPage = () => {
 				/>
 				<meta name="author" content="Restauracja Spoko" />
 				<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+				{/* Open Graph metadata for social sharing */}
+				<meta property="og:title" content="O nas | Restauracja Spoko" />
+				<meta
+					property="og:description"
+					content="Restauracja Spoko w Sopocie oferuje wyjątkowe smaki kuchni lokalnej i europejskiej. Odwiedź nas i poczuj niepowtarzalną atmosferę!"
+				/>
+				<meta property="og:image" content="/img/about-page.jpg" />
+				<meta property="og:type" content="website" />
 			</Head>
 			<MainContainer className='pt-20'>
 				<MaxWidthWrapper>
-					{/* Page header with description, title, and responsive images */}
+					{/* Page header with title, description, and images */}
 					<PageHeaderContainer
-						description='Nasza restauracja Spoko to wyjątkowe miejsce w sercu malowniczego Sopotu z widokiem na Bałtyk. Oferujemy nowoczesne dania kuchni europejskiej wzbogacone o polskie smaki, tworzone z lokalnych składników najwyższej jakości. Każde danie przygotowujemy z pasją i dbałością o szczegóły, aby zachwycić zarówno smakiem, jak i estetyką. Odwiedź nas i przekonaj się, dlaczego jesteśmy ulubionym miejscem zarówno mieszkańców, jak i turystów.
-						'
+						description='Nasza restauracja Spoko to wyjątkowe miejsce w sercu malowniczego Sopotu z widokiem na Bałtyk. Oferujemy nowoczesne dania kuchni europejskiej wzbogacone o polskie smaki, tworzone z lokalnych składników najwyższej jakości. Każde danie przygotowujemy z pasją i dbałością o szczegóły, aby zachwycić zarówno smakiem, jak i estetyką. Odwiedź nas i przekonaj się, dlaczego jesteśmy ulubionym miejscem zarówno mieszkańców, jak i turystów.'
 						title='O nas'
 						image='/img/about-page.jpg'
 						imageMobile='/img/about-page-mobile.jpg'
 					/>
 
-					{/* Section about the chef with an image and quote */}
+					{/* Section about the chef */}
 					<div className='my-12 flex flex-col md:flex-row-reverse items-center gap-8'>
 						<div className='md:w-1/2'>
 							<h2 className='text-3xl font-bold text-secondary mb-4'>Kilka słów od szefa kuchni</h2>
@@ -46,15 +53,14 @@ const AboutPage = () => {
 						<div className='md:w-1/2 md:h-auto'>
 							<Image
 								src='/img/chef.png'
-								alt='Lesia Voloshyna, Szef Kuchni'
+								alt='Lesia Voloshyna, szef kuchni Restauracji Spoko'
 								width={500}
 								height={500}
-								className=''
 							/>
 						</div>
 					</div>
 
-					{/* Section about the team with an image */}
+					{/* Section about the team */}
 					<div className='my-12'>
 						<div className='flex flex-col md:flex-row items-center gap-8'>
 							<div className='md:w-1/2'>
@@ -66,10 +72,9 @@ const AboutPage = () => {
 							<div className='md:w-1/2 md:h-auto'>
 								<Image
 									src='/img/team.jpg'
-									alt='Zespół Restauracji Spoko'
+									alt='Zespół kulinarny Restauracji Spoko w Sopocie'
 									width={500}
 									height={500}
-									className=''
 								/>
 							</div>
 						</div>

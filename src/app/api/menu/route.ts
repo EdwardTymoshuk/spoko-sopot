@@ -10,7 +10,6 @@ export async function GET() {
 
 		// Fetch menu items from the 'MenuItem' collection
 		const menuItems = await db.collection('MenuItem').find({ isOrderable: true }).toArray()
-		console.log('Menu from api/menu: ', menuItems[1])
 		// Close the database connection
 		client.close()
 
