@@ -46,6 +46,13 @@ const Home: React.FC = () => {
     })
   }
 
+  const navigateToOrderPage = async () => {
+    setIsLoading(true)
+    startTransition(() => {
+      router.push('https://order.spokosopot.pl')
+    })
+  }
+
   // Fetches settings to check if online ordering is available
   useEffect(() => {
     const fetchSettings = async () => {
@@ -66,18 +73,26 @@ const Home: React.FC = () => {
   return (
     <>
       <Head>
-        <title>Restauracja Spoko | Smaki, które pokochasz</title>
+        <title>Restauracja Spoko | Kuchnia lokalna i europejska w Sopocie</title>
         <meta
           name="description"
-          content="Zapraszamy do Restauracji Spoko w Sopocie. Ciesz się wyjątkowymi daniami, przyjazną atmosferą i widokiem na Bałtyk. Sprawdź nasze menu i opinie!"
+          content="Zapraszamy do Restauracji Spoko w Sopocie. Oferujemy wyjątkowe dania kuchni lokalnej i europejskiej w przyjaznej atmosferze z widokiem na Bałtyk. Sprawdź nasze menu i zarezerwuj stolik już dziś!"
         />
         <meta
           name="keywords"
-          content="Restauracja Spoko, Restauracja w sopocie, Restauracja Sopot, Restauracja z widokiem na morze, menu, dania, przyjęcia, rezerwacja, opinie"
+          content="Restauracja Spoko, restauracja Sopot, kuchnia lokalna, kuchnia europejska, widok na Bałtyk, zamówienia online, rezerwacja stolika, opinie"
         />
         <meta name="author" content="Restauracja Spoko" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <meta property="og:title" content="Restauracja Spoko | Kuchnia lokalna i europejska w Sopocie" />
+        <meta
+          property="og:description"
+          content="Restauracja Spoko w Sopocie to wyjątkowe miejsce na mapie Trójmiasta. Skosztuj dań kuchni lokalnej i europejskiej w unikalnej atmosferze z widokiem na Bałtyk."
+        />
+        <meta property="og:image" content="/img/carousel-1.jpg" />
+        <meta property="og:type" content="website" />
       </Head>
+
       <MainContainer className='w-full'>
         <div className='flex flex-col h-screen w-full'>
           <div className='flex-grow relative overflow-hidden'>
@@ -111,7 +126,6 @@ const Home: React.FC = () => {
                 <RxDoubleArrowDown size={40} />
               </button>
             </div>
-
           </div>
           <div className='p-4 md:hidden'>
             <TooltipProvider delayDuration={150}>
@@ -119,6 +133,7 @@ const Home: React.FC = () => {
                 <TooltipTrigger asChild>
                   <Button
                     size='lg'
+                    onClick={isOrderingOpen ? navigateToOrderPage : () => { }}
                     className={cn('w-full text-lg font-semibold', {
                       'text-text-secondary': isOrderingOpen,
                       'text-gray-400 opacity-60 cursor-not-allowed': !isOrderingOpen,
@@ -129,7 +144,7 @@ const Home: React.FC = () => {
                     ) : (
                       <p className='leading-none'>
                         <span>ZAMÓW ONLINE</span>
-                        <span className="block text-sm">(tymczasowo niedostępne<i className='text-red-800'>*</i> )</span>
+                        <span className="block text-sm">(tymczasowo niedostępne<i className='text-danger'>*</i> )</span>
                       </p>
                     )}
                   </Button>
@@ -180,11 +195,11 @@ const Home: React.FC = () => {
                   <div className='text-center'>
                     <p className='mt-2'>
                       <h3 className='font-bold text-secondary'>Zadzwoń</h3>
-                      <a href="tel:+48123456789" className="text-text-seconadary hover:underline">+48 123 456 789</a>
+                      <a href="tel:+48123456789" className="text-text-secondary hover:underline">+48 123 456 789</a>
                     </p>
                     <p className='mt-1'>
                       <h3 className='font-bold text-secondary'>Napisz</h3>
-                      <a href="mailto:info@spokosopot.pl" className="text-text-seconadary  hover:underline">info@spokosopot.pl</a>
+                      <a href="mailto:info@spokosopot.pl" className="text-text-secondary hover:underline">info@spokosopot.pl</a>
                     </p>
                   </div>
                 </PopoverContent>
@@ -214,11 +229,11 @@ const Home: React.FC = () => {
                   <div className='text-center'>
                     <p className='mt-2'>
                       <h3 className='font-bold text-secondary'>Zadzwoń</h3>
-                      <a href="tel:+48530659666" className="text-text-seconadary hover:underline">+48 530 659 666</a>
+                      <a href="tel:+48530659666" className="text-text-secondary hover:underline">+48 530 659 666</a>
                     </p>
                     <p className='mt-1'>
                       <h3 className='font-bold text-secondary'>Napisz</h3>
-                      <a href="mailto:info@spokosopot.pl" className="text-text-seconadary  hover:underline">info@spokosopot.pl</a>
+                      <a href="mailto:info@spokosopot.pl" className="text-text-secondary hover:underline">info@spokosopot.pl</a>
                     </p>
                   </div>
                 </PopoverContent>
@@ -281,7 +296,6 @@ const Home: React.FC = () => {
               Sprawdź menu <MdOutlineKeyboardArrowRight />
             </LoadingButton>
           </PageContainer>
-
 
         </MaxWidthWrapper>
       </MainContainer>

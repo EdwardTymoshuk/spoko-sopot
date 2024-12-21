@@ -199,7 +199,7 @@ const ContactPage = () => {
 													</FormControl>
 													<FormLabel className="text-sm font-normal text-muted-foreground">
 														Wyrażam zgodę na przetwarzanie moich danych osobowych zgodnie z{' '}
-														<Link href="/privacy-policy" target="_blank" className="underline text-primary">
+														<Link href="/privacy-policy" target="_blank" rel="noopener noreferrer" className="underline text-primary">
 															polityką prywatności
 														</Link>
 													</FormLabel>

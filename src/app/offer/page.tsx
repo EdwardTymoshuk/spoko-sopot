@@ -91,7 +91,7 @@ const OfferPage = () => {
 				<div className="text-center mt-8">
 					<p className="text-lg font-medium">Skontaktuj się z nami, aby uzyskać szczegółowe informacje lub zarezerwować termin</p>
 					<p className="mt-4 text-secondary">
-						Telefon: <a href="tel:+48123456789" className="underline">+48 123 456 789</a> | Email: <a href="mailto:info@spokosopot.pl" className="underline">info@spokosopot.pl</a>
+						Telefon: <a href="tel:+48530659666" className="underline">+48 530 659 666</a> | Email: <a href="mailto:info@spokosopot.pl" className="underline">info@spokosopot.pl</a>
 					</p>
 				</div>
 			</MaxWidthWrapper>

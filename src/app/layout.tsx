@@ -14,8 +14,8 @@ const lato = Lato({ weight: '400', subsets: ['latin'] })
 const nunito = Nunito({ weight: '400', subsets: ['latin'] })
 
 export const metadata: Metadata = {
-  title: 'Spoko Sopot',
-  description: 'Spoko Sopot restauracja',
+  title: 'Restauracja Spoko Sopot | Kuchnia lokalna i europejska w Sopocie',
+  description: 'Restauracja Spoko w Sopocie oferuje wyjątkowe dania kuchni lokalnej i europejskiej, tworzone z najwyższej jakości składników. Odwiedź nas i ciesz się niepowtarzalną atmosferą nad Bałtykiem.',
 }
 
 export default function RootLayout({

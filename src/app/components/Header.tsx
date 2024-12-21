@@ -6,21 +6,26 @@ import { Button } from '@/app/components/ui/button'
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/app/components/ui/tooltip'
 import { cn } from '@/lib/utils'
 import Link from 'next/link'
-import { usePathname, useRouter } from 'next/navigation'
-import { useEffect, useState } from 'react'
+import { useRouter } from 'next/navigation'
+import { startTransition, useEffect, useState } from 'react'
 import { FaBars, FaTimes } from 'react-icons/fa'
+import LoadingButton from './LoadingButton'
 import NavBar from './NavBar'
 
 const Header = () => {
 	const [isMenuOpen, setIsMenuOpen] = useState(false)
 	const [isOrderingOpen, setIsOrderingOpen] = useState(false)
 	const [isLoading, setIsLoading] = useState(true)
-	const [isActive, setIsActive] = useState<string>('')
 	const router = useRouter()
-	const pathName = usePathname()
 
 	const toggleMenu = () => {
 		setIsMenuOpen(!isMenuOpen)
+	}
+	const navigateToOrderPage = async () => {
+		setIsLoading(true)
+		startTransition(() => {
+			router.push('https://order.spokosopot.pl')
+		})
 	}
 
 	useEffect(() => {
@@ -38,14 +43,6 @@ const Header = () => {
 
 		fetchSettings()
 	}, [])
-
-	useEffect(() => {
-		if (pathName) {
-			setIsActive(pathName)
-		} else {
-			setIsActive('/')
-		}
-	}, [pathName])
 
 	return (
 		<header className='bg-background p-4 shadow-sm shadow-primary min-h-20 h-auto fixed w-full z-10'>
@@ -72,8 +69,10 @@ const Header = () => {
 					<TooltipProvider delayDuration={200}>
 						<Tooltip>
 							<TooltipTrigger asChild>
-								<Button
+								<LoadingButton
+									isLoading={isLoading}
 									variant='default'
+									onClick={isOrderingOpen ? navigateToOrderPage : () => { }}
 									className={cn(`text-text-primary`, {
 										'text-gray-600 opacity-60 hover:bg-primary cursor-not-allowed': !isOrderingOpen,
 									})}
@@ -86,7 +85,7 @@ const Header = () => {
 											<span className="block text-xs">(tymczasowo niedostępne<i className='text-red-800'>*</i> )</span>
 										</p>
 									)}
-								</Button>
+								</LoadingButton>
 							</TooltipTrigger>
 							{!isOrderingOpen && (
 								<TooltipContent>
@@ -126,6 +125,7 @@ const Header = () => {
 								<Tooltip>
 									<TooltipTrigger asChild>
 										<Button
+											onClick={isOrderingOpen ? navigateToOrderPage : () => { }}
 											className={cn(
 												'w-full text-text-secondary text-wrap text-center',
 												{
@@ -152,7 +152,7 @@ const Header = () => {
 								</Tooltip>
 							</TooltipProvider>
 
-							<Button variant="outline" className="w-full">
+							<Button variant="outline" className="w-full" onClick={navigateToOrderPage}>
 								ŚLEDŹ ZAMÓWIENIE
 							</Button>
 						</div>
