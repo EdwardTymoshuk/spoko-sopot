@@ -1,6 +1,5 @@
 'use client'
 
-import Head from 'next/head'
 import 'photoswipe/dist/photoswipe.css'
 import { useEffect, useState } from 'react'
 import { Gallery, Item } from 'react-photoswipe-gallery'
@@ -45,60 +44,45 @@ const GalleryPage = () => {
   }, [])
 
   return (
-    <>
-      <Head>
-        <title>Galeria zdjęć | Restauracja Spoko</title>
-        <meta
-          name="description"
-          content="Odkryj galerię zdjęć Restauracji Spoko w Sopocie. Zobacz nasze potrawy, wnętrza oraz niezapomniane chwile tworzone z pasją dla naszych gości."
-        />
-        <meta
-          name="keywords"
-          content="galeria zdjęć, Restauracja Spoko, Sopot, zdjęcia restauracji, klimat restauracji, Bałtyk"
-        />
-        <meta name="author" content="Restauracja Spoko" />
-        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-      </Head>
-      <MainContainer className='pt-20 pb-8'>
-        <MaxWidthWrapper>
-          <PageHeaderContainer
-            title='Galeria'
-            image='/img/gallery/gallery-image-1.jpg'
-            description='
+    <MainContainer className='pt-20 pb-8'>
+      <MaxWidthWrapper>
+        <PageHeaderContainer
+          title='Galeria'
+          image='/img/gallery/gallery-image-1.jpg'
+          description='
           
           Zapraszamy do obejrzenia naszej galerii zdjęć, która ukazuje wyjątkowy klimat naszej restauracji. To miejsce, gdzie pasja do gotowania spotyka się z pięknem wnętrz i niezapomnianym widokiem na Bałtyk. Nasza galeria przedstawia momenty, które tworzymy dla naszych gości każdego dnia – od starannie przygotowanych potraw, przez uśmiechniętą obsługę, aż po wyjątkowe wydarzenia, które mają miejsce w naszym lokalu. Ciesz się widokami naszych specjałów, poznaj nasz zespół i poczuj atmosferę Spoko Sopot jeszcze przed wizytą.
           
           ' />
-          <Gallery>
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
-              {photos.map((photo, index) => (
-                <Item
-                  key={index}
-                  original={photo.src}
-                  thumbnail={photo.thumbnail}
-                  width={photo.width}
-                  height={photo.height}
-                >
-                  {({ ref, open }) => (
-                    <div
-                      ref={ref}
-                      onClick={open}
-                      className="w-full aspect-square overflow-hidden cursor-pointer relative"
-                    >
-                      <img
-                        src={photo.thumbnail}
-                        alt={`Galeria zdjęć ${index + 1}`}
-                        className="w-full h-full object-cover"
-                      />
-                    </div>
-                  )}
-                </Item>
-              ))}
-            </div>
-          </Gallery>
-        </MaxWidthWrapper>
-      </MainContainer>
-    </>
+        <Gallery>
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+            {photos.map((photo, index) => (
+              <Item
+                key={index}
+                original={photo.src}
+                thumbnail={photo.thumbnail}
+                width={photo.width}
+                height={photo.height}
+              >
+                {({ ref, open }) => (
+                  <div
+                    ref={ref}
+                    onClick={open}
+                    className="w-full aspect-square overflow-hidden cursor-pointer relative"
+                  >
+                    <img
+                      src={photo.thumbnail}
+                      alt={`Galeria zdjęć ${index + 1}`}
+                      className="w-full h-full object-cover"
+                    />
+                  </div>
+                )}
+              </Item>
+            ))}
+          </div>
+        </Gallery>
+      </MaxWidthWrapper>
+    </MainContainer>
   )
 }
 

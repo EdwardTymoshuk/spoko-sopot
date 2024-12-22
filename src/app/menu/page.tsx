@@ -4,7 +4,6 @@ import MaxWidthWrapper from '@/app/components/MaxWidthWrapper'
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/app/components/ui/accordion'
 import { MenuItemCategory, MenuItemType } from '@/app/types'
 import { fetchMenuItems } from '@/lib/menu'
-import Head from 'next/head'
 import MainContainer from '../components/MainContainer'
 import MenuItem from '../components/MenuItem'
 import PageHeaderContainer from '../components/PageHeaderComponent'
@@ -45,57 +44,42 @@ const MenuPage = async () => {
 	const categories = sortCategories(categoriesData)
 
 	return (
-		<>
-			<Head>
-				<title>Menu | Restauracja Spoko</title>
-				<meta
-					name="description"
-					content="Odkryj wyjątkowe menu Restauracji Spoko w Sopocie. Śniadania, przystawki, desery i dania główne, tworzone z najlepszych sezonowych składników. Smacznego!"
+		<MainContainer className='pt-20'>
+			<MaxWidthWrapper>
+				<PageHeaderContainer
+					description='Zapraszamy do odkrycia wyjątkowych smaków, które przygotowaliśmy specjalnie dla Was. Nasze menu to starannie skomponowana oferta, która łączy w sobie tradycję z nowoczesnością, wykorzystując najlepsze składniki sezonowe. Smacznego!'
+					title='Menu'
+					image='/img/menu-page.jpg'
+					imageMobile='/img/menu-page-mobile.jpg'
 				/>
-				<meta
-					name="keywords"
-					content="menu restauracji, Restauracja Spoko, potrawy, dania sezonowe, Sopotu, śniadania, desery, dania główne"
-				/>
-				<meta name="author" content="Restauracja Spoko" />
-				<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-			</Head>
-			<MainContainer className='pt-20'>
-				<MaxWidthWrapper>
-					<PageHeaderContainer
-						description='Zapraszamy do odkrycia wyjątkowych smaków, które przygotowaliśmy specjalnie dla Was. Nasze menu to starannie skomponowana oferta, która łączy w sobie tradycję z nowoczesnością, wykorzystując najlepsze składniki sezonowe. Smacznego!'
-						title='Menu'
-						image='/img/menu-page.jpg'
-						imageMobile='/img/menu-page-mobile.jpg'
-					/>
 
-					<Accordion type="single" collapsible className=''>
-						{categories.map((category, index) => (
-							<AccordionItem key={category} value={`item-${index}`} className='border-0'>
-								<AccordionTrigger className='text-text-foreground hover:text-text-secondary data-[state=open]:text-text-secondary text-4xl md:text-5xl hover:no-underline'>
-									{category}
-								</AccordionTrigger>
-								<AccordionContent className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 justify-items-center">
-									{menuItems
-										.filter(item => item.category === category)
-										.map(item => (
-											<MenuItem
-												key={item.name}
-												name={item.name}
-												price={item.price}
-												description={item.description}
-												image={item.image}
-												orientation="horizontal"
-											/>
-										))}
-								</AccordionContent>
+				<Accordion type="single" collapsible className=''>
+					{categories.map((category, index) => (
+						<AccordionItem key={category} value={`item-${index}`} className='border-0'>
+							<AccordionTrigger className='text-text-foreground hover:text-text-secondary data-[state=open]:text-text-secondary text-4xl md:text-5xl hover:no-underline'>
+								{category}
+							</AccordionTrigger>
+							<AccordionContent className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 justify-items-center">
+								{menuItems
+									.filter(item => item.category === category)
+									.map(item => (
+										<MenuItem
+											key={item.name}
+											name={item.name}
+											price={item.price}
+											description={item.description}
+											image={item.image}
+											orientation="horizontal"
+										/>
+									))}
+							</AccordionContent>
 
 
-							</AccordionItem>
-						))}
-					</Accordion>
-				</MaxWidthWrapper>
-			</MainContainer>
-		</>
+						</AccordionItem>
+					))}
+				</Accordion>
+			</MaxWidthWrapper>
+		</MainContainer>
 	)
 }
 

@@ -1,26 +1,12 @@
 'use client'
 
 import MaxWidthWrapper from '@/app/components/MaxWidthWrapper'
-import Head from 'next/head'
 import MainContainer from '../components/MainContainer'
 import PageHeaderContainer from '../components/PageHeaderComponent'
 
 const OfferPage = () => {
 	return (
 		<MainContainer className="pt-20 pb-10">
-			<Head>
-				<title>Nasza Oferta | Restauracja Spoko</title>
-				<meta
-					name="description"
-					content="Restauracja Spoko w Sopocie zaprasza na organizację wyjątkowych przyjęć nad Bałtykiem. Oferujemy różnorodne menu, usługi premium i idealne rozwiązania na każdą okazję."
-				/>
-				<meta
-					name="keywords"
-					content="organizacja przyjęć, oferta kulinarna, Restauracja Spoko, przyjęcia nad Bałtykiem, menu dla dzieci, usługi premium"
-				/>
-				<meta name="author" content="Restauracja Spoko" />
-				<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-			</Head>
 			<MaxWidthWrapper className='space-y-8'>
 				<PageHeaderContainer
 					title="Nasza Oferta"
