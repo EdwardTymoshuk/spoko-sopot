@@ -20,7 +20,13 @@ const categoryOrder: Record<string, number> = {
 	'Bowle': 9,
 	'Dla dzieci': 10,
 	'Desery': 11,
-	'Dodatki': Infinity,
+	'Dodatki': 12,
+	'Wina Czerwone': 13,
+	'Wina Białe': 14,
+	'Wina Musujące': 15,
+	'Wina Różowe': 16,
+	'Napoje bezalkoholowe': 17,
+	'Inne': Infinity,
 }
 
 // Унікальні категорії з елементів меню
