@@ -64,9 +64,10 @@ export interface MenuItemType {
 	description: string | null | undefined,
 	category: MenuItemCategory,
 	image: string | null | undefined,
-	isOrderable?: boolean,
+	isActive?: boolean,
 	isRecommended?: boolean,
-	isOnMainPage?: boolean
+	isOnMainPage?: boolean,
+	isOrderable?: boolean,
 	createdAt: Date,
 	updatedAt: Date,
 }
