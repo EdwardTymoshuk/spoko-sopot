@@ -11,7 +11,7 @@ export async function fetchMenuItems(): Promise<MenuItemType[]> {
 		}
 		const data = await response.json()
 		// Filter items that are orderable
-		return data.filter((item: MenuItemType) => item.isOrderable)
+		return data.filter((item: MenuItemType) => item.isActive)
 	} catch (error) {
 		console.error('Error fetching menu:', error)
 		return []
