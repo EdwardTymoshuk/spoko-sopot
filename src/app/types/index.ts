@@ -44,6 +44,7 @@ export type MenuItemCategory =
 	'Wina Białe' |
 	'Wina Czerwone' |
 	'Wina Musujące' |
+	'Wina Różowe' |
 	'Drinki' |
 	'Whisky' |
 	'Rum' |

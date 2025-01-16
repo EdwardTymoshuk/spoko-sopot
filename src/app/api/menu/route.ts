@@ -9,7 +9,7 @@ export async function GET() {
 		const db = client.db()
 
 		// Fetch menu items from the 'MenuItem' collection
-		const menuItems = await db.collection('MenuItem').find({ isOrderable: true }).toArray()
+		const menuItems = await db.collection('MenuItem').find({ isActive: true }).toArray()
 		// Close the database connection
 		client.close()
 
