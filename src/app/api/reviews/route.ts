@@ -10,7 +10,6 @@ export async function GET() {
 
 		// Отримуємо всі відгуки з колекції 'reviews'
 		const reviews = await db.collection('reviews').find().toArray()
-		console.log(reviews)
 		// Закриваємо клієнт
 		client.close()
 
