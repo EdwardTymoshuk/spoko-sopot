@@ -14,20 +14,49 @@ export async function GET() {
 
 		if (!settings) {
 			console.warn('Nie znaleziono dokumentu w kolekcji Settings')
-			return NextResponse.json({ isOrderingOpen: false })
+			return NextResponse.json(
+				{ isOrderingOpen: false },
+				{
+					headers: {
+						'Cache-Control': 'no-store, no-cache, must-revalidate, proxy-revalidate',
+						Expires: '0',
+						Pragma: 'no-cache',
+					},
+				}
+			)
 		}
 
 		// Ensure 'isOrderingOpen' is a boolean value
 		const isOrderingOpen = typeof settings.isOrderingOpen === 'boolean' ? settings.isOrderingOpen : false
 
 		// Return the settings data
-		return NextResponse.json({
-			isOrderingOpen: isOrderingOpen,
-			orderWaitTime: settings.orderWaitTime || null,
-			deliveryCost: settings.deliveryCost || null
-		})
+		return NextResponse.json(
+			{
+				isOrderingOpen: isOrderingOpen,
+				orderWaitTime: settings.orderWaitTime || null,
+				deliveryCost: settings.deliveryCost || null,
+			},
+			{
+				headers: {
+					'Cache-Control': 'no-store, no-cache, must-revalidate, proxy-revalidate',
+					Expires: '0',
+					Pragma: 'no-cache',
+				},
+			}
+		)
 	} catch (error) {
 		console.error('Błąd podczas pobierania ustawień:', error)
-		return NextResponse.json({ isOrderingOpen: false }, { status: 500 })
+		return NextResponse.json(
+			{ isOrderingOpen: false },
+			{
+				status: 500,
+				headers: {
+					'Cache-Control': 'no-store, no-cache, must-revalidate, proxy-revalidate',
+					Expires: '0',
+					Pragma: 'no-cache',
+				},
+			}
+		)
 	}
 }
+
