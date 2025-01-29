@@ -17,6 +17,10 @@ export const NAVBAR_ITEMS: NavBarItem[] = [
 		link: '/offer'
 	},
 	{
+		label: 'AKTUALNOŚCI',
+		link: '/news'
+	},
+	{
 		label: 'MENU',
 		link: '/menu'
 	},
