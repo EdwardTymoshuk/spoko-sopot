@@ -148,10 +148,8 @@ const NewsPage: React.FC = () => {
 						}}
 					>
 						<DialogContent
-							className="w-full md:w-auto max-w-[90%] md:max-w-fit max-h-[95vh] overflow-auto"
-							onInteractOutside={(e) => e.preventDefault()} // Запобігаємо автоматичному закриттю
+							className="w-full md:w-auto max-w-[90%] md:max-w-fit h-screen max-h-[80vh] overflow-auto"
 							aria-describedby={`dialog-description-${item.id}`}
-							onClick={(e) => e.stopPropagation()} // Зупиняємо поширення подій, щоб кнопки не закривали `Dialog`
 						>
 
 							<DialogHeader>
@@ -163,7 +161,13 @@ const NewsPage: React.FC = () => {
 										{item.description}
 									</p>
 									{/* Gallery of images */}
-									<Gallery >
+									<Gallery
+										options={{
+											arrowNext: true,
+											arrowPrev: true,
+											closeOnVerticalDrag: true,
+										}}
+									>
 										<div className="grid grid-cols-2 gap-4">
 											{item.galleryImages.map((photo, index) => (
 												<Item
