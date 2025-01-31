@@ -148,12 +148,18 @@ const NewsPage: React.FC = () => {
 						}}
 					>
 						<DialogContent
-							className="w-full md:w-auto max-w-[90%] md:max-w-fit h-screen max-h-[85vh] overflow-auto"
+							className="w-full md:w-auto max-w-[90%] md:max-w-fit h-screen max-h-[80vh] overflow-auto"
 							onInteractOutside={(e) => {
-								e.preventDefault()
+								e.preventDefault() // Запобігає закриттю при кліку поза модальним вікном
 							}}
 							onClick={(e) => {
-								e.stopPropagation()
+								e.stopPropagation() // Запобігає закриттю при кліку всередині модального вікна
+							}}
+							onTouchStart={(e) => {
+								e.stopPropagation() // Запобігає перехопленню подій свайпу
+							}}
+							onTouchMove={(e) => {
+								e.stopPropagation() // Запобігає перехопленню подій свайпу
 							}}
 						>
 
@@ -167,13 +173,8 @@ const NewsPage: React.FC = () => {
 									</p>
 									{/* Gallery of images */}
 									<Gallery
-										options={{
-											arrowNext: true,
-											arrowPrev: true,
-											closeOnVerticalDrag: true,
-										}}
 									>
-										<div className="grid grid-cols-2 gap-4">
+										<div className="gallery-container grid grid-cols-2 gap-4">
 											{item.galleryImages.map((photo, index) => (
 												<Item
 													key={index}
