@@ -35,6 +35,7 @@ export const NAVBAR_ITEMS: NavBarItem[] = [
 ]
 
 export const CAROUSEL_MAIN_IMAGES: CarouselImage[] = [
+	{ src: '/img/carousel-3.png', srcMobile: '/img/carousel-3-mobile.png' },
 	{ src: '/img/carousel-1.jpg', srcMobile: '/img/carousel-1-mobile.jpg' },
 	{ src: '/img/carousel-2.jpg', srcMobile: '/img/carousel-2.jpg' },
 ]

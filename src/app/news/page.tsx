@@ -11,6 +11,7 @@ import { Button } from '../components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/card'
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '../components/ui/dialog'
 
+// Interface defining the structure of a single news item
 interface NewsItem {
 	id: number
 	title: string
@@ -21,17 +22,21 @@ interface NewsItem {
 }
 
 const NewsPage: React.FC = () => {
+	// State to store fetched news data
 	const [news, setNews] = useState<NewsItem[]>([])
+	// State for news items with loaded image dimensions
 	const [loadedNews, setLoadedNews] = useState<NewsItem[]>([])
+	// State to track which dialog is open
 	const [openDialogId, setOpenDialogId] = useState<number | null>(null)
 
+	// Fetch news data when the component mounts
 	useEffect(() => {
 		const fetchNews = async () => {
 			const fetchedNews = [
 				{
 					id: 1,
 					title: "Walentynkowa Kolacja",
-					image: "/img/news/valentines-day-2025/valentines-day-1.jpg",
+					image: "/img/news/valentines-day-2025/valentines-day-cover.jpg",
 					description:
 						"Romantyczna kolacja przy muzyce na żywo, z wyjątkowym menu i walentynkowymi dekoracjami.",
 					fullDescription: `<h2 class='text-center text-2xl'>Zapraszamy na Walentynkową Kolację w Restauracji Spoko Sopot.</h2>
@@ -47,9 +52,12 @@ const NewsPage: React.FC = () => {
 					<span class='pl-4'>&#128198; 14 lutego od godz. 17:00</span>
 					<h3 class='text-secondary pt-2'>Jak zarezerwować?</h3>
 					<ul class="list-none pl-4">
-					<li>&#128241 530-659-666</li>
-					<li>&#128231; info@spokospot.pl</li>
-					<li>&#128187; wwww.spokosopot.pl</li>
+					<ul>
+					<li>&#128241; <a href="tel:530659666">530-659-666</a></li>
+					<li>&#128231; <a href="mailto:info@spokosopot.pl">info@spokosopot.pl</a></li>
+					<li>&#128187; <a href="https://www.spokosopot.pl" target="_blank">www.spokosopot.pl</a></li>
+				</ul>
+				
 					</ul>
 `,
 					galleryImages: [
@@ -64,6 +72,7 @@ const NewsPage: React.FC = () => {
 		fetchNews()
 	}, [])
 
+	// Load images asynchronously and store their dimensions
 	useEffect(() => {
 		const loadImages = async () => {
 			const newsWithDimensions = await Promise.all(
@@ -94,13 +103,14 @@ const NewsPage: React.FC = () => {
 	return (
 		<MainContainer className="pt-20 pb-8">
 			<MaxWidthWrapper>
+				{/* Page header with background image and description */}
 				<PageHeaderContainer
 					title="Aktualności"
 					image="/img/news-page.jpg"
 					imageMobile="/img/news-page-mobile.jpg"
 					description="Bądź na bieżąco z tym, co dzieje się w naszej restauracji. Nowości, wydarzenia i limitowane oferty specjalnie dla Ciebie."
 				/>
-
+				{/* Grid layout displaying news cards */}
 				<div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
 					{loadedNews.map((item) => (
 						<Card
@@ -111,7 +121,7 @@ const NewsPage: React.FC = () => {
 								<img
 									src={item.image}
 									alt={item.title}
-									className="w-full h-full object-cover rounded-t-lg"
+									className="w-full h-full object-cover object-top rounded-t-lg"
 								/>
 							</div>
 							<CardHeader>
@@ -126,7 +136,7 @@ const NewsPage: React.FC = () => {
 						</Card>
 					))}
 				</div>
-
+				{/* Dialog popups for each news item */}
 				{loadedNews.map((item) => (
 					<Dialog
 						key={item.id}
@@ -139,11 +149,11 @@ const NewsPage: React.FC = () => {
 					>
 						<DialogContent
 							className="w-full md:w-auto max-w-[90%] md:max-w-fit max-h-[95vh] overflow-auto"
-							onInteractOutside={(e) => {
-								e.preventDefault()
-							}}
+							onInteractOutside={(e) => e.preventDefault()} // Запобігаємо автоматичному закриттю
 							aria-describedby={`dialog-description-${item.id}`}
+							onClick={(e) => e.stopPropagation()} // Зупиняємо поширення подій, щоб кнопки не закривали `Dialog`
 						>
+
 							<DialogHeader>
 								<DialogTitle className='text-center text-2xl text-secondary'>
 									{item.title}
@@ -152,8 +162,8 @@ const NewsPage: React.FC = () => {
 									<p id={`dialog-description-${item.id}`} className="sr-only">
 										{item.description}
 									</p>
-
-									<Gallery>
+									{/* Gallery of images */}
+									<Gallery >
 										<div className="grid grid-cols-2 gap-4">
 											{item.galleryImages.map((photo, index) => (
 												<Item
@@ -167,7 +177,7 @@ const NewsPage: React.FC = () => {
 														<div
 															ref={ref as unknown as React.RefObject<HTMLDivElement>}
 															onClick={open}
-															className="w-full aspect-auto overflow-hidden cursor-pointer relative"
+															className="w-full aspect-auto overflow-hidden cursor-pointer relative rounded-md"
 														>
 															<img
 																src={photo.thumbnail}
@@ -180,6 +190,7 @@ const NewsPage: React.FC = () => {
 											))}
 										</div>
 									</Gallery>
+									{/* Render sanitized HTML content */}
 									<div className="mt-6">
 										<p
 											className="text-lg font-semibold"
