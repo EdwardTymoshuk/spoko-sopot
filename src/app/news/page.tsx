@@ -148,8 +148,13 @@ const NewsPage: React.FC = () => {
 						}}
 					>
 						<DialogContent
-							className="w-full md:w-auto max-w-[90%] md:max-w-fit h-screen max-h-[80vh] overflow-auto"
-							aria-describedby={`dialog-description-${item.id}`}
+							className="w-full md:w-auto max-w-[90%] md:max-w-fit h-screen max-h-[85vh] overflow-auto"
+							onInteractOutside={(e) => {
+								e.preventDefault()
+							}}
+							onClick={(e) => {
+								e.stopPropagation()
+							}}
 						>
 
 							<DialogHeader>
@@ -180,7 +185,10 @@ const NewsPage: React.FC = () => {
 													{({ ref, open }) => (
 														<div
 															ref={ref as unknown as React.RefObject<HTMLDivElement>}
-															onClick={open}
+															onClick={(e) => {
+																e.stopPropagation() // Запобігає закриттю модального вікна
+																open(e)
+															}}
 															className="w-full aspect-auto overflow-hidden cursor-pointer relative rounded-md"
 														>
 															<img
