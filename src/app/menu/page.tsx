@@ -29,23 +29,25 @@ const categoryOrder: Record<string, number> = {
 	'Inne': Infinity,
 }
 
-// Унікальні категорії з елементів меню
-const getUniqueCategories = (items: MenuItemType[]): MenuItemCategory[] => {
-	const categories = items.map(item => item.category)
-	return Array.from(new Set(categories)) as MenuItemCategory[]
-}
-
-const sortCategories = (categories: MenuItemCategory[]): MenuItemCategory[] => {
-	return categories.sort((a, b) => {
-		const orderA = categoryOrder[a] || Infinity // Default for undefined categories
-		const orderB = categoryOrder[b] || Infinity
-		return orderA - orderB
-	})
-}
-
 const MenuPage = async () => {
 	// Отримуємо меню
 	const menuItems: MenuItemType[] = await fetchMenuItems()
+	const excludedCategories = ['Pizza'];
+
+	const getUniqueCategories = (items: MenuItemType[]): MenuItemCategory[] => {
+		const categories = items.map(item => item.category);
+		return Array.from(new Set(categories))
+			.filter(category => !excludedCategories.includes(category)) as MenuItemCategory[];
+	};
+	
+	const sortCategories = (categories: MenuItemCategory[]): MenuItemCategory[] => {
+		return categories.sort((a, b) => {
+			const orderA = categoryOrder[a] || Infinity
+			const orderB = categoryOrder[b] || Infinity
+			return orderA - orderB
+		})
+	}
+
 	const categoriesData: MenuItemCategory[] = getUniqueCategories(menuItems)
 	const categories = sortCategories(categoriesData)
 
