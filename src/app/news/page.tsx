@@ -100,7 +100,7 @@ const NewsPage: React.FC = () => {
 					title="Aktualności"
 					image="/img/news-page.jpg"
 					imageMobile="/img/news-page-mobile.jpg"
-					description="Bądź na bieżąco z tym, co dzieje się w nuestra restauracji. Nowości, wydarzenia i limitowane oferty specjalnie dla Ciebie."
+					description="Bądź na bieżąco z tym, co dzieje się w naszej restauracji. Nowości, wydarzenia i limitowane oferty specjalnie dla Ciebie."
 				/>
 				<div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
 					{loadedNews.map((item) => (
