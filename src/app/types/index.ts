@@ -13,11 +13,10 @@ export interface MongoDBReview {
 	author: string
 	message: string
 	rating: number
-	date: string // дата у форматі ISO (string)
+	date: string 
 }
 export type MenuItemCategory =
 	'Dania główne' |
-	'Pizza' |
 	'Burgery' |
 	'Makarony/Ravioli' |
 	'Dla dzieci' |

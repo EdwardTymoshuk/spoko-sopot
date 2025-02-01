@@ -34,7 +34,7 @@ const NewsPage: React.FC = () => {
 					image: "/img/news/valentines-day-2025/valentines-day-cover.jpg",
 					description:
 						"Romantyczna kolacja przy muzyce na żywo, z wyjątkowym menu i walentynkowymi dekoracjami.",
-					fullDescription: `<h2 class='text-center text-2xl'>Zapraszamy na Walentynkową Kolację w Restauracji Spoko Sopot.</h2>
+					fullDescription: `<h2 class='text-center text-secondary text-2xl'>Zapraszamy na Walentynkową Kolację w Restauracji Spoko Sopot.</h2>
           <h3 class='text-secondary pt-4'>Co oferujemy?</h3>
           <ul class="list-none pl-4">
           <li>&#9829;&#65039; Kolacja serwowana<br />(2 przystawki, 2 dania główne, 2 desery)</li>
@@ -100,7 +100,7 @@ const NewsPage: React.FC = () => {
 					title="Aktualności"
 					image="/img/news-page.jpg"
 					imageMobile="/img/news-page-mobile.jpg"
-					description="Bądź na bieżąco z tym, co dzieje się w nuestra restauracji. Nowości, wydarzenia i limitowane oferty specjalnie dla Ciebie."
+					description="Bądź na bieżąco z tym, co dzieje się w naszej restauracji. Nowości, wydarzenia i limitowane oferty specjalnie dla Ciebie."
 				/>
 				<div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
 					{loadedNews.map((item) => (
@@ -141,8 +141,8 @@ const NewsPage: React.FC = () => {
 							className="w-full md:w-auto max-w-[90%] md:max-w-fit h-screen max-h-[80vh] overflow-auto"
 						>
 							<DialogHeader>
-								<DialogTitle className="text-center text-2xl text-secondary">
-									{item.title}
+								<DialogTitle className="h-2">
+									
 								</DialogTitle>
 								<DialogDescription className="text-text-secondary text-start">
 									<p id={`dialog-description-${item.id}`} className="sr-only">
