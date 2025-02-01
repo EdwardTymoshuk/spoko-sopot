@@ -87,9 +87,7 @@
 /* styles/globals.css */
 #nprogress .bar {
   background: #aad959;
-  /* Колір лінії прогресу */
   height: 4px;
-  /* Висота лінії прогресу */
 }
 
 #nprogress .peg {
@@ -99,4 +97,9 @@
 #nprogress .spinner-icon {
   border-top-color: #aad959;
   border-left-color: #aad959;
+}
+
+.custom-gallery .image-gallery-left-nav,
+.custom-gallery .image-gallery-right-nav {
+  @apply w-12 h-12 text-primary rounded-full flex items-center justify-center transition;
 }

@@ -12,7 +12,7 @@ const PageHeaderContainer = ({ title, description, image, imageMobile }: { title
 				<source srcSet={imageMobile} media="(max-width: 768px)" />
 				<img
 					src={image}
-					alt="Responsive image"
+					alt="Responsive page image"
 					className='w-full h-full object-cover rounded-lg'
 				/>
 			</picture>
