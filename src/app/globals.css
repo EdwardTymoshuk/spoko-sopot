@@ -99,7 +99,19 @@
   border-left-color: #aad959;
 }
 
-.custom-gallery .image-gallery-left-nav,
-.custom-gallery .image-gallery-right-nav {
-  @apply w-12 h-12 text-primary rounded-full flex items-center justify-center transition;
+.image-gallery-icon {
+  @apply !text-muted hover:!text-primary;
 }
+
+  .image-gallery-left-nav {
+    @apply w-12 h-12 items-center flex justify-center transition focus-within:hidden z-10;
+  }
+  .image-gallery-right-nav {
+    @apply w-12 h-12 items-center flex justify-center transition focus-within:hidden z-10;
+  }
+  .image-gallery-thumbnail {
+    @apply hover:!border-primary;
+  }
+  .image-gallery-thumbnail.active {
+    @apply !border-primary;
+  }
