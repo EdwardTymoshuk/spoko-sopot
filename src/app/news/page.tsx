@@ -138,10 +138,10 @@ const NewsPage: React.FC = () => {
 						}}
 					>
 						<DialogContent
-							className="w-full md:w-auto max-w-[90%] md:max-w-fit h-screen max-h-[80vh] overflow-auto"
+							className="w-full md:w-auto max-w-[90%] md:max-w-fit h-screen max-h-[90vh] overflow-auto"
 						>
 							<DialogHeader>
-								<DialogTitle className="text-center text-2xl text-secondary">
+								<DialogTitle className="text-center text-4xl text-secondary">
 									{item.title}
 								</DialogTitle>
 								<DialogDescription className="text-text-secondary text-start">
