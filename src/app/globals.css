@@ -99,6 +99,7 @@
   border-left-color: #aad959;
 }
 
-.gallery-container {
-  touch-action: pan-y;
+.custom-gallery .image-gallery-left-nav,
+.custom-gallery .image-gallery-right-nav {
+  @apply w-12 h-12 text-primary rounded-full flex items-center justify-center transition;
 }
