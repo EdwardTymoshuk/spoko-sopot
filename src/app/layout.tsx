@@ -1,4 +1,5 @@
 import { MenuProvider } from '@/context/MenuContext'
+import { Analytics } from "@vercel/analytics/react"
 import type { Metadata } from 'next'
 import { Inter, Lato, Nunito, Roboto } from 'next/font/google'
 import { Toaster } from 'sonner'
@@ -64,6 +65,7 @@ export default function RootLayout({
           <Footer />
           <Toaster position='top-center' richColors />
         </MenuProvider>
+        <Analytics/> 
       </body>
     </html>
   )
