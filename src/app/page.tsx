@@ -53,22 +53,28 @@ const Home: React.FC = () => {
     })
   }
 
-  // Fetches settings to check if online ordering is available
   useEffect(() => {
     const fetchSettings = async () => {
       try {
-        const response = await fetch('/api/settings')
+        // Fetch settings from the API with no caching to ensure fresh data
+        const response = await fetch('/api/settings', { cache: 'no-store' })
         const data = await response.json()
-        setIsOrderingOpen(data.isOrderingOpen)
+  
+        // Update state only if the value has changed
+        setIsOrderingOpen((prev) => {
+          if (prev !== data.isOrderingOpen) {
+            refetch() // Trigger refetch only when `isOrderingOpen` changes
+          }
+          return data.isOrderingOpen
+        })
       } catch (error) {
         console.error('Error fetching settings:', error)
-      } finally {
-        setIsLoading(false)
       }
     }
-
-    fetchSettings()
-  }, [])
+  
+    fetchSettings() // Fetch settings once when the component mounts
+  }, []) // Runs only once on mount
+  
 
   useEffect(() => {
     const handleResize = () => {
@@ -242,7 +248,7 @@ const Home: React.FC = () => {
               <div className='grid grid-cols-2 gap-4 md:grid-cols-4'>
                 {filteredItems.slice(0, 8).map((menuItem: MenuItemType, index: number) => (
                   <MenuItem
-                    key={index}
+                    key={menuItem.id}
                     name={menuItem.name}
                     price={menuItem.price}
                     description={menuItem.description}
