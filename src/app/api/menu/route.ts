@@ -14,7 +14,10 @@ export async function GET() {
 		client.close()
 
 		// Return the menu items as JSON
-		return NextResponse.json(menuItems)
+		const response = NextResponse.json(menuItems)
+		response.headers.set('Cache-Control', 'no-store')
+	
+		return response
 	} catch (error) {
 		console.error('Error fetching menu items:', error)
 		return NextResponse.json({ message: 'Error fetching menu items' }, { status: 500 })
