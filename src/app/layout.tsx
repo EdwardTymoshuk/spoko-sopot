@@ -1,7 +1,8 @@
 import { MenuProvider } from '@/context/MenuContext'
-import { Analytics } from "@vercel/analytics/react"
+import { Analytics } from '@vercel/analytics/react'
 import type { Metadata } from 'next'
 import { Inter, Lato, Nunito, Roboto } from 'next/font/google'
+import Script from 'next/script'
 import { Toaster } from 'sonner'
 import Footer from './components/Footer'
 import Header from './components/Header'
@@ -17,7 +18,8 @@ const nunito = Nunito({ weight: '400', subsets: ['latin'] })
 export const metadata: Metadata = {
   metadataBase: new URL('https://spokosopot.pl'),
   title: 'Restauracja Spoko | Kuchnia lokalna i europejska w Sopocie',
-  description: 'Zapraszamy do Restauracji Spoko w Sopocie. Oferujemy wyjątkowe dania kuchni lokalnej i europejskiej w przyjaznej atmosferze z widokiem na Bałtyk. Sprawdź nasze menu i zarezerwuj stolik już dziś!',
+  description:
+    'Zapraszamy do Restauracji Spoko w Sopocie. Oferujemy wyjątkowe dania kuchni lokalnej i europejskiej w przyjaznej atmosferze z widokiem na Bałtyk. Sprawdź nasze menu i zarezerwuj stolik już dziś!',
   keywords: [
     'Restauracja Spoko',
     'restauracja Sopot',
@@ -56,16 +58,31 @@ export default function RootLayout({
   children: React.ReactNode
 }>) {
   return (
-    <html lang='en'>
+    <html lang="en">
+      <head>
+        <Script
+          strategy="afterInteractive"
+          src="https://www.googletagmanager.com/gtag/js?id=G-6LJXDLVD65"
+        />
+        <Script strategy="afterInteractive" id="gtag-init">
+          {`
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
+            
+            gtag('config', 'G-6LJXDLVD65');
+          `}
+        </Script>
+      </head>
       <body className={lato.className}>
         <MenuProvider>
           <ProgressBar />
           <Header />
           {children}
           <Footer />
-          <Toaster position='top-center' richColors />
+          <Toaster position="top-center" richColors />
         </MenuProvider>
-        <Analytics/> 
+        <Analytics />
       </body>
     </html>
   )
