@@ -6,7 +6,6 @@
 @import url('https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&family=Sacramento&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&family=Nunito:ital,wght@0,200..1000;1,200..1000&family=Sacramento&display=swap');
 
-
 @layer base {
   :root {
     --background: 0 0% 100%;
@@ -58,7 +57,6 @@
   }
 }
 
-
 @layer base {
   * {
     @apply border-border;
@@ -78,7 +76,7 @@
   }
 
   .special-font {
-    font-family: "Sacramento", cursive;
+    font-family: 'Sacramento', cursive;
     font-weight: 400;
     font-style: normal;
   }
@@ -103,15 +101,33 @@
   @apply !text-muted hover:!text-primary;
 }
 
-  .image-gallery-left-nav {
-    @apply w-12 h-12 items-center flex justify-center transition focus-within:hidden z-10;
-  }
-  .image-gallery-right-nav {
-    @apply w-12 h-12 items-center flex justify-center transition focus-within:hidden z-10;
-  }
-  .image-gallery-thumbnail {
-    @apply hover:!border-primary;
-  }
-  .image-gallery-thumbnail.active {
-    @apply !border-primary;
-  }
+.image-gallery-left-nav {
+  @apply w-12 h-12 items-center flex justify-center transition focus-within:hidden z-10;
+}
+.image-gallery-right-nav {
+  @apply w-12 h-12 items-center flex justify-center transition focus-within:hidden z-10;
+}
+.image-gallery-thumbnail {
+  @apply hover:!border-primary;
+}
+.image-gallery-thumbnail.active {
+  @apply !border-primary;
+}
+
+/* globals.css (or any global stylesheet) */
+
+/* Force react-image-gallery images to resize responsively */
+.custom-gallery .image-gallery-slide .image-gallery-image {
+  width: 100% !important;
+  max-width: 100% !important;
+  height: auto !important;
+  object-fit: contain !important;
+}
+
+.custom-gallery
+  .image-gallery-thumbnails-container
+  .image-gallery-thumbnail-image {
+  width: 100% !important;
+  height: auto !important;
+  object-fit: cover !important;
+}
