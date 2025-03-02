@@ -1,19 +1,26 @@
 'use client'
 
 import { Button } from '@/app/components/ui/button'
-import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from '@/app/components/ui/carousel'
-import { Popover, PopoverContent, PopoverTrigger } from '@/app/components/ui/popover'
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from '@/app/components/ui/popover'
 import { Skeleton } from '@/app/components/ui/skeleton'
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/app/components/ui/tooltip'
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from '@/app/components/ui/tooltip'
 import { MenuItemType } from '@/app/types'
-import { CAROUSEL_MAIN_IMAGES } from '@/config'
 import { useMenu } from '@/context/MenuContext'
 import { cn } from '@/lib/utils'
 import { useRouter } from 'next/navigation'
 import { startTransition, useCallback, useEffect, useState } from 'react'
-import { FaLocationDot } from "react-icons/fa6"
+import { FaLocationDot } from 'react-icons/fa6'
 import { MdOutlineKeyboardArrowRight } from 'react-icons/md'
-import { RxDoubleArrowDown } from "react-icons/rx"
+import HeroCarousel from './components/HeroCarousel'
 import LoadingButton from './components/LoadingButton'
 import MainContainer from './components/MainContainer'
 import MaxWidthWrapper from './components/MaxWidthWrapper'
@@ -33,7 +40,7 @@ const Home: React.FC = () => {
   const scrollToSection = useCallback(() => {
     window.scrollTo({
       top: window.innerHeight - 80,
-      behavior: 'smooth'
+      behavior: 'smooth',
     })
   }, [])
 
@@ -59,7 +66,7 @@ const Home: React.FC = () => {
         // Fetch settings from the API with no caching to ensure fresh data
         const response = await fetch('/api/settings', { cache: 'no-store' })
         const data = await response.json()
-  
+
         // Update state only if the value has changed
         setIsOrderingOpen((prev) => {
           if (prev !== data.isOrderingOpen) {
@@ -71,10 +78,9 @@ const Home: React.FC = () => {
         console.error('Error fetching settings:', error)
       }
     }
-  
+
     fetchSettings() // Fetch settings once when the component mounts
   }, []) // Runs only once on mount
-  
 
   useEffect(() => {
     const handleResize = () => {
@@ -87,60 +93,33 @@ const Home: React.FC = () => {
   }, [])
 
   return (
-    <MainContainer className='w-full'>
-      <div className='flex flex-col h-[calc(var(--vh, 1vh) * 100)] w-full'>
+    <MainContainer className="w-full">
+      <div className="flex flex-col h-[calc(var(--vh, 1vh) * 100)] w-full">
         {/* Hero section with carousel */}
-        <div className='flex-grow relative overflow-hidden'>
-          <div className="relative h-screen w-full">
-            <Carousel className="w-full h-full max-w-full">
-              <CarouselContent className="h-full">
-                {CAROUSEL_MAIN_IMAGES.map((item, index) => (
-                  <CarouselItem key={index} className="relative h-full">
-                    <picture className="relative h-full">
-                      <source srcSet={item.srcMobile} media="(max-width: 768px)" />
-                      <img
-                        src={item.src}
-                        alt="Responsive image"
-                        className='min-h-full w-full object-cover'
-                      />
-                    </picture>
-                  </CarouselItem>
-                ))}
-              </CarouselContent>
-              <CarouselPrevious className="left-0 text-primary opacity-80 hover:opacity-100" />
-              <CarouselNext className="right-0 text-primary opacity-80 hover:opacity-100" />
-            </Carousel>
-
-            {/* Scroll down button */}
-            <button
-              onClick={scrollToSection}
-              className="absolute opacity-50 bottom-8 left-1/2 transform -translate-x-1/2 text-primary animate-bounce"
-              aria-label="Scroll down"
-            >
-              <RxDoubleArrowDown size={40} />
-            </button>
-          </div>
-        </div>
+        <HeroCarousel />
 
         {/* Mobile order button with tooltip */}
-        <div className='p-4 md:hidden'>
+        <div className="p-4 md:hidden">
           <TooltipProvider delayDuration={150}>
             <Tooltip>
               <TooltipTrigger asChild>
                 <Button
-                  size='lg'
-                  onClick={isOrderingOpen ? navigateToOrderPage : () => { }}
+                  size="lg"
+                  onClick={isOrderingOpen ? navigateToOrderPage : () => {}}
                   className={cn('w-full text-lg font-semibold', {
                     'text-text-secondary': isOrderingOpen,
-                    'text-gray-400 opacity-60 cursor-not-allowed': !isOrderingOpen,
+                    'text-gray-400 opacity-60 cursor-not-allowed':
+                      !isOrderingOpen,
                   })}
                 >
                   {isOrderingOpen ? (
                     'ZAMÓW ONLINE'
                   ) : (
-                    <p className='leading-none'>
+                    <p className="leading-none">
                       <span>ZAMÓW ONLINE</span>
-                      <span className="block text-sm">(tymczasowo niedostępne<i className='text-danger'>*</i>)</span>
+                      <span className="block text-sm">
+                        (tymczasowo niedostępne<i className="text-danger">*</i>)
+                      </span>
                     </p>
                   )}
                 </Button>
@@ -148,7 +127,9 @@ const Home: React.FC = () => {
               {!isOrderingOpen && (
                 <TooltipContent>
                   <p>Usługa zamawiania online jest tymczasowo niedostępna.</p>
-                  <p>W celu słożenia zamówienia prosimy o kontakt telefoniczny.</p>
+                  <p>
+                    W celu słożenia zamówienia prosimy o kontakt telefoniczny.
+                  </p>
                 </TooltipContent>
               )}
             </Tooltip>
@@ -156,22 +137,23 @@ const Home: React.FC = () => {
         </div>
       </div>
 
-      <PageContainer className='md:hidden'>
-        <span className='font-special text-4xl text-center pt-4'>lub</span>
+      <PageContainer className="md:hidden">
+        <span className="font-special text-4xl text-center pt-4">lub</span>
       </PageContainer>
 
       {/* Visit us section */}
-      <div className='w-full md:max-w-screen-2xl md:mx-auto md:px-8 2xl:p-0 flex flex-col md:flex-row-reverse items-stretch'>
-        <MaxWidthWrapper className='min-h-full flex-grow'>
-          <div className='flex flex-col justify-between items-center h-full py-6 md:py-12'>
-            <PageSubHeader title='Odwiedź nas' className='p-0' />
-            <PageContainer className='md:text-2xl flex flex-col gap-4'>
+      <div className="w-full md:max-w-screen-2xl md:mx-auto md:px-8 2xl:p-0 flex flex-col md:flex-row-reverse items-stretch">
+        <MaxWidthWrapper className="min-h-full flex-grow">
+          <div className="flex flex-col justify-between items-center h-full py-6 md:py-12">
+            <PageSubHeader title="Odwiedź nas" className="p-0" />
+            <PageContainer className="md:text-2xl flex flex-col gap-4">
               <div>
-                <p className='flex gap-1 items-center text-secondary'>
-                  <FaLocationDot className='text-secondary' /> Hestii 3, 81-731 Sopot
+                <p className="flex gap-1 items-center text-secondary">
+                  <FaLocationDot className="text-secondary" /> Hestii 3, 81-731
+                  Sopot
                 </p>
               </div>
-              <div className='text-center'>
+              <div className="text-center">
                 <p>Pon-pt: 10:00 - 19:00</p>
                 <p>Sob-niedz: 8:00 - 19:00</p>
               </div>
@@ -181,21 +163,31 @@ const Home: React.FC = () => {
             <Popover>
               <PopoverTrigger asChild>
                 <Button
-                  size='lg'
-                  className='bg-secondary hover:bg-secondary-foreground text-lg w-full text-text-primary font-semibold md:w-1/2 hidden md:flex'
+                  size="lg"
+                  className="bg-secondary hover:bg-secondary-foreground text-lg w-full text-text-primary font-semibold md:w-1/2 hidden md:flex"
                 >
                   REZERWACJA
                 </Button>
               </PopoverTrigger>
               <PopoverContent>
-                <div className='text-center'>
-                  <p className='mt-2'>
-                    <h3 className='font-bold text-secondary'>Zadzwoń</h3>
-                    <a href="tel:+48123456789" className="text-text-secondary hover:underline">+48 123 456 789</a>
+                <div className="text-center">
+                  <p className="mt-2">
+                    <h3 className="font-bold text-secondary">Zadzwoń</h3>
+                    <a
+                      href="tel:+48123456789"
+                      className="text-text-secondary hover:underline"
+                    >
+                      +48 123 456 789
+                    </a>
                   </p>
-                  <p className='mt-1'>
-                    <h3 className='font-bold text-secondary'>Napisz</h3>
-                    <a href="mailto:info@spokosopot.pl" className="text-text-secondary hover:underline">info@spokosopot.pl</a>
+                  <p className="mt-1">
+                    <h3 className="font-bold text-secondary">Napisz</h3>
+                    <a
+                      href="mailto:info@spokosopot.pl"
+                      className="text-text-secondary hover:underline"
+                    >
+                      info@spokosopot.pl
+                    </a>
                   </p>
                 </div>
               </PopoverContent>
@@ -203,7 +195,7 @@ const Home: React.FC = () => {
           </div>
         </MaxWidthWrapper>
 
-        <div className='w-full py-2 md:px-8'>
+        <div className="w-full py-2 md:px-8">
           <iframe
             src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3554.356080609364!2d18.58294595188907!3d54.43213053637157!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x46fd0b6edee7521f%3A0x324a244fefc976ef!2sRestauracja%20Spoko%20Sopot!5e0!3m2!1suk!2spl!4v1721160082108!5m2!1suk!2spl"
             width="100%"
@@ -224,7 +216,7 @@ const Home: React.FC = () => {
             // Show skeletons while loading
             return (
               <>
-                <PageSubHeader title='Nasze specjale' />
+                <PageSubHeader title="Nasze specjale" />
                 <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
                   {Array.from({ length: 8 }).map((_, i) => (
                     <Skeleton key={i} className="h-[300px] w-full rounded-lg" />
@@ -244,31 +236,29 @@ const Home: React.FC = () => {
 
           return (
             <>
-              <PageSubHeader title='Nasze specjale' />
-              <div className='grid grid-cols-2 gap-4 md:grid-cols-4'>
-                {filteredItems.slice(0, 8).map((menuItem: MenuItemType, index: number) => (
-                  <MenuItem
-                    key={menuItem.id}
-                    name={menuItem.name}
-                    price={menuItem.price}
-                    description={menuItem.description}
-                    image={menuItem.image}
-                  />
-                ))}
+              <PageSubHeader title="Nasze specjale" />
+              <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
+                {filteredItems
+                  .slice(0, 8)
+                  .map((menuItem: MenuItemType, index: number) => (
+                    <MenuItem
+                      key={menuItem.id}
+                      name={menuItem.name}
+                      price={menuItem.price}
+                      description={menuItem.description}
+                      image={menuItem.image}
+                    />
+                  ))}
               </div>
             </>
           )
         })()}
 
-        <PageContainer className='pt-2 pb-8'>
-          <LoadingButton
-            isLoading={isLoading}
-            onClick={navigateToMenu}
-          >
+        <PageContainer className="pt-2 pb-8">
+          <LoadingButton isLoading={isLoading} onClick={navigateToMenu}>
             Sprawdź menu <MdOutlineKeyboardArrowRight />
           </LoadingButton>
         </PageContainer>
-
       </MaxWidthWrapper>
     </MainContainer>
   )
