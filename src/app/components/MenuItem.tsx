@@ -1,29 +1,36 @@
 'use client'
 
-import {
-	Card,
-	CardContent,
-	CardFooter,
-	CardHeader
-} from "@/app/components/ui/card"
+import { Card, CardContent, CardFooter } from '@/app/components/ui/card'
 import { MenuItemType } from '@/app/types'
 import { cn } from '@/lib/utils'
-import Image from 'next/image'
 import React, { useState } from 'react'
-import { GiMeal } from 'react-icons/gi'
 
 type MenuItemProps = Partial<MenuItemType> & {
-	orientation?: 'vertical' | 'horizontal'
-	className?: string
+  orientation?: 'vertical' | 'horizontal'
+  className?: string
 }
 
-const MenuItem: React.FC<MenuItemProps> = ({ name, price, description, image, orientation = 'vertical', className }) => {
-	const [imageError, setImageError] = useState(false)
-	const isVertical = orientation === 'vertical'
+const MenuItem: React.FC<MenuItemProps> = ({
+  name,
+  price,
+  description,
+  image,
+  orientation = 'vertical',
+  className,
+}) => {
+  const [imageError, setImageError] = useState(false)
+  const isVertical = orientation === 'vertical'
 
-	return (
-		<Card className={cn(`w-full max-w-sm border-0 shadow-none flex ${isVertical ? 'flex-col' : 'flex-row items-center'} justify-between`, className)}>
-			<CardHeader className={`p-0 ${isVertical ? 'w-full h-48' : 'w-24 h-24'}`}>
+  return (
+    <Card
+      className={cn(
+        `w-full max-w-sm border-0 shadow-none flex ${
+          isVertical ? 'flex-col' : 'flex-row items-center'
+        } justify-between`,
+        className
+      )}
+    >
+      {/* <CardHeader className={`p-0 ${isVertical ? 'w-full h-48' : 'w-24 h-24'}`}>
 				<div className='relative w-full h-full '>
 					{image && !imageError ? (
 						<Image
@@ -40,16 +47,32 @@ const MenuItem: React.FC<MenuItemProps> = ({ name, price, description, image, or
 						</div>
 					)}
 				</div>
-			</CardHeader>
-			<CardContent className={`p-2 border-0 flex-1 text-center`}>
-				<h4 className={`uppercase text-secondary py-2 font-bold ${isVertical ? 'text-lg' : 'text-base'}`}>{name}</h4>
-				<span className={`text-sm text-text-foreground italic ${isVertical ? 'text-sm' : 'text-xs'}`}>{description}</span>
-			</CardContent>
-			<CardFooter className={`px-2 pb-2 mt-auto self-center ${!isVertical && 'my-auto pb-0'}`}>
-				<span className='text-secondary'>{price} zł</span>
-			</CardFooter>
-		</Card>
-	)
+			</CardHeader> */}
+      <CardContent className={`p-2 border-0 flex-1 text-center`}>
+        <h4
+          className={`uppercase text-secondary py-2 font-bold ${
+            isVertical ? 'text-lg' : 'text-base'
+          }`}
+        >
+          {name}
+        </h4>
+        <span
+          className={`text-sm text-text-foreground italic ${
+            isVertical ? 'text-sm' : 'text-xs'
+          }`}
+        >
+          {description}
+        </span>
+      </CardContent>
+      <CardFooter
+        className={`px-2 pb-2 mt-auto self-center ${
+          !isVertical && 'my-auto pb-0'
+        }`}
+      >
+        <span className="text-secondary">{price} zł</span>
+      </CardFooter>
+    </Card>
+  )
 }
 
 export default MenuItem
