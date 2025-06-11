@@ -2,6 +2,10 @@
 import { MongoClient } from 'mongodb'
 import { NextResponse } from 'next/server'
 
+export const dynamic = 'force-dynamic'
+export const fetchCache = 'force-no-store'
+export const revalidate = 0
+
 // API route to fetch menu items from the database
 export async function GET() {
   try {
@@ -19,6 +23,11 @@ export async function GET() {
     // Return the menu items as JSON
     const response = NextResponse.json(menuItems)
     response.headers.set('Cache-Control', 'no-cache, no-store, must-revalidate')
+    response.headers.set('Cache-Control', 'no-cache, no-store, must-revalidate')
+    response.headers.set(
+      'Vary',
+      'RSC, Next-Router-State-Tree, Next-Router-Prefetch'
+    )
 
     return response
   } catch (error) {
