@@ -1,5 +1,5 @@
-// /app/menu/page.tsx
-export const dynamic = 'force-dynamic'
+'use client'
+
 import MaxWidthWrapper from '@/app/components/MaxWidthWrapper'
 import {
   Accordion,
@@ -7,8 +7,10 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from '@/app/components/ui/accordion'
+import { Skeleton } from '@/app/components/ui/skeleton'
 import { MenuItemCategory, MenuItemType } from '@/app/types'
-import { fetchMenuItems } from '@/lib/menu'
+import { allowedCategories } from '@/config'
+import { useEffect, useState } from 'react'
 import MainContainer from '../components/MainContainer'
 import MenuItem from '../components/MenuItem'
 import PageHeaderContainer from '../components/PageHeaderComponent'
@@ -34,8 +36,31 @@ const categoryOrder: Record<string, number> = {
   Inne: Infinity,
 }
 
-const MenuPage = async () => {
-  const menuItems: MenuItemType[] = await fetchMenuItems()
+const MenuPage = () => {
+  const [menuItems, setMenuItems] = useState<MenuItemType[]>([])
+  const [loading, setLoading] = useState<boolean>(true)
+
+  useEffect(() => {
+    const fetchMenu = async () => {
+      try {
+        const response = await fetch('/api/menu', { cache: 'no-store' })
+        const data = await response.json()
+        setMenuItems(
+          data.filter(
+            (item: MenuItemType) =>
+              item.isActive && allowedCategories.includes(item.category)
+          )
+        )
+      } catch (error) {
+        console.error('Error fetching menu:', error)
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    fetchMenu()
+  }, [])
+
   const excludedCategories = ['Pizza']
 
   const getUniqueCategories = (items: MenuItemType[]): MenuItemCategory[] => {
@@ -68,33 +93,54 @@ const MenuPage = async () => {
           imageMobile="/img/menu-page-mobile.jpg"
         />
 
-        <Accordion type="single" collapsible className="">
-          {categories.map((category, index) => (
-            <AccordionItem
-              key={category}
-              value={`item-${index}`}
-              className="border-0"
-            >
-              <AccordionTrigger className="text-text-foreground hover:text-text-secondary data-[state=open]:text-text-secondary text-4xl md:text-5xl hover:no-underline">
-                {category}
-              </AccordionTrigger>
-              <AccordionContent className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 justify-items-center">
-                {menuItems
-                  .filter((item) => item.category === category)
-                  .map((item) => (
-                    <MenuItem
-                      key={item.name}
-                      name={item.name}
-                      price={item.price}
-                      description={item.description}
-                      image={item.image}
-                      orientation="horizontal"
+        {loading ? (
+          <div className="space-y-10">
+            {[...Array(4)].map((_, index) => (
+              <div
+                key={index}
+                className="w-full flex flex-col items-center space-y-6"
+              >
+                <Skeleton className="h-10 w-full sm:w-full md:w-1/2 lg:w-1/4 mx-auto" />
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 w-full px-4 md:px-0">
+                  {[...Array(3)].map((_, itemIndex) => (
+                    <Skeleton
+                      key={itemIndex}
+                      className="h-[200px] w-full rounded-lg"
                     />
                   ))}
-              </AccordionContent>
-            </AccordionItem>
-          ))}
-        </Accordion>
+                </div>
+              </div>
+            ))}
+          </div>
+        ) : (
+          <Accordion type="single" collapsible className="">
+            {categories.map((category, index) => (
+              <AccordionItem
+                key={category}
+                value={`item-${index}`}
+                className="border-0"
+              >
+                <AccordionTrigger className="text-text-foreground hover:text-text-secondary data-[state=open]:text-text-secondary text-4xl md:text-5xl hover:no-underline">
+                  {category}
+                </AccordionTrigger>
+                <AccordionContent className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 justify-items-center">
+                  {menuItems
+                    .filter((item) => item.category === category)
+                    .map((item) => (
+                      <MenuItem
+                        key={item.name}
+                        name={item.name}
+                        price={item.price}
+                        description={item.description}
+                        image={item.image}
+                        orientation="horizontal"
+                      />
+                    ))}
+                </AccordionContent>
+              </AccordionItem>
+            ))}
+          </Accordion>
+        )}
       </MaxWidthWrapper>
     </MainContainer>
   )
