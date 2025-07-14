@@ -40,7 +40,8 @@ export const NAVBAR_ITEMS: NavBarItem[] = [
 
 export const CAROUSEL_MAIN_IMAGES: CarouselImage[] = [
   { src: '/img/carousel-1.jpg', srcMobile: '/img/carousel-1-mobile.jpg' },
-  { src: '/img/carousel-2.jpg', srcMobile: '/img/carousel-2.jpg' },
+  { src: '/img/carousel-2.jpg', srcMobile: '/img/carousel-2-mobile.jpg' },
+  { src: '/img/carousel-3.jpg', srcMobile: '/img/carousel-3-mobile.jpg' },
 ]
 
 export const OPINIONS: MongoDBReview[] = [
@@ -82,6 +83,34 @@ export const OPINIONS: MongoDBReview[] = [
     date: '5 miesięcy temu',
     message:
       'Super miejsce, a obiad mega pyszny. Najlepsza lemoniada jaka piłam. Dorsz z purée ziemniaczano bazyliowym i boczniakami po kaszubsku, palce lizać',
+    rating: 5,
+  },
+  {
+    _id: '6',
+    author: 'Adam W',
+    date: '14.07.2025',
+    message: `
+  Zrobiliśmy pit stop na  skromy posiłek.
+  Rosół hmmmm odnieśliśmy wrażenie że kucharz próbował w jakiś cudowny sposób go rozmnożyć. Może to wypadek przy pracy.
+  Generalnie był taki fit🫣.
+  Frytki i zupa rybna petarda. 👌 polecamy
+  Frytki niby nic takiego ale naprawdę mniam mniam.
+  Duże uznanie za obsługę i atmosferę.
+  Super naprawdę super. PROFESKA👌.
+  Dobre powitanie ,rozmowa, malowanka dla juniora.
+  Lux.
+  Podsumowując .
+  Zatrzymamy się na obiad w przyszłości.
+  Magda i Adam i Jan😊`,
+    rating: 5,
+  },
+  {
+    _id: '7',
+    author: 'Ewelina R',
+    date: '14.07.2025',
+    message: `
+    Restauracja jest położona blisko plaży więc można iść na spacer po kolacji.
+    Kolacja była pyszna, tak samo jak drinki i kawa. Pani Kelnerka przemiła.`,
     rating: 5,
   },
 ]
