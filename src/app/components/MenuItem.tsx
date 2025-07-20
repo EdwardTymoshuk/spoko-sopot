@@ -24,7 +24,7 @@ const MenuItem: React.FC<MenuItemProps> = ({
   return (
     <Card
       className={cn(
-        `w-full max-w-sm border-0 shadow-none flex ${
+        `w-3/4 max-w-sm border-0 shadow-none flex ${
           isVertical ? 'flex-col' : 'flex-row items-center'
         } justify-between`,
         className
@@ -51,7 +51,7 @@ const MenuItem: React.FC<MenuItemProps> = ({
 				</div>
 			</CardHeader> */}
 
-      <CardContent className={`p-2 border-0 flex-1 text-center`}>
+      <CardContent className={`p-2 border-0 flex-1 text-start`}>
         <h4
           className={`uppercase text-secondary py-2 font-bold ${
             isVertical ? 'text-lg' : 'text-base'
