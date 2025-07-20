@@ -3,7 +3,7 @@
 import { Card, CardContent, CardFooter } from '@/app/components/ui/card'
 import { MenuItemType } from '@/app/types'
 import { cn } from '@/lib/utils'
-import React, { useState } from 'react'
+import React from 'react'
 
 type MenuItemProps = Partial<MenuItemType> & {
   orientation?: 'vertical' | 'horizontal'
@@ -13,12 +13,12 @@ type MenuItemProps = Partial<MenuItemType> & {
 const MenuItem: React.FC<MenuItemProps> = ({
   name,
   price,
-  description,
-  image,
+  // description, (delete temporary description)
+  // image,
   orientation = 'vertical',
   className,
 }) => {
-  const [imageError, setImageError] = useState(false)
+  // const [imageError, setImageError] = useState(false)
   const isVertical = orientation === 'vertical'
 
   return (
@@ -30,6 +30,8 @@ const MenuItem: React.FC<MenuItemProps> = ({
         className
       )}
     >
+      {/* TEMPORARY DELETE IMAGE */}
+
       {/* <CardHeader className={`p-0 ${isVertical ? 'w-full h-48' : 'w-24 h-24'}`}>
 				<div className='relative w-full h-full '>
 					{image && !imageError ? (
@@ -48,6 +50,7 @@ const MenuItem: React.FC<MenuItemProps> = ({
 					)}
 				</div>
 			</CardHeader> */}
+
       <CardContent className={`p-2 border-0 flex-1 text-center`}>
         <h4
           className={`uppercase text-secondary py-2 font-bold ${
@@ -56,13 +59,16 @@ const MenuItem: React.FC<MenuItemProps> = ({
         >
           {name}
         </h4>
-        <span
+
+        {/* TEMPORARY DELETE DESCRIPTION  */}
+
+        {/* <span
           className={`text-sm text-text-foreground italic ${
             isVertical ? 'text-sm' : 'text-xs'
           }`}
         >
           {description}
-        </span>
+        </span> */}
       </CardContent>
       <CardFooter
         className={`px-2 pb-2 mt-auto self-center ${

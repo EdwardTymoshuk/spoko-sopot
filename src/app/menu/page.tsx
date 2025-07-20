@@ -123,7 +123,7 @@ const MenuPage = () => {
                 <AccordionTrigger className="text-text-foreground hover:text-text-secondary data-[state=open]:text-text-secondary text-4xl md:text-5xl hover:no-underline">
                   {category}
                 </AccordionTrigger>
-                <AccordionContent className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 justify-items-center">
+                <AccordionContent className="grid grid-cols-1  gap-4 justify-items-center">
                   {menuItems
                     .filter((item) => item.category === category)
                     .map((item) => (
