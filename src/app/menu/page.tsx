@@ -10,6 +10,7 @@ import {
 import { Skeleton } from '@/app/components/ui/skeleton'
 import { MenuItemCategory, MenuItemType } from '@/app/types'
 import { allowedCategories } from '@/config'
+import { UtensilsCrossed } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import MainContainer from '../components/MainContainer'
 import MenuItem from '../components/MenuItem'
@@ -36,9 +37,19 @@ const categoryOrder: Record<string, number> = {
   Inne: Infinity,
 }
 
+/**
+ * MenuPage
+ * ------------------------------------------------------------------
+ * Displays either the restaurant menu or a temporary message
+ * if the menu is being updated. Includes a disclaimer at the bottom
+ * about possible differences in prices and availability.
+ */
 const MenuPage = () => {
   const [menuItems, setMenuItems] = useState<MenuItemType[]>([])
   const [loading, setLoading] = useState<boolean>(true)
+
+  // Toggle this flag to show/hide menu
+  const isShowMenu = false
 
   useEffect(() => {
     const fetchMenu = async () => {
@@ -114,33 +125,66 @@ const MenuPage = () => {
           </div>
         ) : (
           <Accordion type="single" collapsible className="">
-            {categories.map((category, index) => (
-              <AccordionItem
-                key={category}
-                value={`item-${index}`}
-                className="border-0"
-              >
-                <AccordionTrigger className="text-text-foreground hover:text-text-secondary data-[state=open]:text-text-secondary text-4xl md:text-5xl hover:no-underline">
-                  {category}
-                </AccordionTrigger>
-                <AccordionContent className="grid grid-cols-1  gap-4 justify-items-center">
-                  {menuItems
-                    .filter((item) => item.category === category)
-                    .map((item) => (
-                      <MenuItem
-                        key={item.name}
-                        name={item.name}
-                        price={item.price}
-                        description={item.description}
-                        image={item.image}
-                        orientation="horizontal"
-                      />
-                    ))}
-                </AccordionContent>
-              </AccordionItem>
-            ))}
+            {isShowMenu ? (
+              categories.map((category, index) => (
+                <AccordionItem
+                  key={category}
+                  value={`item-${index}`}
+                  className="border-0"
+                >
+                  <AccordionTrigger className="text-text-foreground hover:text-text-secondary data-[state=open]:text-text-secondary text-4xl md:text-5xl hover:no-underline">
+                    {category}
+                  </AccordionTrigger>
+                  <AccordionContent className="grid grid-cols-1 gap-4 justify-items-center">
+                    {menuItems
+                      .filter((item) => item.category === category)
+                      .map((item) => (
+                        <MenuItem
+                          key={item.name}
+                          name={item.name}
+                          price={item.price}
+                          description={item.description}
+                          image={item.image}
+                          orientation="horizontal"
+                        />
+                      ))}
+                  </AccordionContent>
+                </AccordionItem>
+              ))
+            ) : (
+              <div className="flex flex-col items-center text-center py-24">
+                <UtensilsCrossed className="w-16 h-16 text-primary mt-10 mb-6" />
+
+                <h2 className="text-2xl font-semibold mb-4">
+                  Pracujemy nad nowym menu dla Was!
+                </h2>
+
+                <p className="text-lg text-zinc-500 max-w-xl">
+                  Już wkrótce będziecie mogli spróbować zupełnie nowych smaków —
+                  świeżych, aromatycznych i przygotowanych z miłością.
+                  Zaglądajcie tu ponownie, niebawem wszystko odkryjecie!
+                </p>
+              </div>
+            )}
           </Accordion>
         )}
+
+        {/* Disclaimer section */}
+        <footer className="mt-24 pb-12 px-4">
+          <p className="text-xs text-zinc-400 max-w-3xl mx-auto leading-relaxed text-center">
+            *Menu prezentowane na stronie ma charakter orientacyjny i może ulec
+            zmianie. Aktualne ceny oraz dostępność dań mogą różnić się od tych
+            przedstawionych online. W celu potwierdzenia szczegółów prosimy o
+            kontakt z obsługą na miejscu lub wysłanie zapytania na adres:&nbsp;
+            <a
+              href="mailto:info@spokosopot.pl"
+              className="text-amber-600 hover:underline"
+            >
+              info@spokosopot.pl
+            </a>
+            .
+          </p>
+        </footer>
       </MaxWidthWrapper>
     </MainContainer>
   )
