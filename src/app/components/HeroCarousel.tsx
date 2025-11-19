@@ -12,72 +12,75 @@ import Image from 'next/image'
 import { useEffect, useState } from 'react'
 import { RxDoubleArrowDown } from 'react-icons/rx'
 
-/**
- * Interface representing a banner object fetched from API or fallback.
- */
 interface Banner {
   desktopImageUrl: string
   mobileImageUrl?: string
-  createdAt?: string // Optional: for sorting
+  createdAt?: string
 }
 
-/**
- * HeroCarousel component
- * -----------------------------------------
- * Displays a carousel of main banners.
- * - Banners are loaded from an API endpoint (/api/main-banners).
- * - If API returns no banners or fails, fallback images from CAROUSEL_MAIN_IMAGES are shown.
- * - Default images are always included at the end (without duplicates).
- */
 const HeroCarousel = () => {
   const [banners, setBanners] = useState<Banner[]>([])
   const [isLoading, setIsLoading] = useState(true)
 
+  const extractNumber = (url: string) => {
+    const match = url.match(/(\d+)(?=\.\w+$)/)
+    return match ? parseInt(match[1], 10) : 0
+  }
+
   useEffect(() => {
-    /**
-     * Loads banners from API and merges them with fallback images.
-     */
     const fetchBanners = async () => {
       try {
         const response = await fetch('/api/main-banners')
         if (!response.ok) throw new Error('Failed to fetch banners')
         const data: Banner[] = await response.json()
 
-        // Sort banners by date (newest first)
         const sortedBanners = data.sort(
           (a, b) =>
             (b.createdAt ? new Date(b.createdAt).getTime() : 0) -
             (a.createdAt ? new Date(a.createdAt).getTime() : 0)
         )
 
-        // If no banners from API, use only default images
-        if (!sortedBanners || sortedBanners.length === 0) {
+        if (sortedBanners.length === 0) {
           setBanners(
             CAROUSEL_MAIN_IMAGES.map((img) => ({
               desktopImageUrl: img.src,
               mobileImageUrl: img.srcMobile,
-            }))
+            })).sort(
+              (a, b) =>
+                extractNumber(b.desktopImageUrl) -
+                extractNumber(a.desktopImageUrl)
+            )
           )
         } else {
-          // Merge API banners with default images (without duplicates)
-          setBanners([
-            ...sortedBanners,
-            ...CAROUSEL_MAIN_IMAGES.filter(
-              (staticImg) =>
-                !sortedBanners.some((b) => b.desktopImageUrl === staticImg.src)
-            ).map((img) => ({
-              desktopImageUrl: img.src,
-              mobileImageUrl: img.srcMobile,
-            })),
-          ])
+          setBanners(
+            [
+              ...sortedBanners,
+              ...CAROUSEL_MAIN_IMAGES.filter(
+                (staticImg) =>
+                  !sortedBanners.some(
+                    (b) => b.desktopImageUrl === staticImg.src
+                  )
+              ).map((img) => ({
+                desktopImageUrl: img.src,
+                mobileImageUrl: img.srcMobile,
+              })),
+            ].sort(
+              (a, b) =>
+                extractNumber(b.desktopImageUrl) -
+                extractNumber(a.desktopImageUrl)
+            )
+          )
         }
-      } catch (error) {
-        // On error, use only fallback images
+      } catch {
         setBanners(
           CAROUSEL_MAIN_IMAGES.map((img) => ({
             desktopImageUrl: img.src,
             mobileImageUrl: img.srcMobile,
-          }))
+          })).sort(
+            (a, b) =>
+              extractNumber(b.desktopImageUrl) -
+              extractNumber(a.desktopImageUrl)
+          )
         )
       } finally {
         setIsLoading(false)
@@ -87,21 +90,33 @@ const HeroCarousel = () => {
     fetchBanners()
   }, [])
 
+  // ------------------------------------------------------
+  // SKELETON (full screen) while banners are loading
+  // ------------------------------------------------------
+  if (isLoading) {
+    return (
+      <div className="h-screen w-full animate-pulse bg-muted flex items-center justify-center">
+        <div className="w-1/2 h-1/2 bg-gray-300/30 rounded-xl" />
+      </div>
+    )
+  }
+
+  // ------------------------------------------------------
+  // RENDER CAROUSEL
+  // ------------------------------------------------------
   return (
     <div className="flex-grow relative overflow-hidden">
       <div className="relative h-screen w-full">
         <Carousel className="w-full h-full max-w-full">
           <CarouselContent className="h-full">
-            {/* Render banners as carousel items */}
             {banners.map((item, index) => (
               <CarouselItem key={index} className="relative h-full">
                 <picture className="relative h-full">
-                  {/* Responsive source for mobile devices */}
                   <source
                     srcSet={item.mobileImageUrl || item.desktopImageUrl}
                     media="(max-width: 768px)"
                   />
-                  {/* Fallback to desktop image */}
+
                   <Image
                     src={item.desktopImageUrl}
                     alt={`Banner ${index + 1}`}
@@ -114,11 +129,11 @@ const HeroCarousel = () => {
               </CarouselItem>
             ))}
           </CarouselContent>
-          {/* Carousel navigation buttons */}
+
           <CarouselPrevious className="left-0 text-primary opacity-80 hover:opacity-100" />
           <CarouselNext className="right-0 text-primary opacity-80 hover:opacity-100" />
         </Carousel>
-        {/* Scroll down button */}
+
         <button
           onClick={() =>
             window.scrollTo({ top: window.innerHeight, behavior: 'smooth' })
