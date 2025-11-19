@@ -15,8 +15,8 @@ interface Photo {
   height: number
 }
 
-const thumbnails = Array.from({ length: 17 }, (_, index) => ({
-  src: `/img/gallery/gallery-image-${index + 1}.jpg`,
+const thumbnails = Array.from({ length: 23 }, (_, index) => ({
+  src: `/img/gallery/gallery-image-${index + 1}.webp`,
   thumbnail: `/img/gallery/thumb${index + 1}.jpg`,
 }))
 
@@ -60,7 +60,7 @@ const GalleryPage = () => {
       <MaxWidthWrapper>
         <PageHeaderContainer
           title="Galeria"
-          image="/img/gallery/gallery-image-1.jpg"
+          image="/img/gallery/gallery-image-1.webp"
           description="
             Zapraszamy do obejrzenia naszej galerii zdjęć, która ukazuje wyjątkowy klimat naszej restauracji. 
             To miejsce, gdzie pasja do gotowania spotyka się z pięknem wnętrz i niezapomnianym widokiem na Bałtyk. 
@@ -85,7 +85,15 @@ const GalleryPage = () => {
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
               {photos
                 .slice()
-                .reverse()
+                .sort((a, b) => {
+                  const numA = Number(
+                    a.src.match(/gallery-image-(\d+)\.webp/)?.[1] || 0
+                  )
+                  const numB = Number(
+                    b.src.match(/gallery-image-(\d+)\.webp/)?.[1] || 0
+                  )
+                  return numB - numA
+                })
                 .map((photo, index) => (
                   <Item
                     key={index}

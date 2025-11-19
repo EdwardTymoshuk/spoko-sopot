@@ -39,9 +39,22 @@ export const NAVBAR_ITEMS: NavBarItem[] = [
 ]
 
 export const CAROUSEL_MAIN_IMAGES: CarouselImage[] = [
-  { src: '/img/carousel-1.jpg', srcMobile: '/img/carousel-1-mobile.jpg' },
-  { src: '/img/carousel-2.jpg', srcMobile: '/img/carousel-2-mobile.jpg' },
-  { src: '/img/carousel-3.jpg', srcMobile: '/img/carousel-3-mobile.jpg' },
+  {
+    src: '/img/carousel/carousel-1.jpg',
+    srcMobile: '/img/carousel/carousel-1-mobile.jpg',
+  },
+  {
+    src: '/img/carousel/carousel-2.jpg',
+    srcMobile: '/img/carousel/carousel-2-mobile.jpg',
+  },
+  {
+    src: '/img/carousel/carousel-3.jpg',
+    srcMobile: '/img/carousel/carousel-3-mobile.jpg',
+  },
+  {
+    src: '/img/carousel/carousel-4.jpg',
+    srcMobile: '/img/carousel/carousel-4-mobile.jpg',
+  },
 ]
 
 export const OPINIONS: MongoDBReview[] = [
