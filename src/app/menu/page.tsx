@@ -15,7 +15,7 @@ interface MenuPageImage {
   height: number
 }
 
-const thumbnails = Array.from({ length: 12 }, (_, index) => ({
+const thumbnails = Array.from({ length: 21 }, (_, index) => ({
   src: `/img/menu/menu-winter-2025/menu-page-${index + 1}.webp`,
   thumbnail: `/img/menu/menu-winter-2025/thumb-menu-page-${index + 1}.webp`,
 }))
@@ -89,6 +89,7 @@ const MenuPage = () => {
                     >
                       <img
                         src={page.thumbnail}
+                        loading="lazy"
                         alt={`Menu strona ${index + 1}`}
                         className="w-full h-full object-cover transition-transform duration-300 hover:scale-105"
                       />

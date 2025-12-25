@@ -51,7 +51,7 @@ const MenuItem: React.FC<MenuItemProps> = ({
 				</div>
 			</CardHeader> */}
 
-      <CardContent className={`p-2 border-0 flex-1 text-start`}>
+      <CardContent className={`p-2 border-0 flex-1 text-center`}>
         <h4
           className={`uppercase text-secondary py-2 font-bold ${
             isVertical ? 'text-lg' : 'text-base'
