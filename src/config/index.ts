@@ -55,6 +55,10 @@ export const CAROUSEL_MAIN_IMAGES: CarouselImage[] = [
     src: '/img/carousel/carousel-4.jpg',
     srcMobile: '/img/carousel/carousel-4-mobile.jpg',
   },
+  {
+    src: '/img/carousel/carousel-5.jpg',
+    srcMobile: '/img/carousel/carousel-5-mobile.jpg',
+  },
 ]
 
 export const OPINIONS: MongoDBReview[] = [

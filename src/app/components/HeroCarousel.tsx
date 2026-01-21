@@ -96,7 +96,7 @@ const HeroCarousel = () => {
   if (isLoading) {
     return (
       <div className="h-screen w-full animate-pulse bg-muted flex items-center justify-center">
-        <div className="w-1/2 h-1/2 bg-gray-300/30 rounded-xl" />
+        <div className="w-full h-1/2 bg-gray-300/30 rounded-xl" />
       </div>
     )
   }

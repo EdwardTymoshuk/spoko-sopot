@@ -6,14 +6,12 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from '@/app/components/ui/popover'
-import { Skeleton } from '@/app/components/ui/skeleton'
 import {
   Tooltip,
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
 } from '@/app/components/ui/tooltip'
-import { MenuItemType } from '@/app/types'
 import { useMenu } from '@/context/MenuContext'
 import { cn } from '@/lib/utils'
 import { useRouter } from 'next/navigation'
@@ -21,10 +19,8 @@ import { startTransition, useCallback, useEffect, useState } from 'react'
 import { FaLocationDot } from 'react-icons/fa6'
 import { MdOutlineKeyboardArrowRight } from 'react-icons/md'
 import HeroCarousel from './components/HeroCarousel'
-import LoadingButton from './components/LoadingButton'
 import MainContainer from './components/MainContainer'
 import MaxWidthWrapper from './components/MaxWidthWrapper'
-import MenuItem from './components/MenuItem'
 import Opinions from './components/Opinions'
 import PageContainer from './components/PageContainer'
 import PageSubHeader from './components/PageSubHeader'
@@ -211,7 +207,63 @@ const Home: React.FC = () => {
       <MaxWidthWrapper>
         <Opinions />
 
-        {(() => {
+        <PageSubHeader title="Najbliższe wydarzenie" />
+
+        <PageContainer className="pb-12">
+          <div className="flex flex-col w-full md:flex-row overflow-hidden rounded-2xl border bg-muted/30">
+            {/* LEFT: IMAGE */}
+            <div className="md:w-1/3 bg-secondary/5">
+              <div className="relative w-full h-full flex items-center justify-center overflow-hidden">
+                <img
+                  src="/img/news/valentines-day-2026/valentines-main.png"
+                  alt="Walentynki w Spoko"
+                  className="w-full h-full object-contain select-none"
+                />
+              </div>
+            </div>
+
+            {/* RIGHT: CONTENT */}
+            <div className="md:w-2/3 flex flex-col space-y-4 justify-between p-6">
+              <div className="space-y-6 max-w-xl">
+                <span className="inline-flex items-center gap-1 text-xs font-semibold uppercase tracking-wide text-secondary">
+                  Wydarzenie specjalne
+                </span>
+
+                <h3 className="text-3xl font-semibold leading-tight">
+                  Walentynki w Spoko ;)
+                </h3>
+
+                <p className="text-sm font-medium text-muted-foreground flex items-center gap-2">
+                  <span className="text-zinc-400">📅 14 lutego</span>
+                  <span className="text-zinc-400">•</span>
+                  <span className="text-zinc-400">⏰ 17:00 – 19:00</span>
+                </p>
+
+                <p className="text-sm md:text-base leading-relaxed text-text-secondary">
+                  Zapraszamy na romantyczny wieczór dla dwojga w wyjątkowej
+                  oprawie. Autorskie menu, muzyka na żywo oraz atmosfera
+                  stworzona z myślą o prawdziwej randce.
+                </p>
+              </div>
+
+              <div className="">
+                <Button
+                  size="lg"
+                  className="
+            w-full md:w-auto 
+            bg-primary hover:bg-primary-foreground font-semibold
+            px-8
+          "
+                  onClick={() => router.push('/news')}
+                >
+                  Zobacz szczegóły wydarzenia <MdOutlineKeyboardArrowRight />
+                </Button>
+              </div>
+            </div>
+          </div>
+        </PageContainer>
+
+        {/* {(() => {
           if (loading) {
             // Show skeletons while loading
             return (
@@ -258,7 +310,7 @@ const Home: React.FC = () => {
           <LoadingButton isLoading={isLoading} onClick={navigateToMenu}>
             Sprawdź menu <MdOutlineKeyboardArrowRight />
           </LoadingButton>
-        </PageContainer>
+        </PageContainer> */}
       </MaxWidthWrapper>
     </MainContainer>
   )
