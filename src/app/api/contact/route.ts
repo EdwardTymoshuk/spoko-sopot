@@ -9,7 +9,6 @@ export async function POST(req: Request): Promise<Response> {
 			return new Response(JSON.stringify({ error: 'All fields are required' }), { status: 400 })
 		}
 
-		// Визначаємо тип для опцій транспорту
 		const transportOptions: SMTPTransport.Options = {
 			host: process.env.SMTP_HOST,
 			port: parseInt(process.env.SMTP_PORT || '587', 10),
