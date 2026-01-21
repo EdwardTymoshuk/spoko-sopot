@@ -1,6 +1,5 @@
 'use client'
 
-import DOMPurify from 'dompurify'
 import 'photoswipe/dist/photoswipe.css'
 import { useEffect, useState } from 'react'
 import { IoHeartSharp } from 'react-icons/io5'
@@ -219,7 +218,7 @@ const NewsPage: React.FC = () => {
                     <div
                       className="text-lg"
                       dangerouslySetInnerHTML={{
-                        __html: DOMPurify.sanitize(item.fullDescription),
+                        __html: item.fullDescription,
                       }}
                     />
                   </div>
