@@ -2,11 +2,7 @@ import { MenuProvider } from '@/context/MenuContext'
 import { Analytics } from '@vercel/analytics/react'
 import type { Metadata } from 'next'
 import { Inter, Lato, Nunito, Roboto } from 'next/font/google'
-import Script from 'next/script'
 import { Toaster } from 'sonner'
-import Footer from './components/Footer'
-import Header from './components/Header'
-import ProgressBar from './components/ProgressBar'
 import './globals.css'
 
 require('dotenv').config()
@@ -58,28 +54,10 @@ export default function RootLayout({
   children: React.ReactNode
 }>) {
   return (
-    <html lang="en">
-      <head>
-        <Script
-          strategy="afterInteractive"
-          src="https://www.googletagmanager.com/gtag/js?id=G-6LJXDLVD65"
-        />
-        <Script strategy="afterInteractive" id="gtag-init">
-          {`
-            window.dataLayer = window.dataLayer || [];
-            function gtag(){dataLayer.push(arguments);}
-            gtag('js', new Date());
-            
-            gtag('config', 'G-6LJXDLVD65');
-          `}
-        </Script>
-      </head>
-      <body className={lato.className}>
+    <html lang="pl">
+      <body>
         <MenuProvider>
-          <ProgressBar />
-          <Header />
           {children}
-          <Footer />
           <Toaster position="top-center" richColors />
         </MenuProvider>
         <Analytics />
