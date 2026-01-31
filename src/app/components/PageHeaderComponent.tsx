@@ -1,28 +1,63 @@
-import PageContainer from './PageContainer'
-import { Separator } from './ui/separator'
+interface PageHeaderContainerProps {
+  title: string
+  description: string
+  image: string
+  imageMobile?: string
+}
 
-const PageHeaderContainer = ({ title, description, image, imageMobile }: { title: string, description: string, image: string, imageMobile?: string }) => {
-	return (
-		<PageContainer>
-			<h2 className='text-6xl text-center font-semibold text-text-secondary py-4 px-2 self-center mx-2'>
-				{title}
-			</h2>
-			<Separator className='mb-8 mx-auto w-1/2 bg-primary' />
-			<picture className="relative w-full h-96 mb-8 rounded-lg">
-				<source srcSet={imageMobile} media="(max-width: 768px)" />
-				<img
-					src={image}
-					alt="Responsive page image"
-					className='w-full h-full object-cover rounded-lg'
-				/>
-			</picture>
+/**
+ * PageHeaderContainer
+ * --------------------------------------------------
+ * Full-width hero section with background image,
+ * dark overlay and centered text content.
+ *
+ * - Responsive background (desktop / mobile)
+ * - Dark overlay for better text readability
+ * - Used as page introduction / hero section
+ */
+const PageHeaderContainer = ({
+  title,
+  description,
+  image,
+  imageMobile,
+}: PageHeaderContainerProps) => {
+  return (
+    <section className="relative w-full h-[30vh] min-h-96 mb-8 z-0">
+      {/* Background image */}
+      <div
+        className="absolute inset-0 bg-cover bg-center"
+        style={{
+          backgroundImage: `url(${image})`,
+        }}
+      />
 
-			<span className='flex mx-auto text-base md:text-lg lg:text-xl text-justify text-text-seconadry'>
-				{description}
-			</span>
-			<Separator className='my-8 mx-auto w-1/2 bg-primary' />
-		</PageContainer>
-	)
+      {/* Mobile background override */}
+      {imageMobile && (
+        <div
+          className="absolute inset-0 bg-cover bg-center md:hidden"
+          style={{
+            backgroundImage: `url(${imageMobile})`,
+          }}
+        />
+      )}
+
+      {/* Dark overlay */}
+      <div className="absolute inset-0 bg-black/60" />
+
+      {/* Content */}
+      <div className="relative z-10 flex h-full items-center justify-center px-4">
+        <div className="max-w-4xl text-center text-white">
+          <h1 className="text-4xl md:text-6xl font-semibold mb-6 text-primary">
+            {title}
+          </h1>
+
+          <p className="text-base italic md:text-lg lg:text-xl opacity-90">
+            {description}
+          </p>
+        </div>
+      </div>
+    </section>
+  )
 }
 
 export default PageHeaderContainer
