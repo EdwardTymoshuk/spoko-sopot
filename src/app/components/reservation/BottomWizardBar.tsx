@@ -33,7 +33,7 @@ const BottomWizardBar = () => {
   return (
     <div
       className="
-  sticky bottom-0 z-40 border-t bg-background/95 backdrop-blur
+  z-40 border-t bg-background/95 backdrop-blur
   px-3 pt-2 pb-[calc(env(safe-area-inset-bottom)+0.5rem)]
   md:px-4 md:py-3
 "

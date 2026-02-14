@@ -15,7 +15,7 @@ const WelcomeStep = () => {
   const router = useRouter()
 
   return (
-    <div className="min-h-screen flex flex-col md:flex-row w-full bg-background">
+    <div className="h-[100dvh] md:h-full flex flex-col md:flex-row w-full bg-background overflow-hidden">
       {/* IMAGE */}
       <div className="relative h-[40vh] md:h-auto md:w-2/5">
         <Image

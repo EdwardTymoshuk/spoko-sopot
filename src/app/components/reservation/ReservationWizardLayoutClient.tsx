@@ -16,6 +16,7 @@ const ReservationWizardLayoutClient = ({
 }) => {
   const searchParams = useSearchParams()
   const step = searchParams.get('step')
+  const isWelcomeStep = !step || step === 'welcome'
   const isPackageStep = step === 'package'
   const viewportRef = useRef<HTMLDivElement>(null)
   const contentRef = useRef<HTMLDivElement>(null)
@@ -74,12 +75,15 @@ const ReservationWizardLayoutClient = ({
 
         <div
           ref={viewportRef}
-          className="
+          className={cn(
+            `
     flex-1
     min-h-0
     overflow-y-auto
     overscroll-contain
-  "
+  `,
+            isWelcomeStep && 'overflow-y-hidden'
+          )}
         >
           <MainContainer className="h-full !min-h-0">
             <div
@@ -97,7 +101,7 @@ const ReservationWizardLayoutClient = ({
         </div>
 
         {isWizardStep && (
-          <footer className="shrink-0 sticky bottom-0 z-40">
+          <footer className="shrink-0 z-40">
             <BottomWizardBar />
           </footer>
         )}
