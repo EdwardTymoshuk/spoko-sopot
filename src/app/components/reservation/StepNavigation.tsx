@@ -88,14 +88,11 @@ const StepNavigation = () => {
         </Button>
       </div>
 
-      <p
-        className={cn(
-          'hidden md:block w-full text-xs text-danger text-center min-h-4 transition-opacity',
-          isValid ? 'opacity-0' : 'opacity-100'
-        )}
-      >
-        Uzupełnij wymagane pola, aby przejść dalej.
-      </p>
+      {!isValid && (
+        <p className="hidden md:block w-full text-xs text-danger text-center">
+          Uzupełnij wymagane pola, aby przejść dalej.
+        </p>
+      )}
     </div>
   )
 }

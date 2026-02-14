@@ -38,15 +38,16 @@ const BottomWizardBar = () => {
   md:px-4 md:py-3
 "
     >
-      <div className="mx-auto max-w-screen-2xl flex w-full items-center justify-between gap-2 md:gap-4">
+      <div className="mx-auto max-w-screen-2xl flex w-full items-center justify-between gap-2 md:grid md:grid-cols-[1fr_auto] md:gap-4">
         {/* LEFT – CENA / DROPDOWN */}
-        <Popover open={open} onOpenChange={setOpen}>
-          <PopoverTrigger asChild>
-            <Button
-              variant="default"
-              size="sm"
-              disabled={total === 0}
-              className="
+        <div className="md:justify-self-start">
+          <Popover open={open} onOpenChange={setOpen}>
+            <PopoverTrigger asChild>
+              <Button
+                variant="default"
+                size="sm"
+                disabled={total === 0}
+                className="
     h-10
     w-auto
     max-w-[38vw]
@@ -58,24 +59,24 @@ const BottomWizardBar = () => {
     font-medium
     shadow-sm
   "
-            >
-              <span className="font-semibold">
-                <span className="hidden md:inline">Suma orientacyjna: </span>
-                {total > 0 ? `${total} zł` : '—'}
-              </span>
+              >
+                <span className="font-semibold">
+                  <span className="hidden md:inline">Suma orientacyjna: </span>
+                  {total > 0 ? `${total} zł` : '—'}
+                </span>
 
-              <LiaChevronCircleUpSolid
-                className={cn(
-                  'h-4 w-4 md:h-5 md:w-5 transition-transform duration-300',
-                  open && 'rotate-180'
-                )}
-              />
-            </Button>
-          </PopoverTrigger>
-          <PopoverContent
-            side="top"
-            align="end"
-            className="
+                <LiaChevronCircleUpSolid
+                  className={cn(
+                    'h-4 w-4 md:h-5 md:w-5 transition-transform duration-300',
+                    open && 'rotate-180'
+                  )}
+                />
+              </Button>
+            </PopoverTrigger>
+            <PopoverContent
+              side="top"
+              align="end"
+              className="
 			w-[calc(100vw-2rem)]
 			max-w-[380px]
     max-h-[min(70dvh,560px)]
@@ -101,13 +102,16 @@ const BottomWizardBar = () => {
     data-[state=closed]:translate-y-3
     data-[state=closed]:scale-[0.97]
   "
-          >
-            <ReservationSummaryContent />
-          </PopoverContent>
-        </Popover>
+            >
+              <ReservationSummaryContent />
+            </PopoverContent>
+          </Popover>
+        </div>
 
         {/* RIGHT – NAWIGACJA */}
-        <StepNavigation />
+        <div className="md:justify-self-center">
+          <StepNavigation />
+        </div>
       </div>
     </div>
   )

@@ -42,14 +42,16 @@ const ReservationWizardLayoutClient = ({
     overflow-y-auto
     overscroll-contain
   `,
-            isWelcomeStep ? 'overflow-y-hidden' : 'pb-[7.25rem] md:pb-24'
+            isWelcomeStep ? 'overflow-y-hidden' : 'pb-[6.25rem] md:pb-0'
           )}
         >
           <MainContainer className="h-full !min-h-0">
             <div
               className={cn(
                 'mx-auto w-full md:flex md:justify-center',
-                isWelcomeStep ? 'md:min-h-full md:items-center' : 'md:items-start'
+                isWelcomeStep
+                  ? 'md:min-h-full md:items-center'
+                  : 'md:items-start'
               )}
             >
               {children}
@@ -58,7 +60,7 @@ const ReservationWizardLayoutClient = ({
         </div>
 
         {isWizardStep && (
-          <footer className="fixed inset-x-0 bottom-0 z-40">
+          <footer className="fixed inset-x-0 bottom-0 z-40 md:static md:inset-auto">
             <BottomWizardBar />
           </footer>
         )}

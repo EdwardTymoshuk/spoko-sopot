@@ -5,6 +5,7 @@ import { Card, CardContent } from '@/app/components/ui/card'
 import { CalendarAvailabilityVM } from '@/app/types/reservation'
 import { cn } from '@/lib/utils'
 import { pl } from 'date-fns/locale'
+import { useEffect, useState } from 'react'
 
 type Props = {
   value?: Date
@@ -38,6 +39,18 @@ const getBasePriceForDate = (date: Date) => {
 }
 
 const PriceCalendar = ({ value, onChange, availability }: Props) => {
+  const [isMobile, setIsMobile] = useState(false)
+
+  useEffect(() => {
+    const media = window.matchMedia('(max-width: 767px)')
+    const apply = () => setIsMobile(media.matches)
+
+    apply()
+    media.addEventListener('change', apply)
+
+    return () => media.removeEventListener('change', apply)
+  }, [])
+
   const availabilityMap = new Map(
     availability.map((d) => [d.date.toDateString(), d])
   )
@@ -72,7 +85,7 @@ const PriceCalendar = ({ value, onChange, availability }: Props) => {
           mode="single"
           selected={value}
           onSelect={onChange}
-          showOutsideDays={false}
+          showOutsideDays={!isMobile}
           weekStartsOn={1}
           locale={pl}
           className="
@@ -80,7 +93,7 @@ const PriceCalendar = ({ value, onChange, availability }: Props) => {
             mx-auto
             [--cell-size:2.15rem]
             sm:[--cell-size:2.55rem]
-            md:[--cell-size:3rem]
+            md:[--cell-size:4rem]
           "
           disabled={(date) => {
             const d = availabilityMap.get(date.toDateString())
