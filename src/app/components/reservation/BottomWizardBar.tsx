@@ -38,7 +38,7 @@ const BottomWizardBar = () => {
   md:px-4 md:py-3
 "
     >
-      <div className="mx-auto flex w-full items-center justify-between gap-2 md:gap-4">
+      <div className="mx-auto max-w-screen-2xl flex w-full items-center justify-between gap-2 md:gap-4">
         {/* LEFT – CENA / DROPDOWN */}
         <Popover open={open} onOpenChange={setOpen}>
           <PopoverTrigger asChild>
