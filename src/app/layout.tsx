@@ -1,15 +1,10 @@
 import { MenuProvider } from '@/context/MenuContext'
 import { Analytics } from '@vercel/analytics/react'
 import type { Metadata } from 'next'
-import { Inter, Lato, Nunito, Roboto } from 'next/font/google'
 import { Toaster } from 'sonner'
 import './globals.css'
 
 require('dotenv').config()
-const inter = Inter({ subsets: ['latin'] })
-const roboto = Roboto({ weight: '400', subsets: ['latin'] })
-const lato = Lato({ weight: '400', subsets: ['latin'] })
-const nunito = Nunito({ weight: '400', subsets: ['latin'] })
 
 export const metadata: Metadata = {
   metadataBase: new URL('https://spokosopot.pl'),

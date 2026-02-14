@@ -43,8 +43,8 @@ const PriceCalendar = ({ value, onChange, availability }: Props) => {
   )
 
   return (
-    <Card className="w-full max-w-xl">
-      <CardContent className="p-4 space-y-4">
+    <Card className="w-full max-w-xl mx-auto">
+      <CardContent className="p-3 sm:p-4 space-y-4">
         {/* CALENDAR */}
         <Calendar
           mode="single"
@@ -54,7 +54,9 @@ const PriceCalendar = ({ value, onChange, availability }: Props) => {
           locale={pl}
           className="
             w-full
-            [--cell-size:--spacing(11)]
+            mx-auto
+            [--cell-size:--spacing(9.5)]
+            sm:[--cell-size:--spacing(10.5)]
             md:[--cell-size:--spacing(12)]
           "
           disabled={(date) => {

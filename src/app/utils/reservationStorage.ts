@@ -4,6 +4,9 @@ const STORAGE_KEY = 'reservation_draft'
 
 const DEFAULT_DRAFT: ReservationDraft = {
   adultsCount: 8,
+  childrenUnder3Count: 0,
+  children3to12Count: 0,
+  childrenMenuOption: null,
 }
 
 export const getReservationDraft = (): ReservationDraft => {

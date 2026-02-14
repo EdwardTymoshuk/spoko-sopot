@@ -39,10 +39,7 @@ const BottomWizardBar = () => {
 "
     >
       <div className="mx-auto flex items-center justify-between">
-        {/* LEFT – NAWIGACJA */}
-        <StepNavigation />
-
-        {/* RIGHT – CENA / DROPDOWN */}
+        {/* LEFT – CENA / DROPDOWN */}
         <Popover open={open} onOpenChange={setOpen}>
           <PopoverTrigger asChild>
             <Button
@@ -100,6 +97,9 @@ const BottomWizardBar = () => {
             <ReservationSummaryContent />
           </PopoverContent>
         </Popover>
+
+        {/* RIGHT – NAWIGACJA */}
+        <StepNavigation />
       </div>
     </div>
   )

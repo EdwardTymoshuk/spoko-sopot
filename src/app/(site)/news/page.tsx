@@ -31,9 +31,9 @@ const valentinesEvent: NewsItem = {
   id: 'valentines-2026',
   title: (
     <span className="flex items-center justify-center gap-2">
-      <IoHeartSharp className="text-red-500" />
+      <IoHeartSharp className="text-danger" />
       Wieczór Walentynkowy w Spoko
-      <IoHeartSharp className="text-red-500" />
+      <IoHeartSharp className="text-danger" />
     </span>
   ),
   image: '/img/news/valentines-day-2026/valentines-1.webp',
