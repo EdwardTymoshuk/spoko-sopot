@@ -38,7 +38,7 @@ const BottomWizardBar = () => {
   md:px-4 md:py-3
 "
     >
-      <div className="mx-auto flex w-full flex-col gap-2 md:flex-row md:items-center md:justify-between">
+      <div className="mx-auto flex w-full items-center justify-between gap-2 md:gap-4">
         {/* LEFT – CENA / DROPDOWN */}
         <Popover open={open} onOpenChange={setOpen}>
           <PopoverTrigger asChild>
@@ -47,11 +47,14 @@ const BottomWizardBar = () => {
               size="sm"
               disabled={total === 0}
               className="
-    w-full md:w-auto
+    h-10
+    w-auto
+    max-w-[38vw]
+    shrink-0
     rounded-full
-    px-4 md:px-5
-    gap-2 md:gap-3
-    text-sm md:text-base
+    px-3 md:px-5
+    gap-1.5 md:gap-3
+    text-base md:text-base
     font-medium
     shadow-sm
   "
@@ -63,7 +66,7 @@ const BottomWizardBar = () => {
 
               <LiaChevronCircleUpSolid
                 className={cn(
-                  'h-5 w-5 transition-transform duration-300',
+                  'h-4 w-4 md:h-5 md:w-5 transition-transform duration-300',
                   open && 'rotate-180'
                 )}
               />
