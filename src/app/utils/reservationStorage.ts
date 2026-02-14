@@ -3,10 +3,13 @@ import { ReservationDraft } from '@/app/types/reservation'
 const STORAGE_KEY = 'reservation_draft'
 
 const DEFAULT_DRAFT: ReservationDraft = {
+  eventDate: null,
   adultsCount: 8,
   childrenUnder3Count: 0,
   children3to12Count: 0,
   childrenMenuOption: null,
+  wantsExtension: false,
+  extensionHours: 0,
 }
 
 export const getReservationDraft = (): ReservationDraft => {

@@ -1,17 +1,12 @@
-//src/app/(wizard)/reservation/page.tsx
-
-'use client'
-
-import { STEP_COMPONENTS } from '@/lib/consts'
-import { useSearchParams } from 'next/navigation'
+import { Suspense } from 'react'
+import ReservationWizardClient from '@/app/components/reservation/ReservationWizardClient'
 
 const ReservationWizardPage = () => {
-  const searchParams = useSearchParams()
-  const step = searchParams.get('step') ?? 'welcome'
-
-  const StepComponent = STEP_COMPONENTS[step] ?? STEP_COMPONENTS['welcome']
-
-  return <StepComponent />
+  return (
+    <Suspense fallback={null}>
+      <ReservationWizardClient />
+    </Suspense>
+  )
 }
 
 export default ReservationWizardPage

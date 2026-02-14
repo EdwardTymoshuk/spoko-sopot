@@ -4,9 +4,9 @@ import { Skeleton } from '@/app/components/ui/skeleton'
 import 'photoswipe/dist/photoswipe.css'
 import { useEffect, useState } from 'react'
 import { Gallery, Item } from 'react-photoswipe-gallery'
-import MainContainer from '../components/MainContainer'
-import MaxWidthWrapper from '../components/MaxWidthWrapper'
-import PageHeaderContainer from '../components/PageHeaderComponent'
+import MainContainer from '@/app/components/MainContainer'
+import MaxWidthWrapper from '@/app/components/MaxWidthWrapper'
+import PageHeaderContainer from '@/app/components/PageHeaderComponent'
 
 interface Photo {
   src: string
