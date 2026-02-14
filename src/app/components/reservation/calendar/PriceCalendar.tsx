@@ -44,7 +44,29 @@ const PriceCalendar = ({ value, onChange, availability }: Props) => {
 
   return (
     <Card className="w-full max-w-xl mx-auto">
-      <CardContent className="p-3 sm:p-4 space-y-4">
+      <CardContent className="p-3 sm:p-4 space-y-3">
+        {/* MOBILE – selected day info */}
+        {value && (
+          <div className="md:hidden rounded-lg border p-3">
+            <p className="font-medium">
+              Wybrana data:{' '}
+              <span className="text-sm text-muted-foreground capitalize">
+                {value.toLocaleDateString('pl-PL', {
+                  weekday: 'short',
+                  day: 'numeric',
+                  month: 'long',
+                })}
+              </span>
+            </p>
+            <p className="font-medium">
+              Cena:{' '}
+              <span className={cn(getBasePriceForDate(value).color)}>
+                od {getBasePriceForDate(value).price} zł/os.
+              </span>
+            </p>
+          </div>
+        )}
+
         {/* CALENDAR */}
         <Calendar
           mode="single"
@@ -55,7 +77,7 @@ const PriceCalendar = ({ value, onChange, availability }: Props) => {
           className="
             w-full
             mx-auto
-            [--cell-size:--spacing(9.5)]
+            [--cell-size:--spacing(8.4)]
             sm:[--cell-size:--spacing(10.5)]
             md:[--cell-size:--spacing(12)]
           "
@@ -104,28 +126,6 @@ const PriceCalendar = ({ value, onChange, availability }: Props) => {
             },
           }}
         />
-
-        {/* MOBILE – selected day info */}
-        {value && (
-          <div className="md:hidden rounded-lg border p-3">
-            <p className="font-medium">
-              Wybrana data:{' '}
-              <span className="text-sm text-muted-foreground capitalize">
-                {value.toLocaleDateString('pl-PL', {
-                  weekday: 'short',
-                  day: 'numeric',
-                  month: 'long',
-                })}
-              </span>
-            </p>
-            <p className="font-medium">
-              Cena :{' '}
-              <span className={cn(getBasePriceForDate(value).color)}>
-                od {getBasePriceForDate(value).price} zł/os.
-              </span>
-            </p>
-          </div>
-        )}
       </CardContent>
     </Card>
   )
