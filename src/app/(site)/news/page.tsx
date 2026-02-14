@@ -3,12 +3,17 @@
 import 'photoswipe/dist/photoswipe.css'
 import { useEffect, useState } from 'react'
 import { IoHeartSharp } from 'react-icons/io5'
-import CustomGallery from '../components/CustomGallery'
-import MainContainer from '../components/MainContainer'
-import MaxWidthWrapper from '../components/MaxWidthWrapper'
-import PageHeaderContainer from '../components/PageHeaderComponent'
-import { Button } from '../components/ui/button'
-import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/card'
+import CustomGallery from '@/app/components/CustomGallery'
+import MainContainer from '@/app/components/MainContainer'
+import MaxWidthWrapper from '@/app/components/MaxWidthWrapper'
+import PageHeaderContainer from '@/app/components/PageHeaderComponent'
+import { Button } from '@/app/components/ui/button'
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from '@/app/components/ui/card'
 import {
   Dialog,
   DialogContent,
@@ -16,7 +21,7 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-} from '../components/ui/dialog'
+} from '@/app/components/ui/dialog'
 
 interface NewsItem {
   id: string

@@ -5,8 +5,8 @@ import { Skeleton } from '@/app/components/ui/skeleton'
 import 'photoswipe/dist/photoswipe.css'
 import { useEffect, useState } from 'react'
 import { Gallery, Item } from 'react-photoswipe-gallery'
-import MainContainer from '../components/MainContainer'
-import PageHeaderContainer from '../components/PageHeaderComponent'
+import MainContainer from '@/app/components/MainContainer'
+import PageHeaderContainer from '@/app/components/PageHeaderComponent'
 
 interface MenuPageImage {
   src: string
