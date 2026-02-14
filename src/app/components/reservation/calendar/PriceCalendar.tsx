@@ -77,7 +77,7 @@ const PriceCalendar = ({ value, onChange, availability }: Props) => {
           className="
             w-full
             mx-auto
-            [--cell-size:--spacing(8.4)]
+            [--cell-size:--spacing(7.4)]
             sm:[--cell-size:--spacing(10.5)]
             md:[--cell-size:--spacing(12)]
           "
@@ -96,9 +96,9 @@ const PriceCalendar = ({ value, onChange, availability }: Props) => {
                   {...props}
                   day={day}
                   modifiers={modifiers}
-                  className="flex flex-col gap-1 py-1.5"
+                  className="flex h-full flex-col items-center justify-center md:gap-1 md:py-1.5"
                 >
-                  <span className="text-sm font-medium">
+                  <span className="text-[13px] sm:text-sm font-medium">
                     {day.date.getDate()}
                   </span>
 
