@@ -72,14 +72,15 @@ const PriceCalendar = ({ value, onChange, availability }: Props) => {
           mode="single"
           selected={value}
           onSelect={onChange}
+          showOutsideDays={false}
           weekStartsOn={1}
           locale={pl}
           className="
             w-full
             mx-auto
-            [--cell-size:--spacing(7.4)]
-            sm:[--cell-size:--spacing(10.5)]
-            md:[--cell-size:--spacing(12)]
+            [--cell-size:2.15rem]
+            sm:[--cell-size:2.55rem]
+            md:[--cell-size:3rem]
           "
           disabled={(date) => {
             const d = availabilityMap.get(date.toDateString())

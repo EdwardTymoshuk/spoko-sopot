@@ -7,7 +7,7 @@ import { ReservationDraftProvider } from '@/app/utils/hooks/reservation/Reservat
 import { RESERVATION_STEPS } from '@/lib/consts'
 import { cn } from '@/lib/utils'
 import { useSearchParams } from 'next/navigation'
-import { ReactNode, useEffect, useRef, useState } from 'react'
+import { ReactNode, useRef } from 'react'
 
 const ReservationWizardLayoutClient = ({
   children,
@@ -17,54 +17,14 @@ const ReservationWizardLayoutClient = ({
   const searchParams = useSearchParams()
   const step = searchParams.get('step')
   const isWelcomeStep = !step || step === 'welcome'
-  const isPackageStep = step === 'package'
   const viewportRef = useRef<HTMLDivElement>(null)
-  const contentRef = useRef<HTMLDivElement>(null)
-  const [hasOverflow, setHasOverflow] = useState(false)
 
   const isWizardStep =
     step !== null && RESERVATION_STEPS.some((s) => s.key === step)
 
-  useEffect(() => {
-    const viewport = viewportRef.current
-    const content = contentRef.current
-
-    if (!viewport || !content) return
-
-    const updateOverflow = () => {
-      setHasOverflow(content.scrollHeight > viewport.clientHeight + 1)
-    }
-
-    updateOverflow()
-
-    const observer = new ResizeObserver(updateOverflow)
-    observer.observe(viewport)
-    observer.observe(content)
-
-    const rafId = requestAnimationFrame(updateOverflow)
-
-    return () => {
-      cancelAnimationFrame(rafId)
-      observer.disconnect()
-    }
-  }, [step])
-
-  useEffect(() => {
-    const prevBodyOverflow = document.body.style.overflow
-    const prevHtmlOverflow = document.documentElement.style.overflow
-
-    document.body.style.overflow = 'hidden'
-    document.documentElement.style.overflow = 'hidden'
-
-    return () => {
-      document.body.style.overflow = prevBodyOverflow
-      document.documentElement.style.overflow = prevHtmlOverflow
-    }
-  }, [])
-
   return (
     <ReservationDraftProvider>
-      <div className="h-[100dvh] min-h-[100dvh] flex flex-col bg-background overflow-hidden">
+      <div className="h-[100svh] min-h-[100svh] md:h-screen flex flex-col bg-background overflow-hidden">
         {isWizardStep && (
           <header className="shrink-0 sticky top-0 z-40 bg-secondary border-b">
             <div className="mx-auto px-4 py-4">
@@ -82,17 +42,14 @@ const ReservationWizardLayoutClient = ({
     overflow-y-auto
     overscroll-contain
   `,
-            isWelcomeStep && 'overflow-y-hidden'
+            isWelcomeStep ? 'overflow-y-hidden' : 'pb-[7.25rem] md:pb-24'
           )}
         >
           <MainContainer className="h-full !min-h-0">
             <div
-              ref={contentRef}
               className={cn(
-                'mx-auto w-full md:flex md:justify-center md:min-h-full',
-                hasOverflow || isPackageStep
-                  ? 'md:items-start'
-                  : 'md:items-center'
+                'mx-auto w-full md:flex md:justify-center',
+                isWelcomeStep ? 'md:min-h-full md:items-center' : 'md:items-start'
               )}
             >
               {children}
@@ -101,7 +58,7 @@ const ReservationWizardLayoutClient = ({
         </div>
 
         {isWizardStep && (
-          <footer className="shrink-0 z-40">
+          <footer className="fixed inset-x-0 bottom-0 z-40">
             <BottomWizardBar />
           </footer>
         )}
