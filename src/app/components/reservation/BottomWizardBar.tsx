@@ -33,12 +33,12 @@ const BottomWizardBar = () => {
   return (
     <div
       className="
-  sticky bottom-0 z-40 border-t bg-background
-  px-3 py-2
+  sticky bottom-0 z-40 border-t bg-background/95 backdrop-blur
+  px-3 pt-2 pb-[calc(env(safe-area-inset-bottom)+0.5rem)]
   md:px-4 md:py-3
 "
     >
-      <div className="mx-auto flex items-center justify-between">
+      <div className="mx-auto flex w-full flex-col gap-2 md:flex-row md:items-center md:justify-between">
         {/* LEFT – CENA / DROPDOWN */}
         <Popover open={open} onOpenChange={setOpen}>
           <PopoverTrigger asChild>
@@ -47,6 +47,7 @@ const BottomWizardBar = () => {
               size="sm"
               disabled={total === 0}
               className="
+    w-full md:w-auto
     rounded-full
     px-4 md:px-5
     gap-2 md:gap-3
@@ -74,6 +75,10 @@ const BottomWizardBar = () => {
             className="
 			w-[calc(100vw-2rem)]
 			max-w-[380px]
+    max-h-[min(70dvh,560px)]
+    md:max-h-[min(80dvh,680px)]
+    overflow-y-auto
+    overscroll-contain
     rounded-2xl
     p-6
     shadow-xl

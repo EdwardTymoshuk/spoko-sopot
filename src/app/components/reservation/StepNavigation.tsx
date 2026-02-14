@@ -38,29 +38,30 @@ const StepNavigation = () => {
   }
 
   return (
-    <div className="flex flex-col items-center gap-2">
+    <div className="flex w-full flex-col items-center gap-2 md:w-auto">
       {/* MOBILE */}
-      <div className="flex items-center gap-2 md:hidden">
+      <div className="flex w-full items-center gap-2 md:hidden">
         <Button
           onClick={goBack}
           disabled={currentIndex === 0}
-          size="icon"
-          variant="ghost"
+          variant="outline"
+          className="h-10 flex-1 justify-center gap-1 font-medium"
         >
-          <BiSolidChevronLeft className="h-5 w-5 text-primary" />
+          <BiSolidChevronLeft className="h-4 w-4" />
+          Wstecz
         </Button>
 
-        <span className="text-sm text-muted-foreground font-normal tabular-nums">
+        <span className="min-w-12 text-center text-sm text-muted-foreground font-normal tabular-nums">
           {currentIndex + 1}/{totalSteps}
         </span>
 
         <Button
           onClick={goNext}
           disabled={currentIndex === totalSteps - 1 || !isValid}
-          size="icon"
-          variant="ghost"
+          className="h-10 flex-1 justify-center gap-1 font-medium"
         >
-          <BiSolidChevronRight className="h-5 w-5 text-primary" />
+          Dalej
+          <BiSolidChevronRight className="h-4 w-4" />
         </Button>
       </div>
 
@@ -89,7 +90,7 @@ const StepNavigation = () => {
 
       <p
         className={cn(
-          'text-xs text-danger text-center min-h-4 transition-opacity',
+          'w-full text-xs text-danger text-center min-h-4 transition-opacity',
           isValid ? 'opacity-0' : 'opacity-100'
         )}
       >

@@ -48,9 +48,22 @@ const ReservationWizardLayoutClient = ({
     }
   }, [step])
 
+  useEffect(() => {
+    const prevBodyOverflow = document.body.style.overflow
+    const prevHtmlOverflow = document.documentElement.style.overflow
+
+    document.body.style.overflow = 'hidden'
+    document.documentElement.style.overflow = 'hidden'
+
+    return () => {
+      document.body.style.overflow = prevBodyOverflow
+      document.documentElement.style.overflow = prevHtmlOverflow
+    }
+  }, [])
+
   return (
     <ReservationDraftProvider>
-      <div className="h-screen flex flex-col bg-background overflow-hidden">
+      <div className="h-[100dvh] min-h-[100dvh] flex flex-col bg-background overflow-hidden">
         {isWizardStep && (
           <header className="shrink-0 sticky top-0 z-40 bg-secondary border-b">
             <div className="mx-auto px-4 py-4">
@@ -65,6 +78,7 @@ const ReservationWizardLayoutClient = ({
     flex-1
     min-h-0
     overflow-y-auto
+    overscroll-contain
   "
         >
           <MainContainer className="h-full !min-h-0">
