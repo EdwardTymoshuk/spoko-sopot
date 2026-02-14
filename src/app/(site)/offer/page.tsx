@@ -6,8 +6,7 @@ import PageHeaderContainer from '@/app/components/PageHeaderComponent'
 import { Button } from '@/app/components/ui/button'
 import { Separator } from '@/app/components/ui/separator'
 import Image from 'next/image'
-import Link from 'next/link'
-import { useRouter } from 'next/navigation'
+import { FiMail, FiPhoneCall } from 'react-icons/fi'
 import { MdOutlineKeyboardArrowRight } from 'react-icons/md'
 
 /**
@@ -17,8 +16,6 @@ import { MdOutlineKeyboardArrowRight } from 'react-icons/md'
  * Focused on atmosphere, clarity and premium restaurant experience.
  */
 const ReservationLandingPage = () => {
-  const router = useRouter()
-
   return (
     <MainContainer className="pt-20 pb-28">
       {/* HERO */}
@@ -114,25 +111,56 @@ const ReservationLandingPage = () => {
               Zaplanuj swoje przyjęcie
             </h2>
 
-            <p className="text-zinc-400 leading-relaxed text-center md:text-start">
-              Odpowiedz na kilka prostych pytań. Na tej podstawie przygotujemy
-              propozycję idealnie dopasowaną do Twojego wydarzenia.
-            </p>
-            <div className="flex w-full items-center justify-center md:justify-start">
-              <Link
-                href="/reservation"
-                target="_blank"
-                rel="noopener noreferrer"
-              >
+            <div className="space-y-4">
+              <p className="text-zinc-400 leading-relaxed text-center md:text-start">
+                Skontaktuj się z nami telefonicznie lub mailowo, a przygotujemy
+                propozycję menu i przebiegu wydarzenia dopasowaną do liczby
+                gości oraz charakteru przyjęcia.
+              </p>
+
+              <div className="flex flex-col md:flex-row gap-3">
                 <Button
+                  asChild
                   size="lg"
-                  className="py-6 px-4 text-lg flex items-center w-fit gap-2"
+                  className="w-full md:w-auto gap-2 font-semibold"
                 >
-                  Przejdź do planowania
-                  <MdOutlineKeyboardArrowRight className="w-5 h-5" />
+                  <a href="tel:+48530659666">
+                    <FiPhoneCall className="h-4 w-4" />
+                    Zadzwoń: 530 659 666
+                  </a>
                 </Button>
-              </Link>
+
+                <Button
+                  asChild
+                  size="lg"
+                  variant="outline"
+                  className="w-full md:w-auto gap-2 font-semibold"
+                >
+                  <a href="mailto:info@spokosopot.pl">
+                    <FiMail className="h-4 w-4" />
+                    Napisz: info@spokosopot.pl
+                  </a>
+                </Button>
+              </div>
             </div>
+
+            {false && (
+              <div className="flex w-full items-center justify-center md:justify-start">
+                <a
+                  href="/reservation"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  <Button
+                    size="lg"
+                    className="py-6 px-4 text-lg flex items-center w-fit gap-2"
+                  >
+                    Przejdź do planowania
+                    <MdOutlineKeyboardArrowRight className="w-5 h-5" />
+                  </Button>
+                </a>
+              </div>
+            )}
           </div>
         </section>
       </MaxWidthWrapper>
