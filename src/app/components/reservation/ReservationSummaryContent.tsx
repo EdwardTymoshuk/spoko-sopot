@@ -3,7 +3,13 @@
 import { Separator } from '@/app/components/ui/separator'
 import { useReservationDraft } from '@/app/utils/hooks/reservation/ReservationDraftContext'
 import { useReservationPricing } from '@/app/utils/hooks/reservation/useReservationPricing'
-import { COLD_PLATE_SALADS, COLD_PLATE_SETS, PACKAGES } from '@/lib/consts'
+import {
+  COLD_PLATE_SALADS,
+  COLD_PLATE_SETS,
+  PACKAGES,
+  PREMIUM_MAIN_PLATTERS,
+  PREMIUM_MAIN_SIDE_OPTIONS,
+} from '@/lib/consts'
 
 const ReservationSummaryContent = () => {
   const { draft } = useReservationDraft()
@@ -12,6 +18,14 @@ const ReservationSummaryContent = () => {
       ? 'jak dorośli (50% pakietu)'
       : draft.childrenMenuOption === 'kids_menu'
       ? 'menu dziecięce'
+      : null
+  const cakeOptionLabel =
+    draft.cakeOption === 'own_cake'
+      ? 'Przynoszę własny tort'
+      : draft.cakeOption === 'need_bakery_contact'
+      ? 'Proszę o kontakt do cukierni (-5% na hasło SPOKO)'
+      : draft.cakeOption === 'skip'
+      ? 'Pomijam etap tortu'
       : null
 
   const {
@@ -23,6 +37,9 @@ const ReservationSummaryContent = () => {
     serviceFee,
     total,
     coldPlateTotal,
+    premiumMainTotal,
+    premiumMainSidesTotal,
+    cakeServiceTotal,
   } = useReservationPricing(draft)
 
   const selectedPackage = PACKAGES.find((p) => p.type === draft.packageType)
@@ -31,6 +48,12 @@ const ReservationSummaryContent = () => {
   )
   const selectedColdPlateSalads = COLD_PLATE_SALADS.filter(
     (salad) => (draft.coldPlateSaladSelections?.[salad.id] ?? 0) > 0
+  )
+  const selectedPremiumMainPlatters = PREMIUM_MAIN_PLATTERS.filter(
+    (platter) => (draft.premiumMainSelections?.[platter.id] ?? 0) > 0
+  )
+  const selectedPremiumMainSides = PREMIUM_MAIN_SIDE_OPTIONS.flatMap((section) =>
+    section.options.filter((option) => (draft.premiumMainSideSelections?.[option.id] ?? 0) > 0)
   )
 
   return (
@@ -69,6 +92,12 @@ const ReservationSummaryContent = () => {
           <div className="flex justify-between">
             <span>Opcja menu dzieci 3-12</span>
             <span className="font-medium">{childrenMenuLabel}</span>
+          </div>
+        )}
+        {cakeOptionLabel && (
+          <div className="flex justify-between">
+            <span>Tort</span>
+            <span className="font-medium">{cakeOptionLabel}</span>
           </div>
         )}
 
@@ -137,6 +166,40 @@ const ReservationSummaryContent = () => {
           </>
         )}
 
+        {/* PÓŁMISKI PREMIUM */}
+        {(premiumMainTotal > 0 || premiumMainSidesTotal > 0) && (
+          <>
+            <div className="flex justify-between">
+              <span>Półmiski Premium</span>
+              <span className="font-medium">
+                +{premiumMainTotal + premiumMainSidesTotal} zł
+              </span>
+            </div>
+
+            {selectedPremiumMainPlatters.map((platter) => (
+              <div
+                key={platter.id}
+                className="flex justify-between text-xs text-muted-foreground"
+              >
+                <span>{platter.title}</span>
+                <span>x{draft.premiumMainSelections?.[platter.id] ?? 0}</span>
+              </div>
+            ))}
+
+            {selectedPremiumMainSides.map((option) => (
+              <div
+                key={option.id}
+                className="flex justify-between text-xs text-muted-foreground"
+              >
+                <span>{option.label}</span>
+                <span>
+                  x{draft.premiumMainSideSelections?.[option.id] ?? 0} (+{(draft.premiumMainSideSelections?.[option.id] ?? 0) * option.price} zł)
+                </span>
+              </div>
+            ))}
+          </>
+        )}
+
         {/* PRZEDŁUŻENIE */}
         {extensionTotal > 0 && (
           <div className="flex justify-between">
@@ -150,6 +213,13 @@ const ReservationSummaryContent = () => {
           <div className="flex justify-between text-orange-600">
             <span>Serwis 10%</span>
             <span className="font-medium">+{serviceFee} zł</span>
+          </div>
+        )}
+
+        {cakeServiceTotal > 0 && (
+          <div className="flex justify-between">
+            <span>Opłata talerzykowa za tort</span>
+            <span className="font-medium">+{cakeServiceTotal} zł</span>
           </div>
         )}
       </div>
