@@ -5,6 +5,7 @@ import { RESERVATION_STEPS } from '@/lib/consts'
 export type PackageType = 'silver' | 'gold' | 'platinum'
 export type SoupChoice = 'tomato_cream' | 'chicken_broth'
 export type ChildrenMenuOption = 'half_package' | 'kids_menu'
+export type CakeOption = 'own_cake' | 'need_bakery_contact' | 'skip'
 
 // Cold plate – appetizer sets served per 6 guests
 export type ColdPlateSelection = {
@@ -13,6 +14,14 @@ export type ColdPlateSelection = {
 
 export type ColdPlateSaladSelection = {
   [saladId: string]: number
+}
+
+export type PremiumMainSelection = {
+  [platterId: string]: number
+}
+
+export type PremiumMainSideSelection = {
+  [sideId: string]: number
 }
 
 // src/app/types/reservation.ts
@@ -43,6 +52,10 @@ export interface ReservationDraft {
   // Selected cold plate sets (setId -> quantity)
   coldPlateSelections?: ColdPlateSelection
   coldPlateSaladSelections?: ColdPlateSaladSelection
+  premiumMainSelections?: PremiumMainSelection
+  premiumMainSideSelections?: PremiumMainSideSelection
+
+  cakeOption?: CakeOption | null
 }
 
 export type ServingStyle = 'plated' | 'sharing' | 'combo'

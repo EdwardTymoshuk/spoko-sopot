@@ -8,6 +8,7 @@ const DEFAULT_DRAFT: ReservationDraft = {
   childrenUnder3Count: 0,
   children3to12Count: 0,
   childrenMenuOption: null,
+  cakeOption: null,
   wantsExtension: false,
   extensionHours: 0,
 }

@@ -1,8 +1,10 @@
 //src/lib/consts.ts
 
 import ColdPlateStep from '@/app/components/reservation/steps/ColdPlateStep'
+import CakeStep from '@/app/components/reservation/steps/CakeStep'
 import DateGuestsStep from '@/app/components/reservation/steps/DateGuestsStep'
 import PackageStep from '@/app/components/reservation/steps/PackagesStep/PackageStep'
+import PremiumMainStep from '@/app/components/reservation/steps/PremiumMainStep'
 import ServingStep from '@/app/components/reservation/steps/ServingStep'
 import WelcomeStep from '@/app/components/reservation/steps/WelcomeStep'
 import {
@@ -18,6 +20,8 @@ export const STEP_COMPONENTS: Record<string, React.FC> = {
   package: PackageStep,
   serving: ServingStep,
   'cold-plate': ColdPlateStep,
+  'premium-main': PremiumMainStep,
+  cake: CakeStep,
 }
 
 export const RESERVATION_STEPS = [
@@ -74,6 +78,16 @@ export const RESERVATION_STEPS = [
 
       return totalSelected >= minSets
     },
+  },
+  {
+    key: 'premium-main',
+    label: 'Półmiski Premium',
+    isValid: () => true,
+  },
+  {
+    key: 'cake',
+    label: 'Tort',
+    isValid: (draft: ReservationDraft) => Boolean(draft.cakeOption),
   },
 ] as const
 
@@ -283,6 +297,26 @@ export interface ColdPlateSalad {
   price: number
 }
 
+export interface PremiumMainPlatter {
+  id: string
+  title: string
+  description: string[]
+  sauces?: string[]
+  price: number
+}
+
+export interface PremiumMainSideOption {
+  id: string
+  label: string
+  price: number
+}
+
+export interface PremiumMainSideSection {
+  id: string
+  title: string
+  options: PremiumMainSideOption[]
+}
+
 export const COLD_PLATE_SETS: ColdPlateSet[] = [
   {
     id: 'bruschetta',
@@ -417,5 +451,113 @@ export const COLD_PLATE_SALADS: ColdPlateSalad[] = [
     description:
       'Minimalne zamówienie: 2 miski (2 porcje). Wędzona pierś z kurczaka, jajko gotowane, ser gouda, pieczarki marynowane, piklowany ogórek, majonez.',
     price: 85,
+  },
+]
+
+export const PREMIUM_MAIN_PLATTERS: PremiumMainPlatter[] = [
+  {
+    id: 'meat_1',
+    title: '🍖 Półmisek Mięs Nr 1',
+    description: [
+      'Soczyste żeberka wieprzowe',
+      'Grillowana karkówka',
+      'Roladka z kurczaka z wędzonym serem i suszonymi pomidorami, owinięta boczkiem',
+    ],
+    sauces: ['spicy mayo', 'salsa mexicana'],
+    price: 399,
+  },
+  {
+    id: 'meat_2',
+    title: '🍗 Półmisek Mięs Nr 2',
+    description: [
+      'Żeberka wieprzowe',
+      'Grillowana karkówka',
+      'Panierowane polędwiczki z kurczaka',
+    ],
+    sauces: ['spicy mayo', 'ketchup'],
+    price: 379,
+  },
+  {
+    id: 'fish',
+    title: '🐟 Półmisek Ryb',
+    description: [
+      'Pieczony dorsz i pieczony łosoś – po 75 g na osobę',
+      'Podawane na ciepło',
+    ],
+    sauces: ['tatarski', 'tzatziki'],
+    price: 429,
+  },
+  {
+    id: 'seafood',
+    title: '🌊 Półmisek Owoców Morza w Sosie',
+    description: [
+      'Krewetki, mule czarne i vongole, ośmiorniczki baby oraz raki',
+      'Duszone w autorskim winno-maślanym sosie z kefirem',
+      'Podawane z grillowaną bagietką i cytryną',
+    ],
+    price: 499,
+  },
+  {
+    id: 'mix',
+    title: '😈 Półmisek Rozpusty',
+    description: [
+      'Panierowany dorsz, krążki kalmara i krewetki butterfly',
+      'Podawane na frytkach belgijskich',
+    ],
+    sauces: ['tatarski', 'ketchup'],
+    price: 459,
+  },
+]
+
+export const PREMIUM_MAIN_SIDE_OPTIONS: PremiumMainSideSection[] = [
+  {
+    id: 'starchy',
+    title: '🥔 Dodatki skrobiowe',
+    options: [
+      {
+        id: 'baked_potatoes',
+        label: 'Ziemniaczki pieczone z sosem tatarskim',
+        price: 79,
+      },
+      {
+        id: 'mashed_parmesan',
+        label: 'Puree ziemniaczane z parmezanem',
+        price: 75,
+      },
+      {
+        id: 'fries',
+        label: 'Frytki belgijskie z ketchupem',
+        price: 69,
+      },
+      {
+        id: 'potato_gratin',
+        label: 'Gratin ziemniaczany zapiekany z mięsnym serem',
+        price: 89,
+      },
+      {
+        id: 'boiled_potatoes_bacon',
+        label: 'Ziemniaki z zasmażką z boczku, cebuli, pieczarek i koperku',
+        price: 79,
+      },
+    ],
+  },
+  {
+    id: 'hot_veggies',
+    title: '🥦 Dodatki warzywne na ciepło',
+    options: [
+      { id: 'grilled_veggies', label: 'Warzywa grillowane', price: 89 },
+      { id: 'veggies_butter', label: 'Bukiet warzyw na masełku', price: 79 },
+    ],
+  },
+  {
+    id: 'salads',
+    title: '🥗 Surówki',
+    options: [
+      { id: 'coleslaw', label: 'Coleslaw', price: 49 },
+      { id: 'carrot_apple', label: 'Marchewka z jabłkiem', price: 49 },
+      { id: 'beetroot', label: 'Buraczki', price: 49 },
+      { id: 'sauerkraut', label: 'Surówka z kiszonej kapusty', price: 49 },
+      { id: 'fresh_veggie_salad', label: 'Sałatka ze świeżych warzyw', price: 55 },
+    ],
   },
 ]

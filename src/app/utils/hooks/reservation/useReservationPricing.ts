@@ -1,14 +1,22 @@
 import type { ReservationDraft } from '@/app/types/reservation'
-import { COLD_PLATE_SALADS, COLD_PLATE_SETS, PACKAGES } from '@/lib/consts'
+import {
+  COLD_PLATE_SALADS,
+  COLD_PLATE_SETS,
+  PACKAGES,
+  PREMIUM_MAIN_PLATTERS,
+  PREMIUM_MAIN_SIDE_OPTIONS,
+} from '@/lib/consts'
 import { useMemo } from 'react'
 
 const SERVICE_THRESHOLD = 8
 const SERVICE_RATE = 0.1
 const CHILDREN_HALF_PACKAGE_RATE = 0.5
+const OWN_CAKE_FEE_PER_PERSON = 10
 
 export const useReservationPricing = (draft: ReservationDraft) => {
   const adults = draft.adultsCount ?? 0
   const children3to12 = draft.children3to12Count ?? 0
+  const childrenUnder3 = draft.childrenUnder3Count ?? 0
 
   const coldPlateTotal = useMemo(() => {
     const setsTotal = COLD_PLATE_SETS.reduce((sum, set) => {
@@ -22,6 +30,24 @@ export const useReservationPricing = (draft: ReservationDraft) => {
     return setsTotal + saladsTotal
   }, [draft.coldPlateSelections, draft.coldPlateSaladSelections])
 
+  const premiumMainTotal = useMemo(() => {
+    return PREMIUM_MAIN_PLATTERS.reduce((sum, platter) => {
+      return sum + (draft.premiumMainSelections?.[platter.id] ?? 0) * platter.price
+    }, 0)
+  }, [draft.premiumMainSelections])
+
+  const premiumMainSidesTotal = useMemo(() => {
+    return PREMIUM_MAIN_SIDE_OPTIONS.reduce((sum, section) => {
+      const sectionSum = section.options.reduce((acc, option) => {
+        return (
+          acc +
+          (draft.premiumMainSideSelections?.[option.id] ?? 0) * option.price
+        )
+      }, 0)
+      return sum + sectionSum
+    }, 0)
+  }, [draft.premiumMainSideSelections])
+
   const selectedPackage = PACKAGES.find((p) => p.type === draft.packageType)
 
   if (!selectedPackage || adults === 0) {
@@ -34,6 +60,9 @@ export const useReservationPricing = (draft: ReservationDraft) => {
       serviceFee: 0,
       total: 0,
       coldPlateTotal: 0,
+      premiumMainTotal: 0,
+      premiumMainSidesTotal: 0,
+      cakeServiceTotal: 0,
     }
   }
 
@@ -73,7 +102,18 @@ export const useReservationPricing = (draft: ReservationDraft) => {
   const serviceFee =
     adults >= SERVICE_THRESHOLD ? Math.round(subtotal * SERVICE_RATE) : 0
 
-  const total = subtotal + serviceFee + coldPlateTotal
+  const cakeServiceTotal =
+    draft.cakeOption === 'own_cake'
+      ? (adults + children3to12 + childrenUnder3) * OWN_CAKE_FEE_PER_PERSON
+      : 0
+
+  const total =
+    subtotal +
+    serviceFee +
+    coldPlateTotal +
+    premiumMainTotal +
+    premiumMainSidesTotal +
+    cakeServiceTotal
 
   return {
     pricePerPerson,
@@ -84,5 +124,8 @@ export const useReservationPricing = (draft: ReservationDraft) => {
     serviceFee,
     total,
     coldPlateTotal,
+    premiumMainTotal,
+    premiumMainSidesTotal,
+    cakeServiceTotal,
   }
 }
