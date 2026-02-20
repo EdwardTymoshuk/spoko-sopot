@@ -3,9 +3,9 @@
 import ColdPlateStep from '@/app/components/reservation/steps/ColdPlateStep'
 import CakeStep from '@/app/components/reservation/steps/CakeStep'
 import DateGuestsStep from '@/app/components/reservation/steps/DateGuestsStep'
+import DessertsStep from '@/app/components/reservation/steps/DessertsStep'
 import PackageStep from '@/app/components/reservation/steps/PackagesStep/PackageStep'
 import PremiumMainStep from '@/app/components/reservation/steps/PremiumMainStep'
-import ServingStep from '@/app/components/reservation/steps/ServingStep'
 import WelcomeStep from '@/app/components/reservation/steps/WelcomeStep'
 import {
   PackageType,
@@ -18,10 +18,10 @@ export const STEP_COMPONENTS: Record<string, React.FC> = {
   welcome: WelcomeStep,
   'date-guests': DateGuestsStep,
   package: PackageStep,
-  serving: ServingStep,
   'cold-plate': ColdPlateStep,
   'premium-main': PremiumMainStep,
   cake: CakeStep,
+  desserts: DessertsStep,
 }
 
 export const RESERVATION_STEPS = [
@@ -31,7 +31,7 @@ export const RESERVATION_STEPS = [
     isValid: (draft: ReservationDraft) =>
       Boolean(draft.eventDate) &&
       typeof draft.adultsCount === 'number' &&
-      draft.adultsCount >= 8 &&
+      draft.adultsCount >= 12 &&
       ((draft.children3to12Count ?? 0) === 0 || Boolean(draft.childrenMenuOption)),
   },
   {
@@ -41,18 +41,10 @@ export const RESERVATION_STEPS = [
       if (!draft.packageType) return false
 
       if (draft.packageType === 'platinum') {
-        if (!draft.wantsSoup) return true
-        return Boolean(draft.soupChoice)
+        if (draft.wantsSoup && !draft.soupChoice) return false
+      } else if (!draft.soupChoice) {
+        return false
       }
-
-      return Boolean(draft.soupChoice)
-    },
-  },
-  {
-    key: 'serving',
-    label: 'Sposób podania',
-    isValid: (draft: ReservationDraft) => {
-      if (!draft.servingStyle) return false
 
       if (draft.specialDiets?.includes('other')) {
         return Boolean(
@@ -68,26 +60,66 @@ export const RESERVATION_STEPS = [
     label: 'Zimna płyta',
     isValid: (draft: ReservationDraft) => {
       const guests = getColdPlateEquivalentGuests(draft)
-      if (guests < 1) return false
+      if (guests < 1) return true
 
       const minSets = Math.ceil(guests / 6)
+      const setValues = Object.values(draft.coldPlateSelections ?? {})
+      const saladValues = Object.values(draft.coldPlateSaladSelections ?? {})
 
-      const totalSelected = Object.values(
-        draft.coldPlateSelections ?? {}
-      ).reduce((sum, val) => sum + val, 0)
+      const hasAnySelection = [...setValues, ...saladValues].some(
+        (value) => value > 0
+      )
 
-      return totalSelected >= minSets
+      if (!hasAnySelection) return true
+
+      const isAnyBelowMin = [...setValues, ...saladValues].some(
+        (value) => value > 0 && value < minSets
+      )
+
+      return !isAnyBelowMin
     },
   },
   {
     key: 'premium-main',
     label: 'Półmiski Premium',
-    isValid: () => true,
+    isValid: (draft: ReservationDraft) => {
+      const guests = getColdPlateEquivalentGuests(draft)
+      if (guests < 1) return true
+
+      const minPlatters = Math.ceil(guests / 6)
+      const selectionValues = Object.values(draft.premiumMainSelections ?? {})
+
+      // Same as cold plate: optional step, but if platters are selected
+      // the minimum number of platters must be met.
+      const hasAnySelection = selectionValues.some((value) => value > 0)
+      if (!hasAnySelection) return true
+
+      const isAnyBelowMin = selectionValues.some(
+        (value) => value > 0 && value < minPlatters
+      )
+      return !isAnyBelowMin
+    },
   },
   {
     key: 'cake',
     label: 'Tort',
     isValid: (draft: ReservationDraft) => Boolean(draft.cakeOption),
+  },
+  {
+    key: 'desserts',
+    label: 'Desery',
+    isValid: (draft: ReservationDraft) => {
+      const selections = draft.dessertSelections ?? {}
+
+      for (const option of DESSERT_OPTIONS) {
+        const qty = selections[option.id] ?? 0
+        if (qty > 0 && option.minQty && qty < option.minQty) {
+          return false
+        }
+      }
+
+      return true
+    },
   },
 ] as const
 
@@ -315,6 +347,16 @@ export interface PremiumMainSideSection {
   id: string
   title: string
   options: PremiumMainSideOption[]
+}
+
+export interface DessertOption {
+  id: string
+  title: string
+  description: string
+  category: 'cake_platters' | 'mini_desserts'
+  unitLabel: string
+  minQty?: number
+  price: number
 }
 
 export const COLD_PLATE_SETS: ColdPlateSet[] = [
@@ -559,5 +601,59 @@ export const PREMIUM_MAIN_SIDE_OPTIONS: PremiumMainSideSection[] = [
       { id: 'sauerkraut', label: 'Surówka z kiszonej kapusty', price: 49 },
       { id: 'fresh_veggie_salad', label: 'Sałatka ze świeżych warzyw', price: 55 },
     ],
+  },
+]
+
+export const DESSERT_OPTIONS: DessertOption[] = [
+  {
+    id: 'sernik_platter',
+    title: 'Sernik',
+    description: 'Patery ciast - autorskie wypieki naszej kuchni.',
+    category: 'cake_platters',
+    unitLabel: 'patera',
+    price: 169,
+  },
+  {
+    id: 'szarlotka_platter',
+    title: 'Szarlotka',
+    description: 'Patery ciast - autorskie wypieki naszej kuchni.',
+    category: 'cake_platters',
+    unitLabel: 'patera',
+    price: 159,
+  },
+  {
+    id: 'brownie_platter',
+    title: 'Brownie',
+    description: 'Patery ciast - autorskie wypieki naszej kuchni.',
+    category: 'cake_platters',
+    unitLabel: 'patera',
+    price: 165,
+  },
+  {
+    id: 'mini_tiramisu',
+    title: '☕ Set mini tiramisu',
+    description: 'Mini desery - idealne na dłuższe przyjęcia.',
+    category: 'mini_desserts',
+    unitLabel: 'szt.',
+    minQty: 20,
+    price: 16,
+  },
+  {
+    id: 'mini_panna_cotta',
+    title: '🍮 Set mini panna cotta',
+    description: 'Mini desery - idealne na dłuższe przyjęcia.',
+    category: 'mini_desserts',
+    unitLabel: 'szt.',
+    minQty: 20,
+    price: 15,
+  },
+  {
+    id: 'mini_chia',
+    title: '🌱 Set mini pudding chia',
+    description: 'Mini desery - idealne na dłuższe przyjęcia.',
+    category: 'mini_desserts',
+    unitLabel: 'szt.',
+    minQty: 20,
+    price: 15,
   },
 ]

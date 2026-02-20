@@ -12,11 +12,25 @@ import { cn } from '@/lib/utils'
 import { useMemo } from 'react'
 import { FiMinus, FiPlus } from 'react-icons/fi'
 
+const pluralize = (
+  value: number,
+  forms: [singular: string, paucal: string, plural: string]
+) => {
+  const mod10 = value % 10
+  const mod100 = value % 100
+  if (value === 1) return forms[0]
+  if (mod10 >= 2 && mod10 <= 4 && !(mod100 >= 12 && mod100 <= 14)) {
+    return forms[1]
+  }
+  return forms[2]
+}
+
 const ColdPlateStep = () => {
   const { draft, updateDraft } = useReservationDraft()
 
+  const adults = draft.adultsCount ?? 0
+  const children3to12 = draft.children3to12Count ?? 0
   const equivalentGuests = getColdPlateEquivalentGuests(draft)
-  const displayGuests = Math.ceil(equivalentGuests)
   const minSets = Math.ceil(equivalentGuests / 6)
 
   const selections = useMemo(() => draft.coldPlateSelections ?? {}, [
@@ -29,6 +43,9 @@ const ColdPlateStep = () => {
   const totalSelected = useMemo(() => {
     return Object.values(selections).reduce((a, b) => a + b, 0)
   }, [selections])
+  const totalSelectedSalads = useMemo(() => {
+    return Object.values(saladSelections).reduce((a, b) => a + b, 0)
+  }, [saladSelections])
 
   const totalPrice = useMemo(() => {
     const setsTotal = COLD_PLATE_SETS.reduce((sum, set) => {
@@ -42,7 +59,10 @@ const ColdPlateStep = () => {
     return setsTotal + saladsTotal
   }, [saladSelections, selections])
 
-  const isInvalid = totalSelected < minSets
+  const incrementWithMin = (current: number) =>
+    current === 0 ? minSets : current + 1
+  const decrementWithMin = (current: number) =>
+    current <= minSets ? 0 : current - 1
 
   const updateSet = (id: string, value: number) => {
     updateDraft('coldPlateSelections', {
@@ -57,29 +77,38 @@ const ColdPlateStep = () => {
       [id]: Math.max(0, value),
     })
   }
+  const hasAnySelection = totalSelected + totalSelectedSalads > 0
+  const isSetBelowMin = Object.values(selections).some(
+    (value) => value > 0 && value < minSets
+  )
+  const isSaladBelowMin = Object.values(saladSelections).some(
+    (value) => value > 0 && value < minSets
+  )
+  const isMinNotReached = hasAnySelection && (isSetBelowMin || isSaladBelowMin)
+  const setWord = pluralize(minSets, ['zestaw', 'zestawy', 'zestawów'])
 
   return (
-    <div className="max-w-7xl mx-auto space-y-16 p-6">
-      {/* HEADER */}
-      <div className="text-center space-y-6">
-        <h2 className="text-4xl font-semibold">
-          Chcesz, aby Twoje przyjęcie było jeszcze bardziej wyjątkowe?
-        </h2>
-
-        <p className="text-lg text-muted-foreground max-w-3xl mx-auto">
-          Poniżej znajdziesz propozycje dodatkowych przystawek na tzw. zimną
-          płytę – idealne do dzielenia się przy stole.
+    <div className="w-full max-w-7xl mx-auto space-y-6 p-4 md:p-6">
+      <div className="space-y-2">
+        <h2 className="text-2xl md:text-3xl font-semibold">Zimna płyta</h2>
+        <p className="text-sm md:text-base text-muted-foreground">
+          Dodatkowe przystawki i sałatki do podania na stole.
         </p>
 
-        <div className="space-y-2">
+        <div className="space-y-1">
           <p className="text-muted-foreground">
             Każdy zestaw jest przygotowany z myślą o 6 osobach.
           </p>
 
           <p className="font-medium">
-            Dla {displayGuests}{' '}
-            osób rekomendujemy minimum{' '}
-            <span className="text-primary">{minSets}</span> zestawy.
+            Dla {adults} osób dorosłych i {children3to12} dzieci w wieku 3-12
+            lat polecamy <span className="text-primary">{minSets}</span>{' '}
+            {setWord}.
+          </p>
+
+          <p className="text-xs text-muted-foreground">
+            Krok jest opcjonalny. Po wybraniu pozycji, dla każdej wybranej
+            pozycji obowiązuje minimum {minSets} {setWord}.
           </p>
 
           {draft.childrenMenuOption === 'half_package' &&
@@ -90,10 +119,10 @@ const ColdPlateStep = () => {
               </p>
             )}
 
-          {isInvalid && (
+          {isMinNotReached && (
             <p className="text-sm text-destructive">
-              Wybierz jeszcze {minSets - totalSelected} zestaw(y), aby spełnić
-              minimalną ilość.
+              Dla tej liczby gości wymagane minimum {minSets} {setWord} dla
+              każdej wybranej pozycji.
             </p>
           )}
         </div>
@@ -135,7 +164,7 @@ const ColdPlateStep = () => {
                     type="button"
                     variant="outline"
                     size="icon"
-                    onClick={() => updateSet(set.id, qty - 1)}
+                    onClick={() => updateSet(set.id, decrementWithMin(qty))}
                     disabled={qty === 0}
                     aria-label={`Zmniejsz liczbę zestawów ${set.title}`}
                     className="h-8 w-8"
@@ -154,7 +183,7 @@ const ColdPlateStep = () => {
                     type="button"
                     variant="outline"
                     size="icon"
-                    onClick={() => updateSet(set.id, qty + 1)}
+                    onClick={() => updateSet(set.id, incrementWithMin(qty))}
                     aria-label={`Zwiększ liczbę zestawów ${set.title}`}
                     className="h-8 w-8"
                   >
@@ -162,6 +191,11 @@ const ColdPlateStep = () => {
                   </Button>
                 </div>
               </div>
+              {qty > 0 && (
+                <p className="text-xs text-muted-foreground border-t pt-3">
+                  Minimum dla tej pozycji: {minSets} {setWord}
+                </p>
+              )}
             </Card>
           )
         })}
@@ -172,8 +206,8 @@ const ColdPlateStep = () => {
         <div className="space-y-2">
           <h3 className="text-2xl font-semibold">🥗 Sałatki</h3>
           <p className="text-sm text-muted-foreground">
-            Dodatkowe propozycje sałatek do zamówienia. Wycena ustalana
-            indywidualnie.
+            Dodatkowe propozycje sałatek do zamówienia - dobierz ilość do
+            liczby gości.
           </p>
         </div>
 
@@ -206,7 +240,7 @@ const ColdPlateStep = () => {
                       type="button"
                       variant="outline"
                       size="icon"
-                      onClick={() => updateSalad(salad.id, qty - 1)}
+                      onClick={() => updateSalad(salad.id, decrementWithMin(qty))}
                       disabled={qty === 0}
                       aria-label={`Zmniejsz liczbę porcji ${salad.title}`}
                       className="h-8 w-8"
@@ -225,7 +259,7 @@ const ColdPlateStep = () => {
                       type="button"
                       variant="outline"
                       size="icon"
-                      onClick={() => updateSalad(salad.id, qty + 1)}
+                      onClick={() => updateSalad(salad.id, incrementWithMin(qty))}
                       aria-label={`Zwiększ liczbę porcji ${salad.title}`}
                       className="h-8 w-8"
                     >
@@ -233,6 +267,11 @@ const ColdPlateStep = () => {
                     </Button>
                   </div>
                 </div>
+                {qty > 0 && (
+                  <p className="text-xs text-muted-foreground border-t pt-3">
+                    Minimum dla tej pozycji: {minSets} {setWord}
+                  </p>
+                )}
               </Card>
             )
           })}

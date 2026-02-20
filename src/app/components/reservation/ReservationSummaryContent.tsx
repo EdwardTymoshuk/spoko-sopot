@@ -6,6 +6,7 @@ import { useReservationPricing } from '@/app/utils/hooks/reservation/useReservat
 import {
   COLD_PLATE_SALADS,
   COLD_PLATE_SETS,
+  DESSERT_OPTIONS,
   PACKAGES,
   PREMIUM_MAIN_PLATTERS,
   PREMIUM_MAIN_SIDE_OPTIONS,
@@ -13,6 +14,12 @@ import {
 
 const ReservationSummaryContent = () => {
   const { draft } = useReservationDraft()
+  const specialDietLabels: Record<string, string> = {
+    vegetarian: 'wegetariańska',
+    lactose_free: 'bez laktozy',
+    gluten_free: 'bez glutenu',
+    other: 'inne potrzeby',
+  }
   const childrenMenuLabel =
     draft.childrenMenuOption === 'half_package'
       ? 'jak dorośli (50% pakietu)'
@@ -39,6 +46,7 @@ const ReservationSummaryContent = () => {
     coldPlateTotal,
     premiumMainTotal,
     premiumMainSidesTotal,
+    dessertsTotal,
     cakeServiceTotal,
   } = useReservationPricing(draft)
 
@@ -54,6 +62,9 @@ const ReservationSummaryContent = () => {
   )
   const selectedPremiumMainSides = PREMIUM_MAIN_SIDE_OPTIONS.flatMap((section) =>
     section.options.filter((option) => (draft.premiumMainSideSelections?.[option.id] ?? 0) > 0)
+  )
+  const selectedDesserts = DESSERT_OPTIONS.filter(
+    (option) => (draft.dessertSelections?.[option.id] ?? 0) > 0
   )
 
   return (
@@ -100,6 +111,23 @@ const ReservationSummaryContent = () => {
             <span className="font-medium">{cakeOptionLabel}</span>
           </div>
         )}
+        {(draft.specialDiets?.length ?? 0) > 0 && (
+          <div className="flex justify-between items-start gap-3">
+            <span>Potrzeby żywieniowe</span>
+            <span className="font-medium text-right">
+              {draft.specialDiets
+                ?.map((diet) => specialDietLabels[diet] ?? diet)
+                .join(', ')}
+            </span>
+          </div>
+        )}
+        {draft.specialDiets?.includes('other') &&
+          draft.specialDietComment?.trim() && (
+            <div className="flex justify-between items-start gap-3 text-xs text-muted-foreground">
+              <span>Szczegóły</span>
+              <span className="text-right">{draft.specialDietComment.trim()}</span>
+            </div>
+          )}
 
         <Separator />
 
@@ -195,6 +223,26 @@ const ReservationSummaryContent = () => {
                 <span>
                   x{draft.premiumMainSideSelections?.[option.id] ?? 0} (+{(draft.premiumMainSideSelections?.[option.id] ?? 0) * option.price} zł)
                 </span>
+              </div>
+            ))}
+          </>
+        )}
+
+        {/* DESERY */}
+        {dessertsTotal > 0 && (
+          <>
+            <div className="flex justify-between">
+              <span>Desery</span>
+              <span className="font-medium">+{dessertsTotal} zł</span>
+            </div>
+
+            {selectedDesserts.map((option) => (
+              <div
+                key={option.id}
+                className="flex justify-between text-xs text-muted-foreground"
+              >
+                <span>{option.title}</span>
+                <span>x{draft.dessertSelections?.[option.id] ?? 0}</span>
               </div>
             ))}
           </>
