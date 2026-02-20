@@ -24,6 +24,10 @@ export type PremiumMainSideSelection = {
   [sideId: string]: number
 }
 
+export type DessertSelection = {
+  [dessertId: string]: number
+}
+
 // src/app/types/reservation.ts
 export type CalendarAvailabilityVM = {
   date: Date
@@ -54,6 +58,7 @@ export interface ReservationDraft {
   coldPlateSaladSelections?: ColdPlateSaladSelection
   premiumMainSelections?: PremiumMainSelection
   premiumMainSideSelections?: PremiumMainSideSelection
+  dessertSelections?: DessertSelection
 
   cakeOption?: CakeOption | null
 }

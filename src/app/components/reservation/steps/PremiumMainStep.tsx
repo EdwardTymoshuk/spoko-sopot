@@ -3,17 +3,38 @@
 import { Button } from '@/app/components/ui/button'
 import { Card } from '@/app/components/ui/card'
 import { useReservationDraft } from '@/app/utils/hooks/reservation/ReservationDraftContext'
-import { PREMIUM_MAIN_PLATTERS, PREMIUM_MAIN_SIDE_OPTIONS } from '@/lib/consts'
+import {
+  PREMIUM_MAIN_PLATTERS,
+  PREMIUM_MAIN_SIDE_OPTIONS,
+  getColdPlateEquivalentGuests,
+} from '@/lib/consts'
 import { cn } from '@/lib/utils'
 import { useMemo } from 'react'
 import { FiMinus, FiPlus } from 'react-icons/fi'
 
+const pluralize = (
+  value: number,
+  forms: [singular: string, paucal: string, plural: string]
+) => {
+  const mod10 = value % 10
+  const mod100 = value % 100
+  if (value === 1) return forms[0]
+  if (mod10 >= 2 && mod10 <= 4 && !(mod100 >= 12 && mod100 <= 14)) {
+    return forms[1]
+  }
+  return forms[2]
+}
+
 const PremiumMainStep = () => {
   const { draft, updateDraft } = useReservationDraft()
+  const adults = draft.adultsCount ?? 0
+  const children3to12 = draft.children3to12Count ?? 0
 
   const selections = useMemo(() => draft.premiumMainSelections ?? {}, [
     draft.premiumMainSelections,
   ])
+  const equivalentGuests = getColdPlateEquivalentGuests(draft)
+  const minPlatters = Math.ceil(equivalentGuests / 6)
 
   const totalSelected = useMemo(() => {
     return Object.values(selections).reduce((sum, qty) => sum + qty, 0)
@@ -39,6 +60,11 @@ const PremiumMainStep = () => {
     }, 0)
   }, [sideSelections])
 
+  const incrementWithMin = (current: number) =>
+    current === 0 ? minPlatters : current + 1
+  const decrementWithMin = (current: number) =>
+    current <= minPlatters ? 0 : current - 1
+
   const updatePlatter = (id: string, value: number) => {
     updateDraft('premiumMainSelections', {
       ...selections,
@@ -52,19 +78,46 @@ const PremiumMainStep = () => {
       [id]: Math.max(0, value),
     })
   }
+  const hasAnySelection = totalSelected > 0
+  const isAnyBelowMin = Object.values(selections).some(
+    (value) => value > 0 && value < minPlatters
+  )
+  const platterWord = pluralize(minPlatters, [
+    'półmisek',
+    'półmiski',
+    'półmisków',
+  ])
 
   return (
-    <div className="w-full max-w-7xl mx-auto space-y-10 p-4 md:p-6">
-      <div className="space-y-4 text-center">
-        <h2 className="text-3xl md:text-5xl font-semibold">
-          Wzbogać dania główne o półmiski Premium
+    <div className="w-full max-w-7xl mx-auto space-y-6 p-4 md:p-6">
+      <div className="space-y-2">
+        <h2 className="text-2xl md:text-3xl font-semibold">
+          Półmiski Premium
         </h2>
-
-        <p className="text-base md:text-lg text-muted-foreground max-w-4xl mx-auto leading-relaxed">
-          Jeśli chcesz, aby przyjęcie było jeszcze bardziej wyjątkowe, możesz
-          dodać do wybranego pakietu półmiski Premium. To opcjonalny dodatek do
-          menu głównego.
+        <p className="text-sm md:text-base text-muted-foreground">
+          Dodatkowe półmiski do dań głównych oraz dodatki ciepłe i surówki.
         </p>
+
+        <div className="space-y-1">
+          <p className="text-sm text-muted-foreground">
+            Każdy półmisek Premium jest przygotowany orientacyjnie dla 6 osób.
+          </p>
+          <p className="text-sm font-medium">
+            Dla {adults} osób dorosłych i {children3to12} dzieci w wieku 3-12
+            lat polecamy minimum {minPlatters} {platterWord}.
+          </p>
+          <p className="text-xs text-muted-foreground">
+            Krok jest opcjonalny. Po wybraniu półmisków, dla każdego wybranego
+            rodzaju obowiązuje minimum {minPlatters} {platterWord}. Dodatki
+            (ziemniaki, warzywa, surówki) można dobierać dowolnie.
+          </p>
+          {hasAnySelection && isAnyBelowMin && (
+            <p className="text-sm text-destructive">
+              Dla tej liczby gości wymagane minimum {minPlatters} {platterWord}
+              dla każdego wybranego rodzaju półmiska.
+            </p>
+          )}
+        </div>
       </div>
 
       <div className="grid grid-cols-1 xl:grid-cols-[1.45fr_1fr] gap-6">
@@ -104,31 +157,42 @@ const PremiumMainStep = () => {
                     <p className="font-semibold">{platter.price} zł</p>
                   </div>
 
-                  <div className="flex items-center gap-2 rounded-lg border px-2 py-1">
-                    <Button
-                      type="button"
-                      variant="outline"
-                      size="icon"
-                      className="h-8 w-8"
-                      onClick={() => updatePlatter(platter.id, qty - 1)}
-                      disabled={qty === 0}
-                    >
-                      <FiMinus className="h-4 w-4" />
-                    </Button>
+                  <div className="space-y-2 text-right">
+                    <div className="flex items-center gap-2 rounded-lg border px-2 py-1">
+                      <Button
+                        type="button"
+                        variant="outline"
+                        size="icon"
+                        className="h-8 w-8"
+                        onClick={() =>
+                          updatePlatter(platter.id, decrementWithMin(qty))
+                        }
+                        disabled={qty === 0}
+                      >
+                        <FiMinus className="h-4 w-4" />
+                      </Button>
 
-                    <div className="w-10 text-center font-semibold tabular-nums">
-                      {qty}
+                      <div className="w-10 text-center font-semibold tabular-nums">
+                        {qty}
+                      </div>
+
+                      <Button
+                        type="button"
+                        variant="outline"
+                        size="icon"
+                        className="h-8 w-8"
+                        onClick={() =>
+                          updatePlatter(platter.id, incrementWithMin(qty))
+                        }
+                      >
+                        <FiPlus className="h-4 w-4" />
+                      </Button>
                     </div>
-
-                    <Button
-                      type="button"
-                      variant="outline"
-                      size="icon"
-                      className="h-8 w-8"
-                      onClick={() => updatePlatter(platter.id, qty + 1)}
-                    >
-                      <FiPlus className="h-4 w-4" />
-                    </Button>
+                    {qty > 0 && (
+                      <p className="text-xs text-muted-foreground">
+                        Minimum dla tej pozycji: {minPlatters} {platterWord}
+                      </p>
+                    )}
                   </div>
                 </div>
               </Card>

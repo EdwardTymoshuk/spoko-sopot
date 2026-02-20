@@ -2,6 +2,7 @@ import type { ReservationDraft } from '@/app/types/reservation'
 import {
   COLD_PLATE_SALADS,
   COLD_PLATE_SETS,
+  DESSERT_OPTIONS,
   PACKAGES,
   PREMIUM_MAIN_PLATTERS,
   PREMIUM_MAIN_SIDE_OPTIONS,
@@ -48,6 +49,12 @@ export const useReservationPricing = (draft: ReservationDraft) => {
     }, 0)
   }, [draft.premiumMainSideSelections])
 
+  const dessertsTotal = useMemo(() => {
+    return DESSERT_OPTIONS.reduce((sum, option) => {
+      return sum + (draft.dessertSelections?.[option.id] ?? 0) * option.price
+    }, 0)
+  }, [draft.dessertSelections])
+
   const selectedPackage = PACKAGES.find((p) => p.type === draft.packageType)
 
   if (!selectedPackage || adults === 0) {
@@ -62,6 +69,7 @@ export const useReservationPricing = (draft: ReservationDraft) => {
       coldPlateTotal: 0,
       premiumMainTotal: 0,
       premiumMainSidesTotal: 0,
+      dessertsTotal: 0,
       cakeServiceTotal: 0,
     }
   }
@@ -113,6 +121,7 @@ export const useReservationPricing = (draft: ReservationDraft) => {
     coldPlateTotal +
     premiumMainTotal +
     premiumMainSidesTotal +
+    dessertsTotal +
     cakeServiceTotal
 
   return {
@@ -126,6 +135,7 @@ export const useReservationPricing = (draft: ReservationDraft) => {
     coldPlateTotal,
     premiumMainTotal,
     premiumMainSidesTotal,
+    dessertsTotal,
     cakeServiceTotal,
   }
 }

@@ -150,7 +150,7 @@ const DateGuestsStep = () => {
                 Goście dorośli
               </h3>
               <p className="text-sm text-muted-foreground">
-                Rezerwacje online realizujemy od 8 osób dorosłych.
+                Rezerwacje online realizujemy od 12 osób dorosłych.
               </p>
             </div>
 
@@ -162,14 +162,21 @@ const DateGuestsStep = () => {
             />
 
             <div className="space-y-2">
-              {adults < 8 ? (
+              {adults < 12 ? (
                 <div className="rounded-lg border border-destructive/30 bg-destructive/5 p-3 text-sm text-destructive">
-                  Rezerwacje online realizujemy od 8 osób dorosłych. Dla
+                  Rezerwacje online realizujemy od 12 osób dorosłych. Dla
                   mniejszych grup zapraszamy do kontaktu: 530 659 666.
                 </div>
-              ) : (
+              ) : adults >= 8 ? (
                 <div className="rounded-lg bg-warning/10 px-3 py-2 text-sm text-warning">
                   Dla grup od 8 osób doliczamy serwis 10% dla personelu.
+                </div>
+              ) : null}
+
+              {adults >= 8 && adults < 12 && (
+                <div className="rounded-lg border border-warning/40 bg-warning/10 px-3 py-2 text-sm text-warning">
+                  Serwis 10% doliczamy od 8 osób, ale formularz online wymaga
+                  minimum 12 osób dorosłych.
                 </div>
               )}
 
