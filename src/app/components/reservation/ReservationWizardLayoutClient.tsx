@@ -17,6 +17,7 @@ const ReservationWizardLayoutClient = ({
   const searchParams = useSearchParams()
   const step = searchParams.get('step')
   const isWelcomeStep = !step || step === 'welcome'
+  const isThankYouStep = step === 'thank-you'
   const viewportRef = useRef<HTMLDivElement>(null)
 
   const isWizardStep =
@@ -25,7 +26,7 @@ const ReservationWizardLayoutClient = ({
   return (
     <ReservationDraftProvider>
       <div className="h-[100svh] min-h-[100svh] md:h-screen flex flex-col bg-background overflow-hidden">
-        {isWizardStep && (
+        {isWizardStep && !isThankYouStep && (
           <header className="shrink-0 sticky top-0 z-40 bg-secondary border-b">
             <div className="mx-auto px-4 py-4">
               <ReservationProgress />
@@ -42,14 +43,16 @@ const ReservationWizardLayoutClient = ({
     overflow-y-auto
     overscroll-contain
   `,
-            isWelcomeStep ? 'overflow-y-hidden' : 'pb-[6.25rem] md:pb-0'
+            isWelcomeStep || isThankYouStep
+              ? 'overflow-y-hidden'
+              : 'pb-[6.25rem] md:pb-0'
           )}
         >
           <MainContainer className="h-full !min-h-0">
             <div
               className={cn(
                 'mx-auto w-full md:flex md:justify-center',
-                isWelcomeStep
+                isWelcomeStep || isThankYouStep
                   ? 'md:min-h-full md:items-center'
                   : 'md:items-start'
               )}
@@ -59,7 +62,7 @@ const ReservationWizardLayoutClient = ({
           </MainContainer>
         </div>
 
-        {isWizardStep && (
+        {isWizardStep && !isThankYouStep && (
           <footer className="fixed inset-x-0 bottom-0 z-40 md:static md:inset-auto">
             <BottomWizardBar />
           </footer>
