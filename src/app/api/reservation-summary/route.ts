@@ -20,33 +20,15 @@ type ReservationSummaryPayload = {
 const isValidEmail = (email: string) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)
 const isProd = process.env.NODE_ENV === 'production'
 
-const toPdfSafeText = (value: string) => {
-  const polishMap: Record<string, string> = {
-    ą: 'a',
-    ć: 'c',
-    ę: 'e',
-    ł: 'l',
-    ń: 'n',
-    ó: 'o',
-    ś: 's',
-    ź: 'z',
-    ż: 'z',
-    Ą: 'A',
-    Ć: 'C',
-    Ę: 'E',
-    Ł: 'L',
-    Ń: 'N',
-    Ó: 'O',
-    Ś: 'S',
-    Ź: 'Z',
-    Ż: 'Z',
-  }
-
-  return value
-    .split('')
-    .map((char) => polishMap[char] ?? char)
-    .join('')
-}
+const toPdfSafeText = (value: string) =>
+  value
+    // Remove diacritics (e.g. ą -> a) while keeping base characters.
+    .normalize('NFKD')
+    .replace(/[\u0300-\u036f]/g, '')
+    // Keep only printable ASCII supported by WinAnsi fallback fonts.
+    .replace(/[^\x20-\x7E]/g, '')
+    .replace(/\s+/g, ' ')
+    .trim()
 
 const buildTextSummary = (sections: SummarySection[], total: number) => {
   const lines: string[] = []
