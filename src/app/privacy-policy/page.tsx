@@ -20,6 +20,7 @@ const PrivacyPolicy: React.FC = () => {
 				<ul className="list-disc list-inside">
 					<li>Imię i nazwisko</li>
 					<li>Adres e-mail</li>
+					<li>Numer telefonu (opcjonalnie)</li>
 					<li>Treść wiadomości</li>
 				</ul>
 			</section>
@@ -28,8 +29,9 @@ const PrivacyPolicy: React.FC = () => {
 				<h2 className="text-2xl font-semibold">2. Wykorzystanie danych</h2>
 				<p>
 					Twoje dane wykorzystujemy wyłącznie w celu odpowiedzi na Twoje zapytanie oraz do prowadzenia
-					dalszej korespondencji, jeśli będzie to konieczne. Dane te nie są udostępniane innym podmiotom
-					ani nie są wykorzystywane do celów marketingowych.
+					dalszej korespondencji, jeśli będzie to konieczne. Dane te nie są udostępniane innym podmiotom.
+					Jeżeli wyrazisz odrębną zgodę marketingową, możemy wykorzystać dane kontaktowe również do
+					przesyłania informacji marketingowych dotyczących oferty restauracji.
 				</p>
 			</section>
 

@@ -4,12 +4,14 @@ import { Separator } from '@/app/components/ui/separator'
 import { useReservationDraft } from '@/app/utils/hooks/reservation/ReservationDraftContext'
 import { useReservationPricing } from '@/app/utils/hooks/reservation/useReservationPricing'
 import {
+  ALCOHOL_OPTIONS,
   COLD_PLATE_SALADS,
   COLD_PLATE_SETS,
   DESSERT_OPTIONS,
   PACKAGES,
   PREMIUM_MAIN_PLATTERS,
   PREMIUM_MAIN_SIDE_OPTIONS,
+  SOFT_DRINK_OPTIONS,
 } from '@/lib/consts'
 
 const ReservationSummaryContent = () => {
@@ -32,7 +34,13 @@ const ReservationSummaryContent = () => {
       : draft.cakeOption === 'need_bakery_contact'
       ? 'Proszę o kontakt do cukierni (-5% na hasło SPOKO)'
       : draft.cakeOption === 'skip'
-      ? 'Pomijam etap tortu'
+      ? 'Bez tortu'
+      : null
+  const hallExclusivityLabel =
+    draft.hallExclusivity === 'yes'
+      ? 'Tak'
+      : draft.hallExclusivity === 'no'
+      ? 'Nie'
       : null
 
   const {
@@ -47,6 +55,10 @@ const ReservationSummaryContent = () => {
     premiumMainTotal,
     premiumMainSidesTotal,
     dessertsTotal,
+    softDrinksTotal,
+    alcoholTotal,
+    hallExclusivityTotal,
+    hallExclusivityBillableHours,
     cakeServiceTotal,
   } = useReservationPricing(draft)
 
@@ -66,6 +78,12 @@ const ReservationSummaryContent = () => {
   const selectedDesserts = DESSERT_OPTIONS.filter(
     (option) => (draft.dessertSelections?.[option.id] ?? 0) > 0
   )
+  const selectedSoftDrinks = SOFT_DRINK_OPTIONS.filter(
+    (option) => (draft.softDrinkSelections?.[option.id] ?? 0) > 0
+  )
+  const selectedAlcohols = ALCOHOL_OPTIONS.filter(
+    (option) => (draft.alcoholSelections?.[option.id] ?? 0) > 0
+  )
 
   return (
     <div className="space-y-6">
@@ -82,6 +100,14 @@ const ReservationSummaryContent = () => {
           <span className="font-medium">
             {draft.eventDate
               ? new Date(draft.eventDate).toLocaleDateString('pl-PL')
+              : '—'}
+          </span>
+        </div>
+        <div className="flex justify-between">
+          <span>Godziny przyjęcia</span>
+          <span className="font-medium">
+            {draft.eventStartTime && draft.eventEndTime
+              ? `${draft.eventStartTime} - ${draft.eventEndTime}`
               : '—'}
           </span>
         </div>
@@ -111,6 +137,22 @@ const ReservationSummaryContent = () => {
             <span className="font-medium">{cakeOptionLabel}</span>
           </div>
         )}
+        {hallExclusivityLabel && (
+          <div className="flex justify-between">
+            <span>Wyłączność sali</span>
+            <span className="font-medium">{hallExclusivityLabel}</span>
+          </div>
+        )}
+        {draft.hallExclusivity === 'yes' &&
+          draft.eventStartTime &&
+          draft.eventEndTime && (
+            <div className="flex justify-between text-xs text-muted-foreground">
+              <span>Godziny wyłączności</span>
+              <span className="font-medium">
+                {draft.eventStartTime} - {draft.eventEndTime}
+              </span>
+            </div>
+          )}
         {(draft.specialDiets?.length ?? 0) > 0 && (
           <div className="flex justify-between items-start gap-3">
             <span>Potrzeby żywieniowe</span>
@@ -248,6 +290,59 @@ const ReservationSummaryContent = () => {
           </>
         )}
 
+        {/* NAPOJE BEZALKOHOLOWE */}
+        {softDrinksTotal > 0 && (
+          <>
+            <div className="flex justify-between">
+              <span>Napoje bezalkoholowe</span>
+              <span className="font-medium">+{softDrinksTotal} zł</span>
+            </div>
+
+            {selectedSoftDrinks.map((option) => (
+              <div
+                key={option.id}
+                className="flex justify-between text-xs text-muted-foreground"
+              >
+                <span>{option.title}</span>
+                <span>x{draft.softDrinkSelections?.[option.id] ?? 0}</span>
+              </div>
+            ))}
+          </>
+        )}
+
+        {/* ALKOHOL */}
+        {alcoholTotal > 0 && (
+          <>
+            <div className="flex justify-between">
+              <span>Alkohol</span>
+              <span className="font-medium">+{alcoholTotal} zł</span>
+            </div>
+
+            {selectedAlcohols.map((option) => (
+              <div
+                key={option.id}
+                className="flex justify-between text-xs text-muted-foreground"
+              >
+                <span>{option.title}</span>
+                <span>x{draft.alcoholSelections?.[option.id] ?? 0}</span>
+              </div>
+            ))}
+          </>
+        )}
+
+        {/* WYŁĄCZNOŚĆ SALI */}
+        {hallExclusivityTotal > 0 && (
+          <div className="flex justify-between">
+            <span>
+              Wyłączność sali
+              {hallExclusivityBillableHours > 0
+                ? ` (${hallExclusivityBillableHours} h do 19:00)`
+                : ''}
+            </span>
+            <span className="font-medium">+{hallExclusivityTotal} zł</span>
+          </div>
+        )}
+
         {/* PRZEDŁUŻENIE */}
         {extensionTotal > 0 && (
           <div className="flex justify-between">
@@ -281,9 +376,6 @@ const ReservationSummaryContent = () => {
         </span>
       </div>
 
-      <p className="text-xs text-zinc-500 leading-snug">
-        Ostateczna wycena zależy od wybranego menu i dodatków.
-      </p>
     </div>
   )
 }

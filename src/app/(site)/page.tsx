@@ -243,59 +243,6 @@ const Home: React.FC = () => {
       <MaxWidthWrapper>
         <Opinions />
 
-        <PageSubHeader title="Najbliższe wydarzenie" className="pt-12 pb-6" />
-
-        <PageContainer className="pb-16">
-          <div className="flex flex-col w-full md:grid md:grid-cols-[1fr_1.35fr] overflow-hidden rounded-2xl border bg-background shadow-sm">
-            {/* LEFT: IMAGE */}
-            <div className="bg-muted/20 min-h-[280px] md:min-h-[420px]">
-              <div className="relative w-full h-full overflow-hidden">
-                <img
-                  src="/img/news/valentines-day-2026/valentines-main.png"
-                  alt="Walentynki w Spoko"
-                  className="w-full h-full object-cover select-none"
-                />
-              </div>
-            </div>
-
-            {/* RIGHT: CONTENT */}
-            <div className="flex flex-col space-y-4 justify-between p-6 md:p-8">
-              <div className="space-y-5 max-w-xl">
-                <span className="inline-flex items-center gap-1 text-xs font-semibold uppercase tracking-wide text-secondary">
-                  Wydarzenie specjalne
-                </span>
-
-                <h3 className="text-3xl font-semibold leading-tight">
-                  Walentynki w Spoko ;)
-                </h3>
-
-                <p className="text-sm font-medium text-muted-foreground flex items-center gap-2">
-                  <span className="text-zinc-400">📅 14 lutego</span>
-                  <span className="text-zinc-400">•</span>
-                  <span className="text-zinc-400">⏰ 17:00 – 19:00</span>
-                </p>
-
-                <p className="text-sm md:text-base leading-relaxed text-text-secondary">
-                  Zapraszamy na romantyczny wieczór dla dwojga w wyjątkowej
-                  oprawie. Autorskie menu, muzyka na żywo oraz atmosfera
-                  stworzona z myślą o prawdziwej randce.
-                </p>
-              </div>
-
-              <div>
-                <Button
-                  size="lg"
-                  variant="outline"
-                  className="w-full md:w-auto font-semibold px-8 border-primary text-primary hover:bg-primary hover:text-text-secondary"
-                  onClick={() => router.push('/news')}
-                >
-                  Zobacz szczegóły wydarzenia <MdOutlineKeyboardArrowRight />
-                </Button>
-              </div>
-            </div>
-          </div>
-        </PageContainer>
-
         {/* {(() => {
           if (loading) {
             // Show skeletons while loading

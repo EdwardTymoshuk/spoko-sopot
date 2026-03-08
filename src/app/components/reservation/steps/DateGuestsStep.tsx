@@ -5,8 +5,10 @@ import { Card } from '@/app/components/ui/card'
 import { Separator } from '@/app/components/ui/separator'
 import type { ChildrenMenuOption } from '@/app/types/reservation'
 import { useReservationDraft } from '@/app/utils/hooks/reservation/ReservationDraftContext'
+import { parseTimeToDecimalHour } from '@/lib/consts'
 import { cn } from '@/lib/utils'
 import { FiMinus, FiPlus } from 'react-icons/fi'
+import { MdKeyboardArrowDown } from 'react-icons/md'
 
 const MOCK_AVAILABILITY = [
   { date: new Date(2026, 0, 10), isBlocked: false, basePriceFrom: 250 },
@@ -21,6 +23,36 @@ const KIDS_MENU_ITEMS = [
   'Panierowane fileciki z dorsza z frytkami i ketchupem',
   'Mini pizza Margherita',
   'Grillowany filet z kurczaka z puree ziemniaczanym, marchewką i groszkiem',
+]
+
+const TIME_OPTIONS = [
+  '10:00',
+  '10:30',
+  '11:00',
+  '11:30',
+  '12:00',
+  '12:30',
+  '13:00',
+  '13:30',
+  '14:00',
+  '14:30',
+  '15:00',
+  '15:30',
+  '16:00',
+  '16:30',
+  '17:00',
+  '17:30',
+  '18:00',
+  '18:30',
+  '19:00',
+  '19:30',
+  '20:00',
+  '20:30',
+  '21:00',
+  '21:30',
+  '22:00',
+  '22:30',
+  '23:00',
 ]
 
 type CounterProps = {
@@ -98,6 +130,10 @@ const DateGuestsStep = () => {
   const shouldPickChildrenOption = children3to12 > 0
   const isChildrenOptionMissing =
     shouldPickChildrenOption && !draft.childrenMenuOption
+  const startHour = parseTimeToDecimalHour(draft.eventStartTime)
+  const endHour = parseTimeToDecimalHour(draft.eventEndTime)
+  const isTimeRangeInvalid =
+    startHour !== null && endHour !== null && endHour <= startHour
 
   const updateChildren312 = (value: number) => {
     const next = Math.max(0, value)
@@ -136,6 +172,69 @@ const DateGuestsStep = () => {
             availability={MOCK_AVAILABILITY}
             onChange={(date) => updateDraft('eventDate', date ?? null)}
           />
+
+          <div className="rounded-xl border p-4 md:p-5 space-y-3">
+            <div className="space-y-1">
+              <h4 className="font-semibold">Godziny przyjęcia</h4>
+              <p className="text-sm text-muted-foreground">
+                Podaj orientacyjne godziny wydarzenia.
+              </p>
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <label className="space-y-1">
+                <span className="text-xs uppercase tracking-wide text-muted-foreground">
+                  Godzina rozpoczęcia
+                </span>
+                <div className="relative">
+                  <select
+                    className="h-11 w-full appearance-none rounded-lg border bg-background px-3 pr-9 text-sm"
+                    value={draft.eventStartTime ?? ''}
+                    onChange={(e) =>
+                      updateDraft('eventStartTime', e.target.value || null)
+                    }
+                  >
+                    <option value="">Wybierz</option>
+                    {TIME_OPTIONS.map((time) => (
+                      <option key={time} value={time}>
+                        {time}
+                      </option>
+                    ))}
+                  </select>
+                  <MdKeyboardArrowDown className="pointer-events-none absolute right-2 top-1/2 h-5 w-5 -translate-y-1/2 text-muted-foreground" />
+                </div>
+              </label>
+
+              <label className="space-y-1">
+                <span className="text-xs uppercase tracking-wide text-muted-foreground">
+                  Godzina zakończenia
+                </span>
+                <div className="relative">
+                  <select
+                    className="h-11 w-full appearance-none rounded-lg border bg-background px-3 pr-9 text-sm"
+                    value={draft.eventEndTime ?? ''}
+                    onChange={(e) =>
+                      updateDraft('eventEndTime', e.target.value || null)
+                    }
+                  >
+                    <option value="">Wybierz</option>
+                    {TIME_OPTIONS.map((time) => (
+                      <option key={time} value={time}>
+                        {time}
+                      </option>
+                    ))}
+                  </select>
+                  <MdKeyboardArrowDown className="pointer-events-none absolute right-2 top-1/2 h-5 w-5 -translate-y-1/2 text-muted-foreground" />
+                </div>
+              </label>
+            </div>
+
+            {isTimeRangeInvalid && (
+              <p className="text-sm text-destructive">
+                Godzina zakończenia musi być późniejsza niż godzina rozpoczęcia.
+              </p>
+            )}
+          </div>
 
           <p className="text-xs text-muted-foreground">
             Ceny są orientacyjne i dotyczą osoby dorosłej. Ostateczna wycena

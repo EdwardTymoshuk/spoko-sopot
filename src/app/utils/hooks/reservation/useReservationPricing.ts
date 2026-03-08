@@ -1,11 +1,14 @@
 import type { ReservationDraft } from '@/app/types/reservation'
 import {
+  calculateHallExclusivityCharge,
+  ALCOHOL_OPTIONS,
   COLD_PLATE_SALADS,
   COLD_PLATE_SETS,
   DESSERT_OPTIONS,
   PACKAGES,
   PREMIUM_MAIN_PLATTERS,
   PREMIUM_MAIN_SIDE_OPTIONS,
+  SOFT_DRINK_OPTIONS,
 } from '@/lib/consts'
 import { useMemo } from 'react'
 
@@ -55,6 +58,33 @@ export const useReservationPricing = (draft: ReservationDraft) => {
     }, 0)
   }, [draft.dessertSelections])
 
+  const softDrinksTotal = useMemo(() => {
+    return SOFT_DRINK_OPTIONS.reduce((sum, option) => {
+      return sum + (draft.softDrinkSelections?.[option.id] ?? 0) * option.price
+    }, 0)
+  }, [draft.softDrinkSelections])
+
+  const alcoholTotal = useMemo(() => {
+    return ALCOHOL_OPTIONS.reduce((sum, option) => {
+      return sum + (draft.alcoholSelections?.[option.id] ?? 0) * option.price
+    }, 0)
+  }, [draft.alcoholSelections])
+
+  const { total: hallExclusivityTotal, billableHours: hallExclusivityBillableHours } =
+    useMemo(() => {
+      return calculateHallExclusivityCharge({
+        eventDate: draft.eventDate,
+        wantsExclusivity: draft.hallExclusivity === 'yes',
+        startTime: draft.eventStartTime,
+        endTime: draft.eventEndTime,
+      })
+    }, [
+      draft.eventDate,
+      draft.hallExclusivity,
+      draft.eventStartTime,
+      draft.eventEndTime,
+    ])
+
   const selectedPackage = PACKAGES.find((p) => p.type === draft.packageType)
 
   if (!selectedPackage || adults === 0) {
@@ -70,6 +100,10 @@ export const useReservationPricing = (draft: ReservationDraft) => {
       premiumMainTotal: 0,
       premiumMainSidesTotal: 0,
       dessertsTotal: 0,
+      softDrinksTotal: 0,
+      alcoholTotal: 0,
+      hallExclusivityTotal: 0,
+      hallExclusivityBillableHours: 0,
       cakeServiceTotal: 0,
     }
   }
@@ -122,6 +156,9 @@ export const useReservationPricing = (draft: ReservationDraft) => {
     premiumMainTotal +
     premiumMainSidesTotal +
     dessertsTotal +
+    softDrinksTotal +
+    alcoholTotal +
+    hallExclusivityTotal +
     cakeServiceTotal
 
   return {
@@ -136,6 +173,10 @@ export const useReservationPricing = (draft: ReservationDraft) => {
     premiumMainTotal,
     premiumMainSidesTotal,
     dessertsTotal,
+    softDrinksTotal,
+    alcoholTotal,
+    hallExclusivityTotal,
+    hallExclusivityBillableHours,
     cakeServiceTotal,
   }
 }

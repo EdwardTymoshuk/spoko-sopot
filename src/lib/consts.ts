@@ -4,8 +4,13 @@ import ColdPlateStep from '@/app/components/reservation/steps/ColdPlateStep'
 import CakeStep from '@/app/components/reservation/steps/CakeStep'
 import DateGuestsStep from '@/app/components/reservation/steps/DateGuestsStep'
 import DessertsStep from '@/app/components/reservation/steps/DessertsStep'
+import HallExclusivityStep from '@/app/components/reservation/steps/HallExclusivityStep'
 import PackageStep from '@/app/components/reservation/steps/PackagesStep/PackageStep'
 import PremiumMainStep from '@/app/components/reservation/steps/PremiumMainStep'
+import AlcoholStep from '@/app/components/reservation/steps/AlcoholStep'
+import SoftDrinksStep from '@/app/components/reservation/steps/SoftDrinksStep'
+import SummarySubmitStep from '@/app/components/reservation/steps/SummarySubmitStep'
+import ThankYouStep from '@/app/components/reservation/steps/ThankYouStep'
 import WelcomeStep from '@/app/components/reservation/steps/WelcomeStep'
 import {
   PackageType,
@@ -22,17 +27,32 @@ export const STEP_COMPONENTS: Record<string, React.FC> = {
   'premium-main': PremiumMainStep,
   cake: CakeStep,
   desserts: DessertsStep,
+  'soft-drinks': SoftDrinksStep,
+  alcohol: AlcoholStep,
+  'hall-exclusivity': HallExclusivityStep,
+  summary: SummarySubmitStep,
+  'thank-you': ThankYouStep,
 }
 
 export const RESERVATION_STEPS = [
   {
     key: 'date-guests',
     label: 'Data i liczba gości',
-    isValid: (draft: ReservationDraft) =>
-      Boolean(draft.eventDate) &&
-      typeof draft.adultsCount === 'number' &&
-      draft.adultsCount >= 12 &&
-      ((draft.children3to12Count ?? 0) === 0 || Boolean(draft.childrenMenuOption)),
+    isValid: (draft: ReservationDraft) => {
+      const start = parseTimeToDecimalHour(draft.eventStartTime)
+      const end = parseTimeToDecimalHour(draft.eventEndTime)
+
+      return (
+        Boolean(draft.eventDate) &&
+        typeof draft.adultsCount === 'number' &&
+        draft.adultsCount >= 12 &&
+        start !== null &&
+        end !== null &&
+        end > start &&
+        ((draft.children3to12Count ?? 0) === 0 ||
+          Boolean(draft.childrenMenuOption))
+      )
+    },
   },
   {
     key: 'package',
@@ -121,6 +141,40 @@ export const RESERVATION_STEPS = [
       return true
     },
   },
+  {
+    key: 'soft-drinks',
+    label: 'Napoje bezalkoholowe',
+    isValid: () => true,
+  },
+  {
+    key: 'alcohol',
+    label: 'Alkohol',
+    isValid: () => true,
+  },
+  {
+    key: 'hall-exclusivity',
+    label: 'Wyłączność sali',
+    isValid: (draft: ReservationDraft) => {
+      if (draft.hallExclusivity === 'no') return true
+      if (draft.hallExclusivity !== 'yes') return false
+
+      const start = parseTimeToDecimalHour(draft.eventStartTime)
+      const end = parseTimeToDecimalHour(draft.eventEndTime)
+      if (start === null || end === null) return false
+
+      return end > start
+    },
+  },
+  {
+    key: 'summary',
+    label: 'Podsumowanie',
+    isValid: () => true,
+  },
+  {
+    key: 'thank-you',
+    label: 'Dziękujemy',
+    isValid: () => true,
+  },
 ] as const
 
 export const getColdPlateEquivalentGuests = (draft: ReservationDraft) => {
@@ -132,6 +186,86 @@ export const getColdPlateEquivalentGuests = (draft: ReservationDraft) => {
   }
 
   return adults
+}
+
+type HallExclusivityRateSegment = {
+  startHour: number
+  endHour: number
+  weekdayRate: number
+  weekendRate: number
+}
+
+const HALL_EXCLUSIVITY_RATE_SEGMENTS: HallExclusivityRateSegment[] = [
+  { startHour: 10, endHour: 13, weekdayRate: 163, weekendRate: 604 },
+  { startHour: 14, endHour: 19, weekdayRate: 326, weekendRate: 1207 },
+]
+
+export function parseTimeToDecimalHour(value?: string | null) {
+  if (!value) return null
+
+  const match = /^(\d{1,2}):(\d{2})$/.exec(value.trim())
+  if (!match) return null
+
+  const hours = Number(match[1])
+  const minutes = Number(match[2])
+
+  if (
+    Number.isNaN(hours) ||
+    Number.isNaN(minutes) ||
+    hours < 0 ||
+    hours > 23 ||
+    (minutes !== 0 && minutes !== 30)
+  ) {
+    return null
+  }
+
+  return hours + minutes / 60
+}
+
+export function calculateHallExclusivityCharge(params: {
+  eventDate?: Date | string | null
+  wantsExclusivity?: boolean
+  startTime?: string | null
+  endTime?: string | null
+}) {
+  const { eventDate, wantsExclusivity, startTime, endTime } = params
+  if (!wantsExclusivity || !eventDate) {
+    return { total: 0, billableHours: 0 }
+  }
+
+  const date = eventDate instanceof Date ? eventDate : new Date(eventDate)
+  if (Number.isNaN(date.getTime())) {
+    return { total: 0, billableHours: 0 }
+  }
+
+  const start = parseTimeToDecimalHour(startTime)
+  const end = parseTimeToDecimalHour(endTime)
+  if (start === null || end === null || end <= start) {
+    return { total: 0, billableHours: 0 }
+  }
+
+  const day = date.getDay() // 0-6, where 0 = Sunday
+  const isWeekend = day === 0 || day === 5 || day === 6
+
+  let total = 0
+  let billableHours = 0
+
+  for (const segment of HALL_EXCLUSIVITY_RATE_SEGMENTS) {
+    const overlapStart = Math.max(start, segment.startHour)
+    const overlapEnd = Math.min(end, segment.endHour)
+    const hours = Math.max(0, overlapEnd - overlapStart)
+
+    if (hours > 0) {
+      const rate = isWeekend ? segment.weekendRate : segment.weekdayRate
+      total += hours * rate
+      billableHours += hours
+    }
+  }
+
+  return {
+    total: Math.round(total),
+    billableHours,
+  }
 }
 
 export interface PackageConfig {
@@ -356,6 +490,22 @@ export interface DessertOption {
   category: 'cake_platters' | 'mini_desserts'
   unitLabel: string
   minQty?: number
+  price: number
+}
+
+export interface SoftDrinkOption {
+  id: string
+  title: string
+  description: string
+  volumeLabel: string
+  price: number
+  recommendation?: string
+}
+
+export interface AlcoholOption {
+  id: string
+  title: string
+  volumeLabel: string
   price: number
 }
 
@@ -655,5 +805,66 @@ export const DESSERT_OPTIONS: DessertOption[] = [
     unitLabel: 'szt.',
     minQty: 20,
     price: 15,
+  },
+]
+
+export const SOFT_DRINK_OPTIONS: SoftDrinkOption[] = [
+  {
+    id: 'juice_jug',
+    title: 'Soki w dzbankach',
+    description: 'Jabłkowy lub pomarańczowy',
+    volumeLabel: '1 l',
+    price: 30,
+    recommendation: 'Rekomendujemy około 1 dzbanek na 6 osób dorosłych.',
+  },
+  {
+    id: 'lemonade_jug',
+    title: 'Lemoniada',
+    description: 'Dzbanek',
+    volumeLabel: '1.5 l',
+    price: 62,
+    recommendation: 'Rekomendujemy około 1 dzbanek na 6 osób dorosłych.',
+  },
+  {
+    id: 'cola_bottle',
+    title: 'Cola / Cola Zero',
+    description: 'Butelka',
+    volumeLabel: '850 ml',
+    price: 25,
+    recommendation:
+      'Ilość coli najlepiej dopasować do liczby osób, które planują spożywać alkohol.',
+  },
+]
+
+export const ALCOHOL_OPTIONS: AlcoholOption[] = [
+  {
+    id: 'ballantines_500',
+    title: "Ballantine's",
+    volumeLabel: '500 ml',
+    price: 149,
+  },
+  {
+    id: 'jameson_500',
+    title: 'Jameson',
+    volumeLabel: '500 ml',
+    price: 169,
+  },
+  {
+    id: 'jack_daniels_500',
+    title: "Jack Daniel's",
+    volumeLabel: '500 ml',
+    price: 199,
+  },
+  {
+    id: 'wyborowa_500',
+    title: 'Wódka Wyborowa',
+    volumeLabel: '500 ml',
+    price: 99,
+  },
+  {
+    id: 'absolut_500',
+    title: 'Wódka Absolut',
+    volumeLabel: '500 ml',
+    price: 119,
   },
 ]

@@ -6,6 +6,7 @@ export type PackageType = 'silver' | 'gold' | 'platinum'
 export type SoupChoice = 'tomato_cream' | 'chicken_broth'
 export type ChildrenMenuOption = 'half_package' | 'kids_menu'
 export type CakeOption = 'own_cake' | 'need_bakery_contact' | 'skip'
+export type HallExclusivityOption = 'no' | 'yes'
 
 // Cold plate – appetizer sets served per 6 guests
 export type ColdPlateSelection = {
@@ -28,6 +29,14 @@ export type DessertSelection = {
   [dessertId: string]: number
 }
 
+export type SoftDrinkSelection = {
+  [drinkId: string]: number
+}
+
+export type AlcoholSelection = {
+  [alcoholId: string]: number
+}
+
 // src/app/types/reservation.ts
 export type CalendarAvailabilityVM = {
   date: Date
@@ -37,6 +46,8 @@ export type CalendarAvailabilityVM = {
 
 export interface ReservationDraft {
   eventDate: Date | null
+  eventStartTime?: string | null
+  eventEndTime?: string | null
   adultsCount: number | null
   childrenUnder3Count?: number
   children3to12Count?: number
@@ -59,6 +70,9 @@ export interface ReservationDraft {
   premiumMainSelections?: PremiumMainSelection
   premiumMainSideSelections?: PremiumMainSideSelection
   dessertSelections?: DessertSelection
+  softDrinkSelections?: SoftDrinkSelection
+  alcoholSelections?: AlcoholSelection
+  hallExclusivity?: HallExclusivityOption | null
 
   cakeOption?: CakeOption | null
 }

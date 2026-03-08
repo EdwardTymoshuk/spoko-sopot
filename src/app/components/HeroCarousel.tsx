@@ -27,6 +27,17 @@ const HeroCarousel = () => {
     return match ? parseInt(match[1], 10) : 0
   }
 
+  const isValentineBanner = (banner: Banner) => {
+    const desktopUrl = banner.desktopImageUrl?.toLowerCase() ?? ''
+    const mobileUrl = banner.mobileImageUrl?.toLowerCase() ?? ''
+    return (
+      desktopUrl.includes('valentin') ||
+      desktopUrl.includes('walentyn') ||
+      mobileUrl.includes('valentin') ||
+      mobileUrl.includes('walentyn')
+    )
+  }
+
   useEffect(() => {
     const fetchBanners = async () => {
       try {
@@ -34,7 +45,9 @@ const HeroCarousel = () => {
         if (!response.ok) throw new Error('Failed to fetch banners')
         const data: Banner[] = await response.json()
 
-        const sortedBanners = data.sort(
+        const sortedBanners = data
+          .filter((banner) => !isValentineBanner(banner))
+          .sort(
           (a, b) =>
             (b.createdAt ? new Date(b.createdAt).getTime() : 0) -
             (a.createdAt ? new Date(a.createdAt).getTime() : 0)

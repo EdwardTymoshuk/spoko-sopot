@@ -35,10 +35,6 @@ const PackageStep = () => {
     if (current.includes(diet)) {
       const next = current.filter((d) => d !== diet)
       updateDraft('specialDiets', next)
-
-      if (diet === 'other') {
-        updateDraft('specialDietComment', '')
-      }
       return
     }
 
@@ -103,21 +99,19 @@ const PackageStep = () => {
           ))}
         </div>
 
-        {isOtherSelected && (
-          <div className="space-y-2">
-            <Textarea
-              placeholder="Opisz dodatkowe potrzeby..."
-              value={draft.specialDietComment ?? ''}
-              onChange={(e) => updateDraft('specialDietComment', e.target.value)}
-              className={isCommentInvalid ? 'border-destructive' : ''}
-            />
-            {isCommentInvalid && (
-              <p className="text-sm text-destructive">
-                Uzupełnij opis dodatkowych potrzeb, aby przejść dalej.
-              </p>
-            )}
-          </div>
-        )}
+        <div className="space-y-2">
+          <Textarea
+            placeholder="Opisz dodatkowe potrzeby (opcjonalnie)..."
+            value={draft.specialDietComment ?? ''}
+            onChange={(e) => updateDraft('specialDietComment', e.target.value)}
+            className={isCommentInvalid ? 'border-destructive' : ''}
+          />
+          {isCommentInvalid && (
+            <p className="text-sm text-destructive">
+              Uzupełnij opis dodatkowych potrzeb, aby przejść dalej.
+            </p>
+          )}
+        </div>
       </section>
 
       <PackageExtension />

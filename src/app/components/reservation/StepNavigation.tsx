@@ -19,9 +19,12 @@ const StepNavigation = () => {
   }
 
   const currentIndex = RESERVATION_STEPS.findIndex((s) => s.key === step)
+  if (step === 'thank-you') return null
 
   const totalSteps = RESERVATION_STEPS.length
   const currentStep = RESERVATION_STEPS[currentIndex]
+  const isLastStep = currentIndex === totalSteps - 1
+  const isActionStep = step === 'summary'
 
   const isValid = currentStep.isValid(draft)
 
@@ -55,14 +58,16 @@ const StepNavigation = () => {
           {currentIndex + 1}/{totalSteps}
         </span>
 
-        <Button
-          onClick={goNext}
-          disabled={currentIndex === totalSteps - 1 || !isValid}
-          className="h-10 px-3 justify-center gap-1 font-medium text-sm"
-        >
-          Dalej
-          <BiSolidChevronRight className="h-4 w-4" />
-        </Button>
+        {!isLastStep && !isActionStep && (
+          <Button
+            onClick={goNext}
+            disabled={!isValid}
+            className="h-10 px-3 justify-center gap-1 font-medium text-sm"
+          >
+            Dalej
+            <BiSolidChevronRight className="h-4 w-4" />
+          </Button>
+        )}
       </div>
 
       {/* DESKTOP */}
@@ -79,13 +84,15 @@ const StepNavigation = () => {
           Krok {currentIndex + 1} z {totalSteps}
         </span>
 
-        <Button
-          onClick={goNext}
-          disabled={currentIndex === totalSteps - 1 || !isValid}
-          className="font-medium shadow-sm hover:shadow-md transition-shadow"
-        >
-          Dalej <BiSolidChevronRight />
-        </Button>
+        {!isLastStep && !isActionStep && (
+          <Button
+            onClick={goNext}
+            disabled={!isValid}
+            className="font-medium shadow-sm hover:shadow-md transition-shadow"
+          >
+            Dalej <BiSolidChevronRight />
+          </Button>
+        )}
       </div>
 
       {!isValid && (
