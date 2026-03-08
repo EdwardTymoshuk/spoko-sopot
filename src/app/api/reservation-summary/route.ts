@@ -20,6 +20,34 @@ type ReservationSummaryPayload = {
 const isValidEmail = (email: string) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)
 const isProd = process.env.NODE_ENV === 'production'
 
+const toPdfSafeText = (value: string) => {
+  const polishMap: Record<string, string> = {
+    ą: 'a',
+    ć: 'c',
+    ę: 'e',
+    ł: 'l',
+    ń: 'n',
+    ó: 'o',
+    ś: 's',
+    ź: 'z',
+    ż: 'z',
+    Ą: 'A',
+    Ć: 'C',
+    Ę: 'E',
+    Ł: 'L',
+    Ń: 'N',
+    Ó: 'O',
+    Ś: 'S',
+    Ź: 'Z',
+    Ż: 'Z',
+  }
+
+  return value
+    .split('')
+    .map((char) => polishMap[char] ?? char)
+    .join('')
+}
+
 const buildTextSummary = (sections: SummarySection[], total: number) => {
   const lines: string[] = []
 
@@ -63,8 +91,9 @@ const generatePdfBuffer = async (sections: SummarySection[], total: number) => {
     size: number,
     opts?: { bold?: boolean; color?: [number, number, number] }
   ) => {
+    const safeText = toPdfSafeText(text)
     addPageIfNeeded(size + 6)
-    page.drawText(text, {
+    page.drawText(safeText, {
       x: marginX,
       y,
       size,
