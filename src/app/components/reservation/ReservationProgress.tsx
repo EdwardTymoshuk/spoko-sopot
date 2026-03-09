@@ -7,18 +7,20 @@ import { Progress } from '../ui/progress'
 export default function ReservationProgress() {
   const searchParams = useSearchParams()
   const step = searchParams.get('step') ?? RESERVATION_STEPS[0].key
+  const progressSteps = RESERVATION_STEPS.filter((s) => s.key !== 'thank-you')
 
-  const currentIndex = RESERVATION_STEPS.findIndex((s) => s.key === step)
+  const currentIndex = progressSteps.findIndex((s) => s.key === step)
+  const safeCurrentIndex = currentIndex === -1 ? 0 : currentIndex
 
-  const progress = ((currentIndex + 1) / RESERVATION_STEPS.length) * 100
+  const progress = ((safeCurrentIndex + 1) / progressSteps.length) * 100
 
   return (
     <div className="space-y-2">
       <div className="sticky flex justify-between text-sm text-muted-foreground">
         <span>
-          Krok {currentIndex + 1} z {RESERVATION_STEPS.length}
+          Krok {safeCurrentIndex + 1} z {progressSteps.length}
         </span>
-        <span>{RESERVATION_STEPS[currentIndex]?.label}</span>
+        <span>{progressSteps[safeCurrentIndex]?.label}</span>
       </div>
 
       <Progress value={progress} />

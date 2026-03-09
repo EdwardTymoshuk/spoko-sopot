@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server'
 import { MongoClient } from 'mongodb'
 import nodemailer from 'nodemailer'
 import SMTPTransport from 'nodemailer/lib/smtp-transport'
-import { PDFDocument, StandardFonts, rgb } from 'pdf-lib'
+import { generateReservationSummaryPdf } from './pdfTemplate'
 
 type SummaryItem = { label: string; value: string }
 type SummarySection = { title: string; items: SummaryItem[] }
@@ -20,95 +20,25 @@ type ReservationSummaryPayload = {
 const isValidEmail = (email: string) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)
 const isProd = process.env.NODE_ENV === 'production'
 
-const toPdfSafeText = (value: string) =>
+const escapeHtml = (value: string) =>
   value
-    // Remove diacritics (e.g. ą -> a) while keeping base characters.
-    .normalize('NFKD')
-    .replace(/[\u0300-\u036f]/g, '')
-    // Keep only printable ASCII supported by WinAnsi fallback fonts.
-    .replace(/[^\x20-\x7E]/g, '')
-    .replace(/\s+/g, ' ')
-    .trim()
+    .replaceAll('&', '&amp;')
+    .replaceAll('<', '&lt;')
+    .replaceAll('>', '&gt;')
+    .replaceAll('"', '&quot;')
+    .replaceAll("'", '&#39;')
 
-const buildTextSummary = (sections: SummarySection[], total: number) => {
-  const lines: string[] = []
+const sectionValue = (
+  sections: SummarySection[],
+  sectionTitle: string,
+  itemLabel: string
+) =>
+  sections
+    .find((section) => section.title === sectionTitle)
+    ?.items.find((item) => item.label === itemLabel)?.value ?? '—'
 
-  lines.push('Podsumowanie oferty - Restauracja Spoko Sopot')
-  lines.push('')
-
-  for (const section of sections) {
-    lines.push(section.title)
-    for (const item of section.items) {
-      lines.push(`- ${item.label}: ${item.value}`)
-    }
-    lines.push('')
-  }
-
-  lines.push(`Suma orientacyjna: ${total} zł`)
-  return lines.join('\n')
-}
-
-const generatePdfBuffer = async (sections: SummarySection[], total: number) => {
-  const doc = await PDFDocument.create()
-  let page = doc.addPage([595.28, 841.89]) // A4 in points
-  const pageWidth = page.getWidth()
-  const marginX = 56
-  const marginTop = 56
-  const marginBottom = 56
-
-  const fontRegular = await doc.embedFont(StandardFonts.Helvetica)
-  const fontBold = await doc.embedFont(StandardFonts.HelveticaBold)
-
-  let y = page.getHeight() - marginTop
-
-  const addPageIfNeeded = (requiredHeight: number) => {
-    if (y - requiredHeight < marginBottom) {
-      page = doc.addPage([595.28, 841.89])
-      y = page.getHeight() - marginTop
-    }
-  }
-
-  const drawLine = (
-    text: string,
-    size: number,
-    opts?: { bold?: boolean; color?: [number, number, number] }
-  ) => {
-    const safeText = toPdfSafeText(text)
-    addPageIfNeeded(size + 6)
-    page.drawText(safeText, {
-      x: marginX,
-      y,
-      size,
-      font: opts?.bold ? fontBold : fontRegular,
-      color: rgb(
-        ...(opts?.color
-          ? opts.color
-          : ([0.12, 0.12, 0.12] as [number, number, number]))
-      ),
-    })
-    y -= size + 6
-  }
-
-  drawLine('Podsumowanie oferty', 20, { bold: true, color: [0.07, 0.07, 0.07] })
-  drawLine('Restauracja Spoko Sopot', 11, { color: [0.4, 0.4, 0.4] })
-  y -= 8
-
-  for (const section of sections) {
-    drawLine(section.title, 13, { bold: true, color: [0.07, 0.07, 0.07] })
-    for (const item of section.items) {
-      drawLine(`${item.label}: ${item.value}`, 10)
-    }
-    y -= 6
-  }
-
-  drawLine(`Suma orientacyjna: ${total} zł`, 14, {
-    bold: true,
-    color: [0.07, 0.07, 0.07],
-  })
-
-  const pdfBytes = await doc.save()
-  return Buffer.from(pdfBytes)
-}
+const generatePdfBuffer = async (sections: SummarySection[], total: number) =>
+  generateReservationSummaryPdf(sections, total)
 
 export async function POST(req: Request): Promise<Response> {
   try {
@@ -146,9 +76,17 @@ export async function POST(req: Request): Promise<Response> {
     const smtpPortRaw = process.env.SMTP_PORT?.trim()
     const smtpUser = process.env.EMAIL_USER?.trim()
     const smtpPass = process.env.EMAIL_PASSWORD?.trim()
-    const adminRecipient = (
-      process.env.RECIPIENT_EMAIL?.trim() || 'info@spokosopot.pl'
-    )
+    const configuredRecipient = process.env.RECIPIENT_EMAIL?.trim() || ''
+    const primaryAdminRecipient = 'info@spokosopot.pl'
+    const ccAdminRecipient =
+      configuredRecipient &&
+      configuredRecipient.toLowerCase() !== primaryAdminRecipient
+        ? configuredRecipient
+        : undefined
+    const adminFallbackRecipient =
+      process.env.ADMIN_FALLBACK_EMAIL?.trim() || 'lesia.cheff@gmail.com'
+    const adminFromAddress =
+      process.env.RESERVATION_ADMIN_FROM?.trim() || 'rezerwacja@spokosopot.pl'
 
     if (!smtpHost || !smtpPortRaw || !smtpUser || !smtpPass) {
       return NextResponse.json(
@@ -173,23 +111,107 @@ export async function POST(req: Request): Promise<Response> {
 
     const transporter = nodemailer.createTransport(transportOptions)
     await transporter.verify()
-    const summaryText = buildTextSummary(sections, total)
-    const customerBlock = [
-      `Adres e-mail: ${customerEmail}`,
-      `Imię: ${customerName || '—'}`,
-      `Telefon: ${customerPhone || '—'}`,
-      `Zgoda marketingowa: ${consentMarketing ? 'tak' : 'nie'}`,
-      '',
-    ].join('\n')
     const pdfBuffer = await generatePdfBuffer(sections, total)
 
     const pdfName = `podsumowanie-oferty-spoko-${Date.now()}.pdf`
 
-    await transporter.sendMail({
+    const managerDate = sectionValue(sections, 'Szczegóły wydarzenia', 'Data')
+    const managerHours = sectionValue(sections, 'Szczegóły wydarzenia', 'Godziny')
+    const managerAdults = sectionValue(sections, 'Szczegóły wydarzenia', 'Dorośli')
+    const managerKids03 = sectionValue(sections, 'Szczegóły wydarzenia', 'Dzieci 0-3')
+    const managerKids312 = sectionValue(sections, 'Szczegóły wydarzenia', 'Dzieci 3-12')
+
+    const customerDisplayName = customerName || 'Dzień dobry'
+    const footerHtml = `
+      <hr style="border:none;border-top:1px solid #e5e7eb;margin:28px 0 16px;" />
+      <p style="margin:0;color:#6b7280;font-size:12px;line-height:1.6;">
+        Restauracja Spoko Sopot<br/>
+        Hestii 3, 81-731 Sopot<br/>
+        tel. <a href="tel:+48530659666" style="color:#6b7280;">+48 530 659 666</a> |
+        e-mail <a href="mailto:info@spokosopot.pl" style="color:#6b7280;">info@spokosopot.pl</a>
+      </p>
+    `
+
+    const customerHtml = `
+      <div style="max-width:680px;margin:0 auto;padding:24px 20px;font-family:Arial,'Helvetica Neue',Helvetica,sans-serif;color:#111827;">
+        <h1 style="margin:0 0 14px;font-size:24px;line-height:1.25;">Podsumowanie formularza rezerwacji</h1>
+        <p style="margin:0 0 10px;font-size:15px;line-height:1.65;">
+          ${escapeHtml(customerDisplayName)}, dziękujemy za przesłanie formularza.
+        </p>
+        <p style="margin:0 0 10px;font-size:15px;line-height:1.65;">
+          W załączniku przesyłamy podsumowanie Twojej konfiguracji wydarzenia.
+        </p>
+        <p style="margin:0;font-size:15px;line-height:1.65;">
+          Skontaktujemy się z Tobą możliwie najszybciej, aby potwierdzić szczegóły.
+        </p>
+        ${footerHtml}
+      </div>
+    `
+
+    const customerText = [
+      'Podsumowanie formularza rezerwacji',
+      '',
+      `${customerDisplayName}, dziękujemy za przesłanie formularza.`,
+      'W załączniku przesyłamy podsumowanie Twojej konfiguracji wydarzenia.',
+      'Skontaktujemy się z Tobą możliwie najszybciej, aby potwierdzić szczegóły.',
+      '',
+      'Restauracja Spoko Sopot',
+      'tel. +48 530 659 666',
+      'info@spokosopot.pl',
+    ].join('\n')
+
+    const adminHtml = `
+      <div style="max-width:720px;margin:0 auto;padding:24px 20px;font-family:Arial,'Helvetica Neue',Helvetica,sans-serif;color:#111827;">
+        <h1 style="margin:0 0 12px;font-size:24px;line-height:1.25;">Nowy formularz rezerwacji</h1>
+        <p style="margin:0 0 16px;font-size:14px;color:#4b5563;">
+          Otrzymano nowe zgłoszenie przez konfigurator rezerwacji.
+        </p>
+        <table style="width:100%;border-collapse:collapse;font-size:14px;">
+          <tbody>
+            <tr><td style="padding:8px;border:1px solid #e5e7eb;background:#f9fafb;width:42%;">E-mail klienta</td><td style="padding:8px;border:1px solid #e5e7eb;">${escapeHtml(customerEmail)}</td></tr>
+            <tr><td style="padding:8px;border:1px solid #e5e7eb;background:#f9fafb;">Imię</td><td style="padding:8px;border:1px solid #e5e7eb;">${escapeHtml(customerName || '—')}</td></tr>
+            <tr><td style="padding:8px;border:1px solid #e5e7eb;background:#f9fafb;">Telefon</td><td style="padding:8px;border:1px solid #e5e7eb;">${escapeHtml(customerPhone || '—')}</td></tr>
+            <tr><td style="padding:8px;border:1px solid #e5e7eb;background:#f9fafb;">Zgoda marketingowa</td><td style="padding:8px;border:1px solid #e5e7eb;">${consentMarketing ? 'tak' : 'nie'}</td></tr>
+            <tr><td style="padding:8px;border:1px solid #e5e7eb;background:#f9fafb;">Data wydarzenia</td><td style="padding:8px;border:1px solid #e5e7eb;">${escapeHtml(managerDate)}</td></tr>
+            <tr><td style="padding:8px;border:1px solid #e5e7eb;background:#f9fafb;">Godziny</td><td style="padding:8px;border:1px solid #e5e7eb;">${escapeHtml(managerHours)}</td></tr>
+            <tr><td style="padding:8px;border:1px solid #e5e7eb;background:#f9fafb;">Dorośli</td><td style="padding:8px;border:1px solid #e5e7eb;">${escapeHtml(managerAdults)}</td></tr>
+            <tr><td style="padding:8px;border:1px solid #e5e7eb;background:#f9fafb;">Dzieci 0-3</td><td style="padding:8px;border:1px solid #e5e7eb;">${escapeHtml(managerKids03)}</td></tr>
+            <tr><td style="padding:8px;border:1px solid #e5e7eb;background:#f9fafb;">Dzieci 3-12</td><td style="padding:8px;border:1px solid #e5e7eb;">${escapeHtml(managerKids312)}</td></tr>
+            <tr><td style="padding:8px;border:1px solid #e5e7eb;background:#f9fafb;">Suma orientacyjna</td><td style="padding:8px;border:1px solid #e5e7eb;"><strong>${total} zł</strong></td></tr>
+          </tbody>
+        </table>
+        ${footerHtml}
+      </div>
+    `
+
+    const adminText = [
+      'Nowy formularz rezerwacji',
+      '',
+      `E-mail klienta: ${customerEmail}`,
+      `Imię: ${customerName || '—'}`,
+      `Telefon: ${customerPhone || '—'}`,
+      `Zgoda marketingowa: ${consentMarketing ? 'tak' : 'nie'}`,
+      '',
+      `Data wydarzenia: ${managerDate}`,
+      `Godziny: ${managerHours}`,
+      `Dorośli: ${managerAdults}`,
+      `Dzieci 0-3: ${managerKids03}`,
+      `Dzieci 3-12: ${managerKids312}`,
+      `Suma orientacyjna: ${total} zł`,
+      '',
+      'Pełne podsumowanie znajduje się w załączniku PDF.',
+      '',
+      'Restauracja Spoko Sopot',
+      'tel. +48 530 659 666',
+      'info@spokosopot.pl',
+    ].join('\n')
+
+    const customerMailInfo = await transporter.sendMail({
       from: `"Restauracja Spoko" <${smtpUser}>`,
       to: customerEmail,
-      subject: 'Podsumowanie oferty - Restauracja Spoko Sopot',
-      text: `${customerBlock}${summaryText}\n\nDziękujemy za wypełnienie formularza.`,
+      subject: 'Dziękujemy - podsumowanie formularza rezerwacji',
+      text: customerText,
+      html: customerHtml,
       attachments: [
         {
           filename: pdfName,
@@ -197,14 +219,27 @@ export async function POST(req: Request): Promise<Response> {
           contentType: 'application/pdf',
         },
       ],
+    })
+    console.info('Reservation summary customer mail', {
+      to: customerEmail,
+      accepted: customerMailInfo.accepted,
+      rejected: customerMailInfo.rejected,
+      response: customerMailInfo.response,
+      messageId: customerMailInfo.messageId,
     })
 
-    await transporter.sendMail({
-      from: `"Restauracja Spoko" <${smtpUser}>`,
-      to: adminRecipient,
+    const adminMailInfo = await transporter.sendMail({
+      from: `"Formularz rezerwacji Spoko" <${adminFromAddress}>`,
+      to: primaryAdminRecipient,
+      cc: adminCcRecipients.length > 0 ? adminCcRecipients.join(', ') : undefined,
+      envelope: {
+        from: adminFromAddress,
+        to: adminRecipients,
+      },
       replyTo: customerEmail,
-      subject: `Nowe podsumowanie oferty - ${customerEmail}`,
-      text: `${customerBlock}${summaryText}`,
+      subject: `Nowy formularz rezerwacji - ${customerEmail}`,
+      text: adminText,
+      html: adminHtml,
       attachments: [
         {
           filename: pdfName,
@@ -213,6 +248,27 @@ export async function POST(req: Request): Promise<Response> {
         },
       ],
     })
+    console.info('Reservation summary admin mail', {
+      to: primaryAdminRecipient,
+      cc: adminCcRecipients.length > 0 ? adminCcRecipients.join(', ') : undefined,
+      fallback: adminFallbackRecipient,
+      accepted: adminMailInfo.accepted,
+      rejected: adminMailInfo.rejected,
+      response: adminMailInfo.response,
+      messageId: adminMailInfo.messageId,
+    })
+
+    const customerRejected = customerMailInfo.rejected?.length ?? 0
+    if (customerRejected > 0 || (customerMailInfo.accepted?.length ?? 0) === 0) {
+      throw new Error('Serwer SMTP odrzucił wysyłkę do klienta.')
+    }
+
+    const adminRejected = adminMailInfo.rejected?.length ?? 0
+    if (adminRejected > 0 || (adminMailInfo.accepted?.length ?? 0) === 0) {
+      throw new Error(
+        `Serwer SMTP odrzucił wysyłkę do restauracji (${primaryAdminRecipient}).`
+      )
+    }
 
     if (consentMarketing && process.env.MONGODB_URI) {
       try {
@@ -256,3 +312,15 @@ export async function POST(req: Request): Promise<Response> {
     )
   }
 }
+    const adminRecipients = Array.from(
+      new Set(
+        [
+          primaryAdminRecipient,
+          ccAdminRecipient,
+          adminFallbackRecipient,
+        ].filter(Boolean)
+      )
+    )
+    const adminCcRecipients = adminRecipients.filter(
+      (address) => address !== primaryAdminRecipient
+    )

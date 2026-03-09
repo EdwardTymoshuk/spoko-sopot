@@ -3,6 +3,8 @@
 import type { ReservationDraft } from '@/app/types/reservation'
 import { createContext, useContext, useEffect, useState } from 'react'
 import {
+  clearReservationDraft,
+  createDefaultReservationDraft,
   getReservationDraft,
   saveReservationDraft,
 } from '../../reservationStorage'
@@ -13,6 +15,7 @@ type ReservationDraftContextValue = {
     key: K,
     value: ReservationDraft[K]
   ) => void
+  resetDraft: () => void
   setDraft: React.Dispatch<React.SetStateAction<ReservationDraft>>
 }
 
@@ -42,8 +45,15 @@ export const ReservationDraftProvider = ({
     }))
   }
 
+  const resetDraft = () => {
+    clearReservationDraft()
+    setDraft(createDefaultReservationDraft())
+  }
+
   return (
-    <ReservationDraftContext.Provider value={{ draft, updateDraft, setDraft }}>
+    <ReservationDraftContext.Provider
+      value={{ draft, updateDraft, resetDraft, setDraft }}
+    >
       {children}
     </ReservationDraftContext.Provider>
   )

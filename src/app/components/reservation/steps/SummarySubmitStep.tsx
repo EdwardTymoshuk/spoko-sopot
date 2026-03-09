@@ -25,10 +25,16 @@ type SummaryItem = { label: string; value: string }
 type SummarySection = { title: string; items: SummaryItem[] }
 
 const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+const specialDietLabels: Record<string, string> = {
+  vegetarian: 'wegetariańska',
+  lactose_free: 'bez laktozy',
+  gluten_free: 'bez glutenu',
+  other: 'inne potrzeby',
+}
 
 const SummarySubmitStep = () => {
   const router = useRouter()
-  const { draft } = useReservationDraft()
+  const { draft, resetDraft } = useReservationDraft()
   const pricing = useReservationPricing(draft)
   const [email, setEmail] = useState('')
   const [name, setName] = useState('')
@@ -68,6 +74,51 @@ const SummarySubmitStep = () => {
         value: String(draft.children3to12Count ?? 0),
       },
     ]
+
+    if (draft.childrenMenuOption) {
+      details.push({
+        label: 'Menu dzieci 3-12',
+        value:
+          draft.childrenMenuOption === 'half_package'
+            ? 'jak dorośli (50% pakietu)'
+            : 'menu dziecięce',
+      })
+    }
+
+    if (draft.cakeOption) {
+      details.push({
+        label: 'Tort',
+        value:
+          draft.cakeOption === 'own_cake'
+            ? 'własny tort'
+            : draft.cakeOption === 'need_bakery_contact'
+            ? 'prośba o kontakt do cukierni'
+            : 'bez tortu',
+      })
+    }
+
+    if (draft.hallExclusivity) {
+      details.push({
+        label: 'Wyłączność sali',
+        value: draft.hallExclusivity === 'yes' ? 'tak' : 'nie',
+      })
+    }
+
+    if ((draft.specialDiets?.length ?? 0) > 0) {
+      details.push({
+        label: 'Potrzeby żywieniowe',
+        value: draft.specialDiets
+          ?.map((diet) => specialDietLabels[diet] ?? diet)
+          .join(', '),
+      })
+    }
+
+    if (draft.specialDiets?.includes('other') && draft.specialDietComment?.trim()) {
+      details.push({
+        label: 'Szczegóły potrzeb żywieniowych',
+        value: draft.specialDietComment.trim(),
+      })
+    }
 
     const pricingItems: SummaryItem[] = []
     if (selectedPackage) {
@@ -179,6 +230,7 @@ const SummarySubmitStep = () => {
         throw new Error(payload?.error ?? 'Nie udało się wysłać podsumowania.')
       }
 
+      resetDraft()
       router.push('/reservation?step=thank-you')
     } catch (e) {
       setStatus('error')

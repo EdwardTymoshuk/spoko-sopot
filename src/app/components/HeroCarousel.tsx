@@ -33,8 +33,12 @@ const HeroCarousel = () => {
     return (
       desktopUrl.includes('valentin') ||
       desktopUrl.includes('walentyn') ||
+      desktopUrl.includes('news/valentines-day') ||
+      desktopUrl.includes('valentines-main') ||
       mobileUrl.includes('valentin') ||
-      mobileUrl.includes('walentyn')
+      mobileUrl.includes('walentyn') ||
+      mobileUrl.includes('news/valentines-day') ||
+      mobileUrl.includes('valentines-main')
     )
   }
 

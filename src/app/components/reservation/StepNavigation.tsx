@@ -21,7 +21,7 @@ const StepNavigation = () => {
   const currentIndex = RESERVATION_STEPS.findIndex((s) => s.key === step)
   if (step === 'thank-you') return null
 
-  const totalSteps = RESERVATION_STEPS.length
+  const totalSteps = RESERVATION_STEPS.filter((s) => s.key !== 'thank-you').length
   const currentStep = RESERVATION_STEPS[currentIndex]
   const isLastStep = currentIndex === totalSteps - 1
   const isActionStep = step === 'summary'

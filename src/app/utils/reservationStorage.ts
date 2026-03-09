@@ -16,19 +16,29 @@ const DEFAULT_DRAFT: ReservationDraft = {
   extensionHours: 0,
 }
 
+export const createDefaultReservationDraft = (): ReservationDraft => ({
+  ...DEFAULT_DRAFT,
+})
+
 export const getReservationDraft = (): ReservationDraft => {
   if (typeof window === 'undefined') {
-    return DEFAULT_DRAFT
+    return createDefaultReservationDraft()
   }
 
   try {
     const raw = localStorage.getItem(STORAGE_KEY)
-    return raw ? { ...DEFAULT_DRAFT, ...JSON.parse(raw) } : DEFAULT_DRAFT
+    return raw
+      ? { ...DEFAULT_DRAFT, ...JSON.parse(raw) }
+      : createDefaultReservationDraft()
   } catch {
-    return DEFAULT_DRAFT
+    return createDefaultReservationDraft()
   }
 }
 
 export const saveReservationDraft = (data: ReservationDraft) => {
   localStorage.setItem(STORAGE_KEY, JSON.stringify(data))
+}
+
+export const clearReservationDraft = () => {
+  localStorage.removeItem(STORAGE_KEY)
 }
