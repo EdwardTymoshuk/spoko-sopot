@@ -87,6 +87,18 @@ export async function POST(req: Request): Promise<Response> {
       process.env.ADMIN_FALLBACK_EMAIL?.trim() || 'lesia.cheff@gmail.com'
     const adminFromAddress =
       process.env.RESERVATION_ADMIN_FROM?.trim() || 'rezerwacja@spokosopot.pl'
+    const adminRecipients = Array.from(
+      new Set(
+        [
+          primaryAdminRecipient,
+          ccAdminRecipient,
+          adminFallbackRecipient,
+        ].filter((value): value is string => Boolean(value))
+      )
+    )
+    const adminCcRecipients = adminRecipients.filter(
+      (address) => address !== primaryAdminRecipient
+    )
 
     if (!smtpHost || !smtpPortRaw || !smtpUser || !smtpPass) {
       return NextResponse.json(
@@ -312,15 +324,3 @@ export async function POST(req: Request): Promise<Response> {
     )
   }
 }
-    const adminRecipients = Array.from(
-      new Set(
-        [
-          primaryAdminRecipient,
-          ccAdminRecipient,
-          adminFallbackRecipient,
-        ].filter(Boolean)
-      )
-    )
-    const adminCcRecipients = adminRecipients.filter(
-      (address) => address !== primaryAdminRecipient
-    )

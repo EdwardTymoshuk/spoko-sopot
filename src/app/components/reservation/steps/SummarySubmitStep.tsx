@@ -107,9 +107,10 @@ const SummarySubmitStep = () => {
     if ((draft.specialDiets?.length ?? 0) > 0) {
       details.push({
         label: 'Potrzeby żywieniowe',
-        value: draft.specialDiets
+        value:
+          draft.specialDiets
           ?.map((diet) => specialDietLabels[diet] ?? diet)
-          .join(', '),
+          .join(', ') ?? '',
       })
     }
 

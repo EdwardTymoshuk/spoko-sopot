@@ -213,7 +213,7 @@ const ReservationSummaryPdf = ({
             Data wygenerowania: {new Date().toLocaleString('pl-PL')}
           </Text>
         </View>
-        {logoDataUrl ? <Image style={styles.logo} src={logoDataUrl} alt="" /> : null}
+        {logoDataUrl ? <Image style={styles.logo} src={logoDataUrl} /> : null}
       </View>
 
       {sections.map((section) => (
