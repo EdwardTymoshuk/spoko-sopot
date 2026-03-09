@@ -180,14 +180,14 @@ const styles = StyleSheet.create({
 
 const sanitize = (value: string) =>
   value
-    .replace(/\p{Extended_Pictographic}/gu, '')
-    .replace(/[^\p{L}\p{N}\p{P}\p{Zs}]/gu, '')
+    // Keep common Latin and Central European chars, strip emojis/symbol noise.
+    .replace(/[^\x20-\x7E\u00A0-\u024F\u1E00-\u1EFF]/g, '')
     .replace(/\s+/g, ' ')
     .trim()
 
 const cleanLabel = (value: string) =>
   sanitize(value)
-    .replace(/^[^\p{L}\p{N}]+/u, '')
+    .replace(/^[^A-Za-z0-9\u00C0-\u024F]+/, '')
     .trim()
 
 const ReservationSummaryPdf = ({

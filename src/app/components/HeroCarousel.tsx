@@ -9,117 +9,26 @@ import {
 } from '@/app/components/ui/carousel'
 import { CAROUSEL_MAIN_IMAGES } from '@/config'
 import Image from 'next/image'
-import { useEffect, useState } from 'react'
+import { useMemo } from 'react'
 import { RxDoubleArrowDown } from 'react-icons/rx'
 
 interface Banner {
   desktopImageUrl: string
   mobileImageUrl?: string
-  createdAt?: string
 }
 
 const HeroCarousel = () => {
-  const [banners, setBanners] = useState<Banner[]>([])
-  const [isLoading, setIsLoading] = useState(true)
-
-  const extractNumber = (url: string) => {
-    const match = url.match(/(\d+)(?=\.\w+$)/)
-    return match ? parseInt(match[1], 10) : 0
-  }
-
-  const isValentineBanner = (banner: Banner) => {
-    const desktopUrl = banner.desktopImageUrl?.toLowerCase() ?? ''
-    const mobileUrl = banner.mobileImageUrl?.toLowerCase() ?? ''
-    return (
-      desktopUrl.includes('valentin') ||
-      desktopUrl.includes('walentyn') ||
-      desktopUrl.includes('news/valentines-day') ||
-      desktopUrl.includes('valentines-main') ||
-      mobileUrl.includes('valentin') ||
-      mobileUrl.includes('walentyn') ||
-      mobileUrl.includes('news/valentines-day') ||
-      mobileUrl.includes('valentines-main')
-    )
-  }
-
-  useEffect(() => {
-    const fetchBanners = async () => {
-      try {
-        const response = await fetch('/api/main-banners')
-        if (!response.ok) throw new Error('Failed to fetch banners')
-        const data: Banner[] = await response.json()
-
-        const sortedBanners = data
-          .filter((banner) => !isValentineBanner(banner))
-          .sort(
-          (a, b) =>
-            (b.createdAt ? new Date(b.createdAt).getTime() : 0) -
-            (a.createdAt ? new Date(a.createdAt).getTime() : 0)
-        )
-
-        if (sortedBanners.length === 0) {
-          setBanners(
-            CAROUSEL_MAIN_IMAGES.map((img) => ({
-              desktopImageUrl: img.src,
-              mobileImageUrl: img.srcMobile,
-            })).sort(
-              (a, b) =>
-                extractNumber(b.desktopImageUrl) -
-                extractNumber(a.desktopImageUrl)
-            )
-          )
-        } else {
-          setBanners(
-            [
-              ...sortedBanners,
-              ...CAROUSEL_MAIN_IMAGES.filter(
-                (staticImg) =>
-                  !sortedBanners.some(
-                    (b) => b.desktopImageUrl === staticImg.src
-                  )
-              ).map((img) => ({
-                desktopImageUrl: img.src,
-                mobileImageUrl: img.srcMobile,
-              })),
-            ].sort(
-              (a, b) =>
-                extractNumber(b.desktopImageUrl) -
-                extractNumber(a.desktopImageUrl)
-            )
-          )
-        }
-      } catch {
-        setBanners(
-          CAROUSEL_MAIN_IMAGES.map((img) => ({
-            desktopImageUrl: img.src,
-            mobileImageUrl: img.srcMobile,
-          })).sort(
-            (a, b) =>
-              extractNumber(b.desktopImageUrl) -
-              extractNumber(a.desktopImageUrl)
-          )
-        )
-      } finally {
-        setIsLoading(false)
-      }
-    }
-
-    fetchBanners()
-  }, [])
+  const banners: Banner[] = useMemo(
+    () =>
+      CAROUSEL_MAIN_IMAGES.map((img) => ({
+        desktopImageUrl: img.src,
+        mobileImageUrl: img.srcMobile,
+      })),
+    []
+  )
 
   // ------------------------------------------------------
   // SKELETON (full screen) while banners are loading
-  // ------------------------------------------------------
-  if (isLoading) {
-    return (
-      <div className="h-screen w-full animate-pulse bg-muted flex items-center justify-center">
-        <div className="w-full h-1/2 bg-gray-300/30 rounded-xl" />
-      </div>
-    )
-  }
-
-  // ------------------------------------------------------
-  // RENDER CAROUSEL
   // ------------------------------------------------------
   return (
     <div className="flex-grow relative overflow-hidden">
