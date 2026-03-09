@@ -4,22 +4,32 @@ import { Button } from '@/app/components/ui/button'
 import { Card } from '@/app/components/ui/card'
 import Image from 'next/image'
 import { useRouter } from 'next/navigation'
+import { useState } from 'react'
 import { FiMail, FiPhoneCall } from 'react-icons/fi'
 import { HiArrowRight } from 'react-icons/hi2'
 import { MdOutlineHome } from 'react-icons/md'
 
 const ThankYouStep = () => {
   const router = useRouter()
+  const [isImageLoaded, setIsImageLoaded] = useState(false)
 
   return (
     <div className="min-h-[100dvh] md:min-h-full flex flex-col md:flex-row w-full bg-background overflow-hidden">
       <div className="relative h-[40vh] md:h-auto md:min-h-full md:w-2/5">
+        <div
+          className={`absolute inset-0 bg-gradient-to-br from-zinc-100 via-zinc-200/70 to-zinc-100 transition-opacity duration-500 ${
+            isImageLoaded ? 'opacity-0' : 'opacity-100'
+          }`}
+        />
         <Image
           fill
           src="/img/offer/IMG_6720.jpg"
           alt="Wnętrze restauracji Spoko"
-          className="object-cover"
+          className={`object-cover transition-opacity duration-500 ${
+            isImageLoaded ? 'opacity-100' : 'opacity-0'
+          }`}
           priority
+          onLoadingComplete={() => setIsImageLoaded(true)}
         />
         <div className="absolute inset-0 bg-gradient-to-t from-black/25 via-black/10 to-white/5 md:from-black/15 md:via-transparent md:to-transparent" />
       </div>

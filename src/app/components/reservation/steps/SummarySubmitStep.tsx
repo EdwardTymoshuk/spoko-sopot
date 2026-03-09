@@ -25,12 +25,28 @@ type SummaryItem = { label: string; value: string }
 type SummarySection = { title: string; items: SummaryItem[] }
 
 const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+const THANK_YOU_IMAGE = '/img/offer/IMG_6720.jpg'
 const specialDietLabels: Record<string, string> = {
   vegetarian: 'wegetariańska',
   lactose_free: 'bez laktozy',
   gluten_free: 'bez glutenu',
   other: 'inne potrzeby',
 }
+
+const preloadImage = (src: string) =>
+  new Promise<void>((resolve) => {
+    if (typeof window === 'undefined') return resolve()
+
+    const img = new window.Image()
+    const done = () => resolve()
+
+    img.onload = done
+    img.onerror = done
+    img.src = src
+
+    // Never block the flow for too long in case of slow network.
+    window.setTimeout(done, 2500)
+  })
 
 const SummarySubmitStep = () => {
   const router = useRouter()
@@ -232,6 +248,7 @@ const SummarySubmitStep = () => {
       }
 
       resetDraft()
+      await preloadImage(THANK_YOU_IMAGE)
       router.push('/reservation?step=thank-you')
     } catch (e) {
       setStatus('error')
