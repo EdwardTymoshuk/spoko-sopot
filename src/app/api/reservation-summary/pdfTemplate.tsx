@@ -23,6 +23,7 @@ const registerFonts = () => {
 
   const regularCandidates = [
     process.env.PDF_FONT_REGULAR_PATH?.trim() || '',
+    path.join(process.cwd(), 'public', 'fonts', 'Arial.ttf'),
     path.join(process.cwd(), 'public', 'fonts', 'DejaVuSans.ttf'),
     path.join(process.cwd(), 'public', 'fonts', 'NotoSans-Regular.ttf'),
     '/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf',
@@ -33,6 +34,7 @@ const registerFonts = () => {
 
   const boldCandidates = [
     process.env.PDF_FONT_BOLD_PATH?.trim() || '',
+    path.join(process.cwd(), 'public', 'fonts', 'Arial-Bold.ttf'),
     path.join(process.cwd(), 'public', 'fonts', 'DejaVuSans-Bold.ttf'),
     path.join(process.cwd(), 'public', 'fonts', 'NotoSans-Bold.ttf'),
     '/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf',
