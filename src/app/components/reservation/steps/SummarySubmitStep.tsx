@@ -54,7 +54,7 @@ const preloadImage = (src: string) =>
 
 const SummarySubmitStep = () => {
   const router = useRouter()
-  const { draft, resetDraft } = useReservationDraft()
+  const { draft, resetDraft, updateDraft } = useReservationDraft()
   const pricing = useReservationPricing(draft)
   const [email, setEmail] = useState('')
   const [name, setName] = useState('')
