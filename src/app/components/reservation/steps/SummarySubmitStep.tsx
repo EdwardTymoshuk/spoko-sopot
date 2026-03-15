@@ -35,7 +35,7 @@ const specialDietLabels: Record<string, string> = {
 }
 
 const stripLeadingEmoji = (value: string) =>
-  value.replace(/^[\p{Extended_Pictographic}\p{Emoji_Presentation}\uFE0F\u200D\s"„”]+/u, '')
+  value.replace(/^[^A-Za-z0-9ĄĆĘŁŃÓŚŹŻąćęłńóśźż]+/, '')
 
 const preloadImage = (src: string) =>
   new Promise<void>((resolve) => {

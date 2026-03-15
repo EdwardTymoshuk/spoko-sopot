@@ -15,7 +15,7 @@ import {
 } from '@/lib/consts'
 
 const stripLeadingEmoji = (value: string) =>
-  value.replace(/^[\p{Extended_Pictographic}\p{Emoji_Presentation}\uFE0F\u200D\s"„”]+/u, '')
+  value.replace(/^[^A-Za-z0-9ĄĆĘŁŃÓŚŹŻąćęłńóśźż]+/, '')
 
 const ReservationSummaryContent = () => {
   const { draft } = useReservationDraft()
