@@ -63,6 +63,7 @@ export interface ReservationDraft {
   servingStyle?: ServingStyle
   specialDiets?: SpecialDiet[]
   specialDietComment?: string
+  summaryNotes?: string | null
 
   // Selected cold plate sets (setId -> quantity)
   coldPlateSelections?: ColdPlateSelection

@@ -73,7 +73,7 @@ const DessertsStep = () => {
           <div className="space-y-1">
             <h3 className="text-lg md:text-xl font-semibold">Patery ciast</h3>
             <p className="text-sm text-muted-foreground">
-              Sernik, szarlotka i brownie w formie gotowych pater.
+              Sernik, szarlotka i brownie podawane ze świeżymi owocami.
             </p>
           </div>
 

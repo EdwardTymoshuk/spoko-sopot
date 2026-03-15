@@ -109,7 +109,8 @@ const AlcoholStep = () => {
           Pozostałe alkohole mocne można zamówić z naszej regularnej karty.
         </p>
         <p className="mt-1 text-sm md:text-base font-semibold text-primary">
-          Na przyjęcia okolicznościowe obowiązuje 20% zniżki.
+          Dla Gości przyjęcia przygotowaliśmy 20% rabatu na napoje, kawy i
+          herbaty.
         </p>
       </Card>
 

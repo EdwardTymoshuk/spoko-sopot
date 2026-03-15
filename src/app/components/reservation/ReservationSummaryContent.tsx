@@ -14,6 +14,9 @@ import {
   SOFT_DRINK_OPTIONS,
 } from '@/lib/consts'
 
+const stripLeadingEmoji = (value: string) =>
+  value.replace(/^[\p{Extended_Pictographic}\p{Emoji_Presentation}\uFE0F\u200D\s"„”]+/u, '')
+
 const ReservationSummaryContent = () => {
   const { draft } = useReservationDraft()
   const specialDietLabels: Record<string, string> = {
@@ -170,6 +173,14 @@ const ReservationSummaryContent = () => {
               <span className="text-right">{draft.specialDietComment.trim()}</span>
             </div>
           )}
+        {draft.summaryNotes?.trim() && (
+          <div className="flex justify-between items-start gap-3">
+            <span>Uwagi</span>
+            <span className="font-medium text-right whitespace-pre-wrap">
+              {draft.summaryNotes.trim()}
+            </span>
+          </div>
+        )}
 
         <Separator />
 
@@ -219,7 +230,7 @@ const ReservationSummaryContent = () => {
                 key={set.id}
                 className="flex justify-between text-xs text-muted-foreground"
               >
-                <span>{set.title}</span>
+                <span>{stripLeadingEmoji(set.title)}</span>
                 <span>x{draft.coldPlateSelections?.[set.id] ?? 0}</span>
               </div>
             ))}
@@ -229,7 +240,7 @@ const ReservationSummaryContent = () => {
                 key={salad.id}
                 className="flex justify-between text-xs text-muted-foreground"
               >
-                <span>{salad.title}</span>
+                <span>{stripLeadingEmoji(salad.title)}</span>
                 <span>x{draft.coldPlateSaladSelections?.[salad.id] ?? 0}</span>
               </div>
             ))}
@@ -251,7 +262,7 @@ const ReservationSummaryContent = () => {
                 key={platter.id}
                 className="flex justify-between text-xs text-muted-foreground"
               >
-                <span>{platter.title}</span>
+                <span>{stripLeadingEmoji(platter.title)}</span>
                 <span>x{draft.premiumMainSelections?.[platter.id] ?? 0}</span>
               </div>
             ))}
@@ -261,7 +272,7 @@ const ReservationSummaryContent = () => {
                 key={option.id}
                 className="flex justify-between text-xs text-muted-foreground"
               >
-                <span>{option.label}</span>
+                <span>{stripLeadingEmoji(option.label)}</span>
                 <span>
                   x{draft.premiumMainSideSelections?.[option.id] ?? 0} (+{(draft.premiumMainSideSelections?.[option.id] ?? 0) * option.price} zł)
                 </span>
@@ -283,7 +294,7 @@ const ReservationSummaryContent = () => {
                 key={option.id}
                 className="flex justify-between text-xs text-muted-foreground"
               >
-                <span>{option.title}</span>
+                <span>{stripLeadingEmoji(option.title)}</span>
                 <span>x{draft.dessertSelections?.[option.id] ?? 0}</span>
               </div>
             ))}
@@ -303,7 +314,7 @@ const ReservationSummaryContent = () => {
                 key={option.id}
                 className="flex justify-between text-xs text-muted-foreground"
               >
-                <span>{option.title}</span>
+                <span>{stripLeadingEmoji(option.title)}</span>
                 <span>x{draft.softDrinkSelections?.[option.id] ?? 0}</span>
               </div>
             ))}
@@ -323,7 +334,7 @@ const ReservationSummaryContent = () => {
                 key={option.id}
                 className="flex justify-between text-xs text-muted-foreground"
               >
-                <span>{option.title}</span>
+                <span>{stripLeadingEmoji(option.title)}</span>
                 <span>x{draft.alcoholSelections?.[option.id] ?? 0}</span>
               </div>
             ))}

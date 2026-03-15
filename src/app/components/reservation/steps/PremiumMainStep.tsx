@@ -106,11 +106,6 @@ const PremiumMainStep = () => {
             Dla {adults} osób dorosłych i {children3to12} dzieci w wieku 3-12
             lat polecamy minimum {minPlatters} {platterWord}.
           </p>
-          <p className="text-xs text-muted-foreground">
-            Krok jest opcjonalny. Po wybraniu półmisków, dla każdego wybranego
-            rodzaju obowiązuje minimum {minPlatters} {platterWord}. Dodatki
-            (ziemniaki, warzywa, surówki) można dobierać dowolnie.
-          </p>
           {hasAnySelection && isAnyBelowMin && (
             <p className="text-sm text-destructive">
               Dla tej liczby gości wymagane minimum {minPlatters} {platterWord}
@@ -149,7 +144,7 @@ const PremiumMainStep = () => {
                   )}
                 </div>
 
-                <div className="flex items-center justify-between border-t pt-4">
+                <div className="flex items-center justify-between gap-4 border-t pt-4">
                   <div>
                     <p className="text-sm text-muted-foreground">
                       cena za półmisek
@@ -157,7 +152,7 @@ const PremiumMainStep = () => {
                     <p className="font-semibold">{platter.price} zł</p>
                   </div>
 
-                  <div className="space-y-2 text-right">
+                  <div className="shrink-0">
                     <div className="flex items-center gap-2 rounded-lg border px-2 py-1">
                       <Button
                         type="button"
@@ -188,11 +183,6 @@ const PremiumMainStep = () => {
                         <FiPlus className="h-4 w-4" />
                       </Button>
                     </div>
-                    {qty > 0 && (
-                      <p className="text-xs text-muted-foreground">
-                        Minimum dla tej pozycji: {minPlatters} {platterWord}
-                      </p>
-                    )}
                   </div>
                 </div>
               </Card>

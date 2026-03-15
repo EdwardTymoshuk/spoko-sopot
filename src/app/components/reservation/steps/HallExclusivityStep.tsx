@@ -37,10 +37,14 @@ const HallExclusivityStep = () => {
       <Card className="p-5 md:p-6 space-y-4">
         <p className="text-lg md:text-xl font-semibold">Jak to działa?</p>
         <p className="text-sm md:text-base text-muted-foreground">
-          Przy przyjęciach do 40 osób standardowo nie zamykamy sali na
+          Przy przyjęciach do 35 osób standardowo nie zamykamy sali na
           wyłączność. W restauracji mogą przebywać również inni goście, a Twoje
           przyjęcie oddzielamy dekoracjami, aby zapewnić większy komfort i
           intymność.
+        </p>
+        <p className="text-sm md:text-base text-muted-foreground">
+          Jeżeli zależy Ci na tym, żeby mieć prywatny event, istnieje możliwość
+          wyłączności sali za dodatkową opłatą.
         </p>
       </Card>
 
@@ -86,14 +90,19 @@ const HallExclusivityStep = () => {
 
       <Card className="p-5 md:p-6 space-y-3 border-warning/35 bg-warning/10">
         <p className="text-base md:text-lg font-semibold text-warning">
-          Ważna informacja o naliczaniu
+          Jak liczymy wyłączność sali?
         </p>
         <p className="text-sm md:text-base text-warning">
-          Wynajęcie sali na wyłączność liczymy maksymalnie do godziny 19:00.
-          Po 19:00 nie naliczamy już kosztu wyłączności sali.
+          Chcemy, aby organizacja przyjęcia była dla Państwa jak najbardziej
+          przejrzysta i komfortowa.
         </p>
         <p className="text-sm md:text-base text-warning">
-          Po 19:00 płacisz wyłącznie za przedłużenie godzin przyjęcia.
+          Restauracja standardowo pracuje do godziny 19:00, dlatego opłatę za
+          wyłączność sali naliczamy maksymalnie do tej godziny.
+        </p>
+        <p className="text-sm md:text-base text-warning">
+          Po 19:00 sala pozostaje już naturalnie do dyspozycji gości przyjęcia
+          bez dodatkowej opłaty za wyłączność.
         </p>
       </Card>
 
@@ -102,16 +111,19 @@ const HallExclusivityStep = () => {
           Dlaczego wyłączność liczymy tylko do 19:00?
         </p>
         <p className="text-sm md:text-base text-primary/90">
-          Ostatnią godzinę pracy przeznaczamy już wyłącznie na obsługę gości
-          obecnych w lokalu i nie przyjmujemy w tym czasie nowych rezerwacji.
+          Restauracja standardowo pracuje do godziny 19:00, dlatego opłatę za
+          wyłączność sali naliczamy maksymalnie do tej godziny.
         </p>
         <p className="text-sm md:text-base text-primary/90">
-          Dzięki temu, organizując przyjęcie np. 15:00-20:00, płacisz za 4
-          godziny wyłączności, a nie za 5.
+          Standardowy czas trwania przyjęcia to 16:00-21:00.
+        </p>
+        <p className="text-sm md:text-base text-primary/90">
+          Po godzinie 19:00 sala pozostaje już do wyłącznej dyspozycji gości
+          przyjęcia bez dodatkowej opłaty za wyłączność - uznajemy, że w tym
+          czasie i tak obsługujemy już tylko Państwa wydarzenie.
         </p>
         <p className="text-sm md:text-base font-semibold text-primary">
-          Wyłączność sali i opłata za dodatkowe godziny przyjęcia nie dublują
-          się po 19:00.
+          Dodatkowe godziny przyjęcia naliczamy dopiero po 21:00.
         </p>
       </Card>
 

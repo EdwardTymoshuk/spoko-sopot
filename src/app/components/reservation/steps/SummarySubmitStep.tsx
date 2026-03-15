@@ -5,6 +5,7 @@ import { Button } from '@/app/components/ui/button'
 import { Card } from '@/app/components/ui/card'
 import { Checkbox } from '@/app/components/ui/checkbox'
 import { Input } from '@/app/components/ui/input'
+import { Textarea } from '@/app/components/ui/textarea'
 import { useReservationDraft } from '@/app/utils/hooks/reservation/ReservationDraftContext'
 import { useReservationPricing } from '@/app/utils/hooks/reservation/useReservationPricing'
 import {
@@ -33,6 +34,9 @@ const specialDietLabels: Record<string, string> = {
   other: 'inne potrzeby',
 }
 
+const stripLeadingEmoji = (value: string) =>
+  value.replace(/^[\p{Extended_Pictographic}\p{Emoji_Presentation}\uFE0F\u200D\s"„”]+/u, '')
+
 const preloadImage = (src: string) =>
   new Promise<void>((resolve) => {
     if (typeof window === 'undefined') return resolve()
@@ -55,6 +59,7 @@ const SummarySubmitStep = () => {
   const [email, setEmail] = useState('')
   const [name, setName] = useState('')
   const [phone, setPhone] = useState('')
+  const [notes, setNotes] = useState(draft.summaryNotes ?? '')
   const [consentData, setConsentData] = useState(false)
   const [consentMarketing, setConsentMarketing] = useState(false)
   const [status, setStatus] = useState<'idle' | 'sending' | 'error'>('idle')
@@ -136,6 +141,12 @@ const SummarySubmitStep = () => {
         value: draft.specialDietComment.trim(),
       })
     }
+    if (notes.trim()) {
+      details.push({
+        label: 'Uwagi',
+        value: notes.trim(),
+      })
+    }
 
     const pricingItems: SummaryItem[] = []
     if (selectedPackage) {
@@ -172,33 +183,33 @@ const SummarySubmitStep = () => {
 
     COLD_PLATE_SETS.forEach((item) => {
       const qty = draft.coldPlateSelections?.[item.id] ?? 0
-      if (qty > 0) selections.push({ label: item.title, value: `x${qty}` })
+      if (qty > 0) selections.push({ label: stripLeadingEmoji(item.title), value: `x${qty}` })
     })
     COLD_PLATE_SALADS.forEach((item) => {
       const qty = draft.coldPlateSaladSelections?.[item.id] ?? 0
-      if (qty > 0) selections.push({ label: item.title, value: `x${qty}` })
+      if (qty > 0) selections.push({ label: stripLeadingEmoji(item.title), value: `x${qty}` })
     })
     PREMIUM_MAIN_PLATTERS.forEach((item) => {
       const qty = draft.premiumMainSelections?.[item.id] ?? 0
-      if (qty > 0) selections.push({ label: item.title, value: `x${qty}` })
+      if (qty > 0) selections.push({ label: stripLeadingEmoji(item.title), value: `x${qty}` })
     })
     PREMIUM_MAIN_SIDE_OPTIONS.forEach((section) => {
       section.options.forEach((option) => {
         const qty = draft.premiumMainSideSelections?.[option.id] ?? 0
-        if (qty > 0) selections.push({ label: option.label, value: `x${qty}` })
+        if (qty > 0) selections.push({ label: stripLeadingEmoji(option.label), value: `x${qty}` })
       })
     })
     DESSERT_OPTIONS.forEach((item) => {
       const qty = draft.dessertSelections?.[item.id] ?? 0
-      if (qty > 0) selections.push({ label: item.title, value: `x${qty}` })
+      if (qty > 0) selections.push({ label: stripLeadingEmoji(item.title), value: `x${qty}` })
     })
     SOFT_DRINK_OPTIONS.forEach((item) => {
       const qty = draft.softDrinkSelections?.[item.id] ?? 0
-      if (qty > 0) selections.push({ label: item.title, value: `x${qty}` })
+      if (qty > 0) selections.push({ label: stripLeadingEmoji(item.title), value: `x${qty}` })
     })
     ALCOHOL_OPTIONS.forEach((item) => {
       const qty = draft.alcoholSelections?.[item.id] ?? 0
-      if (qty > 0) selections.push({ label: item.title, value: `x${qty}` })
+      if (qty > 0) selections.push({ label: stripLeadingEmoji(item.title), value: `x${qty}` })
     })
 
     const result: SummarySection[] = [
@@ -211,7 +222,7 @@ const SummarySubmitStep = () => {
     }
 
     return result
-  }, [draft, pricing])
+  }, [draft, notes, pricing])
 
   const sendSummary = async () => {
     setError(null)
@@ -235,6 +246,7 @@ const SummarySubmitStep = () => {
           customerEmail: email.trim(),
           customerName: name.trim() || null,
           customerPhone: phone.trim() || null,
+          customerNotes: notes.trim() || null,
           consentDataProcessing: consentData,
           consentMarketing,
           total: pricing.total,
@@ -312,6 +324,23 @@ const SummarySubmitStep = () => {
               placeholder="np. jan.kowalski@gmail.com"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
+            />
+          </div>
+
+          <div className="space-y-2">
+            <label htmlFor="summary-notes" className="text-sm font-medium">
+              Uwagi (opcjonalnie)
+            </label>
+            <Textarea
+              id="summary-notes"
+              placeholder="Dodaj dodatkowe informacje do rezerwacji"
+              value={notes}
+              onChange={(e) => {
+                const value = e.target.value
+                setNotes(value)
+                updateDraft('summaryNotes', value || null)
+              }}
+              rows={4}
             />
           </div>
 

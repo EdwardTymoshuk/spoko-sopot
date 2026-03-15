@@ -513,7 +513,7 @@ export const COLD_PLATE_SETS: ColdPlateSet[] = [
   {
     id: 'bruschetta',
     title: '🧀 Set Bruschett',
-    price: 199,
+    price: 69,
     description: [
       'Bruschetta z oscypkiem i żurawiną – 3 szt.',
       'Bruschetta z karmelizowaną gruszką i gorgonzolą – 3 szt.',
@@ -523,7 +523,7 @@ export const COLD_PLATE_SETS: ColdPlateSet[] = [
   {
     id: 'tatar',
     title: '🐟 Set Słoików Tatarów',
-    price: 249,
+    price: 109,
     description: [
       'Tatar z łososia – 200 g',
       'Tatar wołowy – 200 g',
@@ -533,7 +533,7 @@ export const COLD_PLATE_SETS: ColdPlateSet[] = [
   {
     id: 'tartaletki',
     title: '🍰 Set Mini Tartaletek',
-    price: 179,
+    price: 69,
     description: [
       'z pastą z łososia – 6 szt.',
       'z pastą z makreli – 6 szt.',
@@ -543,7 +543,7 @@ export const COLD_PLATE_SETS: ColdPlateSet[] = [
   {
     id: 'mini-burgery',
     title: '🍔 Set Mini Burgerów',
-    price: 229,
+    price: 149,
     description: [
       'mini burger z kurczakiem – 6 szt.',
       'mini burger z dorszem – 6 szt.',
@@ -552,7 +552,7 @@ export const COLD_PLATE_SETS: ColdPlateSet[] = [
   {
     id: 'krewetki',
     title: '🔥 Krewetki z ogniem',
-    price: 269,
+    price: 62,
     description: [
       'krewetki smażone w sosie autorskim – 8 szt.',
       'grillowane grzanki w zestawie',
@@ -561,7 +561,7 @@ export const COLD_PLATE_SETS: ColdPlateSet[] = [
   {
     id: 'mini-nalesniki',
     title: '🥞 Set Mini Naleśników',
-    price: 219,
+    price: 109,
     description: [
       'z kurczakiem, pieczarkami i serem – 3 szt.',
       'z szarpaną łopatką – 3 szt.',
@@ -571,7 +571,7 @@ export const COLD_PLATE_SETS: ColdPlateSet[] = [
   {
     id: 'mini-croissanty',
     title: '🥐 Set Mini Croissantów',
-    price: 229,
+    price: 69,
     description: [
       'z kurczakiem, sałatą, pomidorkami cherry i sosem tatarskim – 3 szt.',
       'z pieczoną szynką, serem gouda i świeżym ogórkiem – 3 szt.',
@@ -581,7 +581,7 @@ export const COLD_PLATE_SETS: ColdPlateSet[] = [
   {
     id: 'szaszlyki-krewetki',
     title: '🍤 Szaszłyki z krewetkami i ananasem',
-    price: 279,
+    price: 219,
     description: [
       '1 porcja = 1 szaszłyk (2 grillowane krewetki + 3 kawałki świeżego ananasa)',
       '1 półmisek = 12 szaszłyków',
@@ -590,7 +590,7 @@ export const COLD_PLATE_SETS: ColdPlateSet[] = [
   {
     id: 'dary-morza',
     title: '🌊 Set „Dary Morza” – półmisek',
-    price: 299,
+    price: 169,
     description: [
       'panierowane krewetki butterfly – 5 szt.',
       'panierowane kalmary – 5 krążków',
@@ -601,7 +601,7 @@ export const COLD_PLATE_SETS: ColdPlateSet[] = [
   {
     id: 'tataki-tunczyk',
     title: '🐟 Tataki z tuńczyka',
-    price: 249,
+    price: 62,
     description: [
       'delikatnie opiekany tuńczyk, podawany na zimno',
       'sos sezamowo-sojowy',
@@ -610,7 +610,7 @@ export const COLD_PLATE_SETS: ColdPlateSet[] = [
   {
     id: 'tartaletki-kawiorem',
     title: '🥟 Tartaletki z kawiorem',
-    price: 289,
+    price: 229,
     description: ['chrupiące tartaletki z kremowym nadzieniem i kawiorem'],
   },
 ]
@@ -656,7 +656,7 @@ export const PREMIUM_MAIN_PLATTERS: PremiumMainPlatter[] = [
       'Roladka z kurczaka z wędzonym serem i suszonymi pomidorami, owinięta boczkiem',
     ],
     sauces: ['spicy mayo', 'salsa mexicana'],
-    price: 399,
+    price: 129,
   },
   {
     id: 'meat_2',
@@ -667,7 +667,7 @@ export const PREMIUM_MAIN_PLATTERS: PremiumMainPlatter[] = [
       'Panierowane polędwiczki z kurczaka',
     ],
     sauces: ['spicy mayo', 'ketchup'],
-    price: 379,
+    price: 149,
   },
   {
     id: 'fish',
@@ -677,7 +677,7 @@ export const PREMIUM_MAIN_PLATTERS: PremiumMainPlatter[] = [
       'Podawane na ciepło',
     ],
     sauces: ['tatarski', 'tzatziki'],
-    price: 429,
+    price: 199,
   },
   {
     id: 'seafood',
@@ -687,7 +687,7 @@ export const PREMIUM_MAIN_PLATTERS: PremiumMainPlatter[] = [
       'Duszone w autorskim winno-maślanym sosie z kefirem',
       'Podawane z grillowaną bagietką i cytryną',
     ],
-    price: 499,
+    price: 149,
   },
   {
     id: 'mix',
@@ -697,7 +697,7 @@ export const PREMIUM_MAIN_PLATTERS: PremiumMainPlatter[] = [
       'Podawane na frytkach belgijskich',
     ],
     sauces: ['tatarski', 'ketchup'],
-    price: 459,
+    price: 119,
   },
 ]
 
@@ -708,27 +708,27 @@ export const PREMIUM_MAIN_SIDE_OPTIONS: PremiumMainSideSection[] = [
     options: [
       {
         id: 'baked_potatoes',
-        label: 'Ziemniaczki pieczone z sosem tatarskim',
+        label: 'Ziemniaczki pieczone z sosem tatarskim - 600 g',
         price: 79,
       },
       {
         id: 'mashed_parmesan',
-        label: 'Puree ziemniaczane z parmezanem',
+        label: 'Puree ziemniaczane z parmezanem - 600 g',
         price: 75,
       },
       {
         id: 'fries',
-        label: 'Frytki belgijskie z ketchupem',
+        label: 'Frytki belgijskie z ketchupem - 600 g',
         price: 69,
       },
       {
         id: 'potato_gratin',
-        label: 'Gratin ziemniaczany zapiekany z mięsnym serem',
+        label: 'Gratin ziemniaczany zapiekany z serem mozzarella - 600 g',
         price: 89,
       },
       {
         id: 'boiled_potatoes_bacon',
-        label: 'Ziemniaki z zasmażką z boczku, cebuli, pieczarek i koperku',
+        label: 'Ziemniaki z zasmażką z boczku, cebuli, pieczarek i koperku - 600 g',
         price: 79,
       },
     ],
@@ -737,47 +737,31 @@ export const PREMIUM_MAIN_SIDE_OPTIONS: PremiumMainSideSection[] = [
     id: 'hot_veggies',
     title: '🥦 Dodatki warzywne na ciepło',
     options: [
-      { id: 'grilled_veggies', label: 'Warzywa grillowane', price: 89 },
-      { id: 'veggies_butter', label: 'Bukiet warzyw na masełku', price: 79 },
+      { id: 'grilled_veggies', label: 'Warzywa grillowane - 600 g', price: 89 },
+      { id: 'veggies_butter', label: 'Bukiet warzyw na masełku - 600 g', price: 79 },
     ],
   },
   {
     id: 'salads',
     title: '🥗 Surówki',
     options: [
-      { id: 'coleslaw', label: 'Coleslaw', price: 49 },
-      { id: 'carrot_apple', label: 'Marchewka z jabłkiem', price: 49 },
-      { id: 'beetroot', label: 'Buraczki', price: 49 },
-      { id: 'sauerkraut', label: 'Surówka z kiszonej kapusty', price: 49 },
-      { id: 'fresh_veggie_salad', label: 'Sałatka ze świeżych warzyw', price: 55 },
+      { id: 'coleslaw', label: 'Coleslaw - 150 g', price: 9 },
+      { id: 'carrot_apple', label: 'Marchewka z jabłkiem - 150 g', price: 9 },
+      { id: 'beetroot', label: 'Buraczki - 150 g', price: 9 },
+      { id: 'sauerkraut', label: 'Surówka z kiszonej kapusty - 150 g', price: 9 },
+      { id: 'fresh_veggie_salad', label: 'Sałatka ze świeżych warzyw - 150 g', price: 9 },
     ],
   },
 ]
 
 export const DESSERT_OPTIONS: DessertOption[] = [
   {
-    id: 'sernik_platter',
-    title: 'Sernik',
-    description: 'Patery ciast - autorskie wypieki naszej kuchni.',
+    id: 'cake_trio_platter',
+    title: 'Sernik + szarlotka + brownie',
+    description: 'Sernik, szarlotka i brownie podawane ze świeżymi owocami.',
     category: 'cake_platters',
-    unitLabel: 'patera',
-    price: 169,
-  },
-  {
-    id: 'szarlotka_platter',
-    title: 'Szarlotka',
-    description: 'Patery ciast - autorskie wypieki naszej kuchni.',
-    category: 'cake_platters',
-    unitLabel: 'patera',
-    price: 159,
-  },
-  {
-    id: 'brownie_platter',
-    title: 'Brownie',
-    description: 'Patery ciast - autorskie wypieki naszej kuchni.',
-    category: 'cake_platters',
-    unitLabel: 'patera',
-    price: 165,
+    unitLabel: 'set',
+    price: 189,
   },
   {
     id: 'mini_tiramisu',
@@ -810,9 +794,17 @@ export const DESSERT_OPTIONS: DessertOption[] = [
 
 export const SOFT_DRINK_OPTIONS: SoftDrinkOption[] = [
   {
-    id: 'juice_jug',
-    title: 'Soki w dzbankach',
-    description: 'Jabłkowy lub pomarańczowy',
+    id: 'apple_juice_jug',
+    title: 'Sok jabłkowy w dzbanku',
+    description: 'Dzbanek',
+    volumeLabel: '1 l',
+    price: 30,
+    recommendation: 'Rekomendujemy około 1 dzbanek na 6 osób dorosłych.',
+  },
+  {
+    id: 'orange_juice_jug',
+    title: 'Sok pomarańczowy w dzbanku',
+    description: 'Dzbanek',
     volumeLabel: '1 l',
     price: 30,
     recommendation: 'Rekomendujemy około 1 dzbanek na 6 osób dorosłych.',
@@ -827,7 +819,16 @@ export const SOFT_DRINK_OPTIONS: SoftDrinkOption[] = [
   },
   {
     id: 'cola_bottle',
-    title: 'Cola / Cola Zero',
+    title: 'Cola',
+    description: 'Butelka',
+    volumeLabel: '850 ml',
+    price: 25,
+    recommendation:
+      'Ilość coli najlepiej dopasować do liczby osób, które planują spożywać alkohol.',
+  },
+  {
+    id: 'cola_zero_bottle',
+    title: 'Cola Zero',
     description: 'Butelka',
     volumeLabel: '850 ml',
     price: 25,

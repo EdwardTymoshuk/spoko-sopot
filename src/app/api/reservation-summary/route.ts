@@ -11,6 +11,7 @@ type ReservationSummaryPayload = {
   customerEmail?: string
   customerName?: string | null
   customerPhone?: string | null
+  customerNotes?: string | null
   consentDataProcessing?: boolean
   consentMarketing?: boolean
   total?: number
@@ -47,6 +48,7 @@ export async function POST(req: Request): Promise<Response> {
     const customerEmail = body.customerEmail?.trim() ?? ''
     const customerName = body.customerName?.trim() ?? ''
     const customerPhone = body.customerPhone?.trim() ?? ''
+    const customerNotes = body.customerNotes?.trim() ?? ''
     const consentDataProcessing = body.consentDataProcessing === true
     const consentMarketing = body.consentMarketing === true
     const total = typeof body.total === 'number' ? body.total : null
@@ -132,6 +134,7 @@ export async function POST(req: Request): Promise<Response> {
     const managerAdults = sectionValue(sections, 'Szczegóły wydarzenia', 'Dorośli')
     const managerKids03 = sectionValue(sections, 'Szczegóły wydarzenia', 'Dzieci 0-3')
     const managerKids312 = sectionValue(sections, 'Szczegóły wydarzenia', 'Dzieci 3-12')
+    const managerNotes = customerNotes || sectionValue(sections, 'Szczegóły wydarzenia', 'Uwagi')
 
     const customerDisplayName = customerName || 'Dzień dobry'
     const footerHtml = `
@@ -183,6 +186,7 @@ export async function POST(req: Request): Promise<Response> {
             <tr><td style="padding:8px;border:1px solid #e5e7eb;background:#f9fafb;width:42%;">E-mail klienta</td><td style="padding:8px;border:1px solid #e5e7eb;">${escapeHtml(customerEmail)}</td></tr>
             <tr><td style="padding:8px;border:1px solid #e5e7eb;background:#f9fafb;">Imię</td><td style="padding:8px;border:1px solid #e5e7eb;">${escapeHtml(customerName || '—')}</td></tr>
             <tr><td style="padding:8px;border:1px solid #e5e7eb;background:#f9fafb;">Telefon</td><td style="padding:8px;border:1px solid #e5e7eb;">${escapeHtml(customerPhone || '—')}</td></tr>
+            <tr><td style="padding:8px;border:1px solid #e5e7eb;background:#f9fafb;">Uwagi</td><td style="padding:8px;border:1px solid #e5e7eb;">${escapeHtml(managerNotes || '—')}</td></tr>
             <tr><td style="padding:8px;border:1px solid #e5e7eb;background:#f9fafb;">Zgoda marketingowa</td><td style="padding:8px;border:1px solid #e5e7eb;">${consentMarketing ? 'tak' : 'nie'}</td></tr>
             <tr><td style="padding:8px;border:1px solid #e5e7eb;background:#f9fafb;">Data wydarzenia</td><td style="padding:8px;border:1px solid #e5e7eb;">${escapeHtml(managerDate)}</td></tr>
             <tr><td style="padding:8px;border:1px solid #e5e7eb;background:#f9fafb;">Godziny</td><td style="padding:8px;border:1px solid #e5e7eb;">${escapeHtml(managerHours)}</td></tr>
@@ -202,6 +206,7 @@ export async function POST(req: Request): Promise<Response> {
       `E-mail klienta: ${customerEmail}`,
       `Imię: ${customerName || '—'}`,
       `Telefon: ${customerPhone || '—'}`,
+      `Uwagi: ${managerNotes || '—'}`,
       `Zgoda marketingowa: ${consentMarketing ? 'tak' : 'nie'}`,
       '',
       `Data wydarzenia: ${managerDate}`,

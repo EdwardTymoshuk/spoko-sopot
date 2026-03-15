@@ -6,7 +6,7 @@ import { useReservationDraft } from '@/app/utils/hooks/reservation/ReservationDr
 import { PACKAGES } from '@/lib/consts'
 import { AnimatePresence, motion } from 'framer-motion'
 
-const BASE_END_HOUR = 20
+const BASE_END_HOUR = 21
 
 const formatHour = (hour: number): string =>
   `${hour.toString().padStart(2, '0')}:00`
@@ -40,7 +40,7 @@ const PackageExtension = () => {
       <p className="text-sm text-muted-foreground max-w-full">
         Cena pakietu obejmuje przyjęcie trwające do{' '}
         <span className="font-medium text-foreground">5 godzin</span>{' '}
-        (standardowo 15:00–20:00). Możliwość przedłużenia przyjęcia za dodatkową
+        (standardowo 16:00–21:00). Możliwość przedłużenia przyjęcia za dodatkową
         opłatą.
       </p>
 
@@ -69,7 +69,7 @@ const PackageExtension = () => {
 
         <div>
           <p className="font-medium text-base">
-            Chcę zapytać o możliwość przedłużenia przyjęcia po 20:00
+            Chcę zapytać o możliwość przedłużenia przyjęcia po 21:00
           </p>
 
           {extensionPrice && (
