@@ -18,7 +18,8 @@ import StepNavigation from './StepNavigation'
 
 const BottomWizardBar = () => {
   const searchParams = useSearchParams()
-  const stepKey = searchParams.get('step')
+  const rawStepKey = searchParams.get('step')
+  const stepKey = rawStepKey === 'cake' ? 'desserts' : rawStepKey
 
   const { draft } = useReservationDraft()
   const { total } = useReservationPricing(draft)

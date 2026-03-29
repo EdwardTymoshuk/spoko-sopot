@@ -2,6 +2,12 @@
 
 import { Calendar, CalendarDayButton } from '@/app/components/ui/calendar'
 import { Card, CardContent } from '@/app/components/ui/card'
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from '@/app/components/ui/tooltip'
 import { CalendarAvailabilityVM } from '@/app/types/reservation'
 import { cn } from '@/lib/utils'
 import { pl } from 'date-fns/locale'
@@ -54,6 +60,8 @@ const PriceCalendar = ({ value, onChange, availability }: Props) => {
   const availabilityMap = new Map(
     availability.map((d) => [d.date.toDateString(), d])
   )
+  const today = new Date()
+  today.setHours(0, 0, 0, 0)
 
   return (
     <Card className="w-full max-w-xl mx-auto">
@@ -81,65 +89,84 @@ const PriceCalendar = ({ value, onChange, availability }: Props) => {
         )}
 
         {/* CALENDAR */}
-        <Calendar
-          mode="single"
-          selected={value}
-          onSelect={onChange}
-          showOutsideDays={!isMobile}
-          weekStartsOn={1}
-          locale={pl}
-          className="
-            w-full
-            mx-auto
-            [--cell-size:2.15rem]
-            sm:[--cell-size:2.55rem]
-            md:[--cell-size:4rem]
-          "
-          disabled={(date) => {
-            const d = availabilityMap.get(date.toDateString())
-            return d?.isBlocked ?? false
-          }}
-          components={{
-            DayButton: ({ day, modifiers, ...props }) => {
-              const data = availabilityMap.get(day.date.toDateString())
-              const isBlocked = data?.isBlocked ?? false
-              const priceInfo = getBasePriceForDate(day.date)
+        <TooltipProvider>
+          <Calendar
+            mode="single"
+            selected={value}
+            onSelect={onChange}
+            showOutsideDays={!isMobile}
+            weekStartsOn={1}
+            locale={pl}
+            className="
+              w-full
+              mx-auto
+              [--cell-size:2.15rem]
+              sm:[--cell-size:2.55rem]
+              md:[--cell-size:4rem]
+            "
+            disabled={(date) => {
+              const d = availabilityMap.get(date.toDateString())
+              const isPastDate = date < today
+              const isBlocked = d?.isBlocked ?? false
+              return isPastDate || isBlocked
+            }}
+            components={{
+              DayButton: ({ day, modifiers, ...props }) => {
+                const data = availabilityMap.get(day.date.toDateString())
+                const isBlocked = data?.isBlocked ?? false
+                const priceInfo = getBasePriceForDate(day.date)
+                const tooltipLabel =
+                  (typeof data?.reason === 'string' && data.reason.trim()) ||
+                  'Termin zarezerwowany'
 
-              return (
-                <CalendarDayButton
-                  {...props}
-                  day={day}
-                  modifiers={modifiers}
-                  className="flex h-full flex-col items-center justify-center md:gap-1 md:py-1.5"
-                >
-                  <span className="text-[13px] sm:text-sm font-medium">
-                    {day.date.getDate()}
-                  </span>
+                const dayButton = (
+                  <CalendarDayButton
+                    {...props}
+                    day={day}
+                    modifiers={modifiers}
+                    className="flex h-full flex-col items-center justify-center md:gap-1 md:py-1.5"
+                  >
+                    <span className="text-[13px] sm:text-sm font-medium">
+                      {day.date.getDate()}
+                    </span>
 
-                  {/* DESKTOP ONLY – price in grid */}
-                  <div className="hidden md:block">
-                    {!isBlocked && (
-                      <span
-                        className={cn(
-                          'text-[11px] font-medium leading-none',
-                          priceInfo.color
-                        )}
-                      >
-                        od {priceInfo.price} zł
-                      </span>
-                    )}
+                    <div className="hidden md:block">
+                      {!isBlocked && (
+                        <span
+                          className={cn(
+                            'text-[11px] font-medium leading-none',
+                            priceInfo.color
+                          )}
+                        >
+                          od {priceInfo.price} zł
+                        </span>
+                      )}
 
-                    {isBlocked && (
-                      <span className="text-[11px] text-destructive">
-                        zajęte
-                      </span>
-                    )}
-                  </div>
-                </CalendarDayButton>
-              )
-            },
-          }}
-        />
+                      {isBlocked && (
+                        <span className="text-[11px] text-destructive">
+                          zajęte
+                        </span>
+                      )}
+                    </div>
+                  </CalendarDayButton>
+                )
+
+                if (!isBlocked) {
+                  return dayButton
+                }
+
+                return (
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <span className="block h-full w-full">{dayButton}</span>
+                    </TooltipTrigger>
+                    <TooltipContent>{tooltipLabel}</TooltipContent>
+                  </Tooltip>
+                )
+              },
+            }}
+          />
+        </TooltipProvider>
       </CardContent>
     </Card>
   )

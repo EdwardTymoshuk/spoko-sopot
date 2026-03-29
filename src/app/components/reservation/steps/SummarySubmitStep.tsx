@@ -37,6 +37,13 @@ const specialDietLabels: Record<string, string> = {
 const stripLeadingEmoji = (value: string) =>
   value.replace(/^[^A-Za-z0-9ĄĆĘŁŃÓŚŹŻąćęłńóśźż]+/, '')
 
+const toDateKey = (date: Date) => {
+  const year = date.getFullYear()
+  const month = String(date.getMonth() + 1).padStart(2, '0')
+  const day = String(date.getDate()).padStart(2, '0')
+  return `${year}-${month}-${day}`
+}
+
 const preloadImage = (src: string) =>
   new Promise<void>((resolve) => {
     if (typeof window === 'undefined') return resolve()
@@ -91,14 +98,14 @@ const SummarySubmitStep = () => {
         value: String(draft.childrenUnder3Count ?? 0),
       },
       {
-        label: 'Dzieci 3-12',
+        label: 'Dzieci 3-8',
         value: String(draft.children3to12Count ?? 0),
       },
     ]
 
     if (draft.childrenMenuOption) {
       details.push({
-        label: 'Menu dzieci 3-12',
+        label: 'Menu dzieci 3-8',
         value:
           draft.childrenMenuOption === 'half_package'
             ? 'jak dorośli (50% pakietu)'
@@ -113,7 +120,7 @@ const SummarySubmitStep = () => {
           draft.cakeOption === 'own_cake'
             ? 'własny tort'
             : draft.cakeOption === 'need_bakery_contact'
-            ? 'prośba o kontakt do cukierni'
+            ? 'kontakt do cukierni (opłata talerzykowa 10 zł / osoba)'
             : 'bez tortu',
       })
     }
@@ -156,7 +163,7 @@ const SummarySubmitStep = () => {
       })
     }
     if (pricing.children312Total > 0) {
-      pricingItems.push({ label: 'Dzieci 3-12 (50% pakietu)', value: `+${pricing.children312Total} zł` })
+      pricingItems.push({ label: 'Dzieci 3-8 (50% pakietu)', value: `+${pricing.children312Total} zł` })
     }
     if (pricing.soupTotal > 0) pricingItems.push({ label: 'Zupa', value: `+${pricing.soupTotal} zł` })
     if (pricing.coldPlateTotal > 0) pricingItems.push({ label: 'Zimna płyta', value: `+${pricing.coldPlateTotal} zł` })
@@ -247,6 +254,9 @@ const SummarySubmitStep = () => {
           customerName: name.trim() || null,
           customerPhone: phone.trim() || null,
           customerNotes: notes.trim() || null,
+          eventDateKey: draft.eventDate ? toDateKey(new Date(draft.eventDate)) : null,
+          eventStartTime: draft.eventStartTime ?? null,
+          eventEndTime: draft.eventEndTime ?? null,
           consentDataProcessing: consentData,
           consentMarketing,
           total: pricing.total,

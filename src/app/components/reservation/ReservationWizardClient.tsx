@@ -5,7 +5,8 @@ import { useSearchParams } from 'next/navigation'
 
 const ReservationWizardClient = () => {
   const searchParams = useSearchParams()
-  const step = searchParams.get('step') ?? 'welcome'
+  const rawStep = searchParams.get('step')
+  const step = rawStep === 'cake' ? 'desserts' : rawStep ?? 'welcome'
 
   const StepComponent = STEP_COMPONENTS[step] ?? STEP_COMPONENTS['welcome']
 

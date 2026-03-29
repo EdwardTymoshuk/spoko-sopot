@@ -1,8 +1,8 @@
 //src/lib/consts.ts
 
 import ColdPlateStep from '@/app/components/reservation/steps/ColdPlateStep'
-import CakeStep from '@/app/components/reservation/steps/CakeStep'
 import DateGuestsStep from '@/app/components/reservation/steps/DateGuestsStep'
+import DecorationsStep from '@/app/components/reservation/steps/DecorationsStep'
 import DessertsStep from '@/app/components/reservation/steps/DessertsStep'
 import HallExclusivityStep from '@/app/components/reservation/steps/HallExclusivityStep'
 import PackageStep from '@/app/components/reservation/steps/PackagesStep/PackageStep'
@@ -25,11 +25,11 @@ export const STEP_COMPONENTS: Record<string, React.FC> = {
   package: PackageStep,
   'cold-plate': ColdPlateStep,
   'premium-main': PremiumMainStep,
-  cake: CakeStep,
   desserts: DessertsStep,
   'soft-drinks': SoftDrinksStep,
   alcohol: AlcoholStep,
   'hall-exclusivity': HallExclusivityStep,
+  decorations: DecorationsStep,
   summary: SummarySubmitStep,
   'thank-you': ThankYouStep,
 }
@@ -102,33 +102,14 @@ export const RESERVATION_STEPS = [
   {
     key: 'premium-main',
     label: 'Półmiski Premium',
-    isValid: (draft: ReservationDraft) => {
-      const guests = getColdPlateEquivalentGuests(draft)
-      if (guests < 1) return true
-
-      const minPlatters = Math.ceil(guests / 6)
-      const selectionValues = Object.values(draft.premiumMainSelections ?? {})
-
-      // Same as cold plate: optional step, but if platters are selected
-      // the minimum number of platters must be met.
-      const hasAnySelection = selectionValues.some((value) => value > 0)
-      if (!hasAnySelection) return true
-
-      const isAnyBelowMin = selectionValues.some(
-        (value) => value > 0 && value < minPlatters
-      )
-      return !isAnyBelowMin
-    },
-  },
-  {
-    key: 'cake',
-    label: 'Tort',
-    isValid: (draft: ReservationDraft) => Boolean(draft.cakeOption),
+    isValid: () => true,
   },
   {
     key: 'desserts',
-    label: 'Desery',
+    label: 'Desery i tort',
     isValid: (draft: ReservationDraft) => {
+      if (!draft.cakeOption) return false
+
       const selections = draft.dessertSelections ?? {}
 
       for (const option of DESSERT_OPTIONS) {
@@ -164,6 +145,11 @@ export const RESERVATION_STEPS = [
 
       return end > start
     },
+  },
+  {
+    key: 'decorations',
+    label: 'Dekoracja stołu',
+    isValid: () => true,
   },
   {
     key: 'summary',
@@ -299,17 +285,18 @@ export const PACKAGES: PackageConfig[] = [
     extensionPricePerHour: 500,
 
     summary: [
-      'Przystawka dla każdego gościa',
-      'Zupa (jedna dla wszystkich)',
-      'Danie główne (indywidualnie)',
+      'Przystawka',
+      'Zupa – 250 ml (wybór jednej zupy dla wszystkich gości, wybór obowiązkowy)',
+      'Danie główne (wybór jednego dania dla wszystkich gości, wybór obowiązkowy)',
       'Deser',
-      'Woda bez limitu',
+      'Napoje: woda niegazowana w dzbankach (bez limitu)',
     ],
 
     details: {
       appetizers: [
         'Bruschetta z musem z awokado i krewetką – 1 szt.',
         'Bruschetta z pesto bazyliowym i prosciutto crudo – 1 szt.',
+        'Podana indywidualnie dla każdego gościa',
       ],
 
       soup: {
@@ -327,8 +314,9 @@ export const PACKAGES: PackageConfig[] = [
       },
 
       main: [
-        'Roladka z kurczaka nadziewana wędzonym serem, owinięta bekonem, ' +
-          'z purée ziemniaczanym z parmezanem, brokułem bimi oraz aromatyczną zieloną oliwą',
+        'Roladka z kurczaka nadziewana wędzonym serem, owinięta bekonem, puree ziemniaczane z parmezanem, brokuł bimi, aromatyczna zielona oliwa',
+        'lub',
+        'Miękka wolno pieczona karkówka, rozpływająca się w ustach, w sosie z leśnych grzybów; podawana z kremowym gratinem ziemniaczanym, delikatnie skropionym oliwą szczypiorkową',
       ],
 
       desserts: [
@@ -347,17 +335,18 @@ export const PACKAGES: PackageConfig[] = [
     badge: 'Najczęściej wybierany',
 
     summary: [
-      'Przystawka dla każdego gościa',
-      'Zupa (jedna dla wszystkich)',
-      'Dania główne na półmiskach',
-      'Desery na stół',
-      'Woda bez limitu',
+      'Przystawka',
+      'Zupa – 250 ml (wybór jednej zupy dla wszystkich gości, wybór obowiązkowy)',
+      'Danie główne (półmiski serwowane w środkach stołu)',
+      'Desery (patery w środkach stołu)',
+      'Napoje: woda niegazowana w dzbankach (bez limitu)',
     ],
 
     details: {
       appetizers: [
         'Bruschetta z musem z awokado i krewetką – 1 szt.',
         'Bruschetta z pesto bazyliowym i prosciutto crudo – 1 szt.',
+        'Podana indywidualnie dla każdego gościa',
       ],
 
       soup: {
@@ -375,18 +364,21 @@ export const PACKAGES: PackageConfig[] = [
       },
 
       main: [
+        'Półmisek mięs:',
         'Żeberka wieprzowe',
         'Grillowana karkówka',
         'Roladka z kurczaka z wędzonym serem i suszonymi pomidorami, owinięta boczkiem',
-        'Sosy: spicy mayo, salsa mexicana',
-        'Ziemniaczki pieczone – 600 g + sos tatarski',
+        'Dodatki:',
+        'Ziemniaczki pieczone',
         'Ziemniaki duszone z zasmażką z boczku, cebuli, pieczarek i koperku',
         'Surówki: coleslaw, z marchewki, z buraczków',
+        'Sosy: spicy mayo, salsa mexicana',
+        '+ sos tatarski',
       ],
 
       desserts: ['Sernik', 'Szarlotka', 'Brownie', 'Owoce sezonowe'],
 
-      drinks: ['Woda niegazowana w dzbankach'],
+      drinks: ['Woda niegazowana w dzbankach (bez limitu)'],
     },
   },
 
@@ -397,24 +389,28 @@ export const PACKAGES: PackageConfig[] = [
     extensionPricePerHour: 300,
 
     summary: [
-      'Bogate przystawki na stół',
-      'Dania główne na półmiskach',
-      'Desery na stół',
-      'Woda bez limitu',
-      'Zupa opcjonalnie (+12 zł / osoba)',
+      'Przystawki (półmiski serwowane w środkach stołu)',
+      'Dania główne (półmiski serwowane w środkach stołu)',
+      'Desery (patery w środkach stołu)',
+      'Napoje: woda niegazowana w dzbankach (bez limitu)',
+      'Zupa opcjonalnie (dopłata 12 zł / osoba lub opcja „Nie, dziękuję” :) )',
     ],
 
     details: {
       appetizers: [
-        'Set bruschett: z oscypkiem i żurawiną, z karmelizowaną gruszką i gorgonzolą, ' +
-          'z prosciutto crudo i pesto bazyliowym',
-        'Set mini croissantów: z kurczakiem, sałatą, pomidorkami cherry, ' +
-          'cheddarem i sosem tatarskim; z pieczoną szynką, goudą i ogórkiem; ' +
-          'z pieczonym burakiem, serem kozim i miodem',
-        'Set mini naleśników: z kurczakiem, pieczarkami i serem; z szarpaną łopatką; ' +
-          'ze szpinakiem i mozzarellą',
-        'Sałatka cesarska z kurczakiem: sałata rzymska, sos cesarski, grillowany kurczak, ' +
-          'jajka przepiórcze, pomidorki cherry, grillowany bekon, parmezan, grzanki żytnie',
+        'Set bruschett:',
+        'Bruschetta z oscypkiem i żurawiną',
+        'Bruschetta z karmelizowaną gruszką i gorgonzolą',
+        'Bruschetta z prosciutto crudo i pesto bazyliowym',
+        'Set mini naleśników:',
+        'Z kurczakiem, pieczarkami i serem',
+        'Z szarpaną łopatką',
+        'Ze szpinakiem i mozzarellą',
+        'Set mini croissantów:',
+        'Z kurczakiem, sałatą, pomidorkami cherry, cheddarem i sosem tatarskim',
+        'Z pieczoną szynką, serem goudą i świeżym ogórkiem',
+        'Z pieczonym burakiem, serem kozim i miodem',
+        'Sałatka Cezarska z kurczakiem (sałata rzymska, sos cezar, grillowany kurczak, jajka przepiórcze, pomidorki cherry, grillowany bekon, parmezan, grzanki żytnie)',
       ],
 
       soup: {
@@ -433,18 +429,20 @@ export const PACKAGES: PackageConfig[] = [
       },
 
       main: [
+        'Półmisek mięs:',
         'Żeberka wieprzowe',
         'Grillowana karkówka',
         'Panierowane polędwiczki z kurczaka',
-        'Sosy: spicy mayo, ketchup',
+        'Dodatki:',
         'Ziemniaczki pieczone + sos tatarski',
         'Ziemniaki duszone z zasmażką z boczku, cebuli, pieczarek i koperku',
         'Surówki: coleslaw, z marchewki, z buraczków',
+        'Sosy: spicy mayo, Ketchup',
       ],
 
       desserts: ['Sernik', 'Szarlotka', 'Brownie', 'Owoce sezonowe'],
 
-      drinks: ['Woda niegazowana w dzbankach'],
+      drinks: ['Woda niegazowana w dzbankach (bez limitu)'],
     },
   },
 ]

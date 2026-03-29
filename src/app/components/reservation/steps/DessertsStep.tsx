@@ -1,12 +1,35 @@
 'use client'
 
+import {
+  Alert,
+  AlertDescription,
+  AlertTitle,
+} from '@/app/components/ui/alert'
 import { Button } from '@/app/components/ui/button'
 import { Card } from '@/app/components/ui/card'
+import type { CakeOption } from '@/app/types/reservation'
 import { useReservationDraft } from '@/app/utils/hooks/reservation/ReservationDraftContext'
 import { DESSERT_OPTIONS } from '@/lib/consts'
 import { cn } from '@/lib/utils'
 import { useMemo } from 'react'
 import { FiMinus, FiPlus } from 'react-icons/fi'
+import { FiInfo } from 'react-icons/fi'
+
+const CAKE_OPTIONS: { value: CakeOption; label: string; hint?: string }[] = [
+  {
+    value: 'own_cake',
+    label: 'Przyniosę własny tort',
+  },
+  {
+    value: 'need_bakery_contact',
+    label: 'Poproszę o kontakt do cukierni, z którą współpracuje restauracja',
+    hint: 'Na hasło „SPOKO” otrzymasz -5% zniżki na tort.',
+  },
+  {
+    value: 'skip',
+    label: 'Nie planuję tortu',
+  },
+]
 
 const DessertsStep = () => {
   const { draft, updateDraft } = useReservationDraft()
@@ -59,17 +82,24 @@ const DessertsStep = () => {
   return (
     <div className="w-full max-w-7xl mx-auto space-y-6 p-4 md:p-6">
       <div className="space-y-2">
-        <h2 className="text-2xl md:text-3xl font-semibold">
-          Desery z naszej kuchni
-        </h2>
+        <h2 className="text-2xl md:text-3xl font-semibold">Desery i tort</h2>
         <p className="text-sm md:text-base text-muted-foreground">
-          Jeśli nie planujesz tortu lub chcesz urozmaicić słodki stół, możesz
-          dodać nasze desery.
+          Najpierw wybierz desery przygotowywane przez naszą kuchnię, a poniżej
+          zdecyduj, czy planujesz dodatkowo tort.
         </p>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <Card className="p-5 md:p-6 space-y-4">
+      <Alert className="border-primary/30 bg-primary/5">
+        <FiInfo className="h-4 w-4 text-primary" />
+        <AlertTitle>Desery od Spoko (rekomendowane)</AlertTitle>
+        <AlertDescription>
+          W pierwszej kolejności zachęcamy do wyboru naszych deserów. To
+          najszybsza i najwygodniejsza opcja organizacyjna.
+        </AlertDescription>
+      </Alert>
+
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 items-start">
+        <Card className="p-5 md:p-6 space-y-4 ring-1 ring-primary/20">
           <div className="space-y-1">
             <h3 className="text-lg md:text-xl font-semibold">Patery ciast</h3>
             <p className="text-sm text-muted-foreground">
@@ -134,9 +164,7 @@ const DessertsStep = () => {
 
         <Card className="p-5 md:p-6 space-y-4">
           <div className="space-y-1">
-            <h3 className="text-lg md:text-xl font-semibold">
-              Mini desery
-            </h3>
+            <h3 className="text-lg md:text-xl font-semibold">Mini desery</h3>
             <p className="text-sm text-muted-foreground">
               Idealne na dłuższe przyjęcia. Dla każdego mini deseru obowiązuje
               minimum 20 szt.
@@ -223,6 +251,74 @@ const DessertsStep = () => {
         <p className="text-muted-foreground">Wybrane pozycje deserowe: {totalSelected}</p>
         <p className="text-xl font-semibold">Suma deserów: {totalPrice} zł</p>
       </div>
+
+      <Card className="p-5 md:p-6 space-y-4">
+        <p className="text-lg md:text-xl font-semibold">Tort na przyjęcie</p>
+        <p className="text-sm text-muted-foreground">
+          Wybierz jedną opcję dotyczącą tortu.
+        </p>
+
+        <div className="space-y-3">
+          {CAKE_OPTIONS.map((option) => (
+            <button
+              key={option.value}
+              type="button"
+              onClick={() => updateDraft('cakeOption', option.value)}
+              className={cn(
+                'w-full rounded-xl border p-4 text-left transition-all',
+                draft.cakeOption === option.value
+                  ? 'border-primary ring-2 ring-primary bg-primary/5'
+                  : 'hover:border-primary/50'
+              )}
+            >
+              <p className="text-base font-medium">{option.label}</p>
+              {option.hint && (
+                <p className="mt-1 text-sm text-muted-foreground">
+                  {option.hint}
+                </p>
+              )}
+            </button>
+          ))}
+        </div>
+      </Card>
+
+      <Card className="p-5 md:p-6 space-y-4">
+        <h3 className="text-lg md:text-xl font-semibold">
+          Informacje organizacyjne dotyczące tortu
+        </h3>
+
+        <ul className="space-y-2 text-sm md:text-base text-muted-foreground">
+          <li>
+            • Przy dostarczeniu tortu prosimy o dowód zakupu z datą produkcji.
+          </li>
+          <li>
+            • Opłata talerzykowa 10 zł / osoba obowiązuje przy torcie własnym
+            oraz przy torcie zamawianym przez kontakt do cukierni partnerskiej.
+          </li>
+          <li>
+            • Tortu nie przechowujemy — prosimy dostarczyć go najlepiej na
+            planowaną godzinę rozpoczęcia przyjęcia.
+          </li>
+        </ul>
+
+        <div className="space-y-2 pt-2">
+          <p className="text-base md:text-lg font-semibold">W opłacie zawarte jest:</p>
+          <ul className="space-y-1 text-sm md:text-base text-muted-foreground">
+            <li>– patera pod tort,</li>
+            <li>– pokrojenie tortu przez obsługę,</li>
+            <li>– serwowanie gościom,</li>
+          </ul>
+        </div>
+
+        <Alert className="border-warning/35 bg-warning/10">
+          <FiInfo className="h-4 w-4 text-warning" />
+          <AlertTitle className="text-base">Dodatki do tortu</AlertTitle>
+          <AlertDescription className="text-sm">
+            Świeczki, race, dekoracje i inne akcesoria prosimy zapewnić we
+            własnym zakresie.
+          </AlertDescription>
+        </Alert>
+      </Card>
     </div>
   )
 }

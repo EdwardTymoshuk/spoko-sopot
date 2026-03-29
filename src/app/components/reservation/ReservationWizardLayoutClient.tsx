@@ -15,7 +15,8 @@ const ReservationWizardLayoutClient = ({
   children: ReactNode
 }) => {
   const searchParams = useSearchParams()
-  const step = searchParams.get('step')
+  const rawStep = searchParams.get('step')
+  const step = rawStep === 'cake' ? 'desserts' : rawStep
   const isWelcomeStep = !step || step === 'welcome'
   const isThankYouStep = step === 'thank-you'
   const viewportRef = useRef<HTMLDivElement>(null)

@@ -145,7 +145,8 @@ export const useReservationPricing = (draft: ReservationDraft) => {
     adults >= SERVICE_THRESHOLD ? Math.round(subtotal * SERVICE_RATE) : 0
 
   const cakeServiceTotal =
-    draft.cakeOption === 'own_cake'
+    draft.cakeOption === 'own_cake' ||
+    draft.cakeOption === 'need_bakery_contact'
       ? (adults + children3to12 + childrenUnder3) * OWN_CAKE_FEE_PER_PERSON
       : 0
 

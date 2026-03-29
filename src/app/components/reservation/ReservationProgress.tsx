@@ -6,7 +6,11 @@ import { Progress } from '../ui/progress'
 
 export default function ReservationProgress() {
   const searchParams = useSearchParams()
-  const step = searchParams.get('step') ?? RESERVATION_STEPS[0].key
+  const rawStep = searchParams.get('step')
+  const step =
+    rawStep === 'cake'
+      ? 'desserts'
+      : rawStep ?? RESERVATION_STEPS[0].key
   const progressSteps = RESERVATION_STEPS.filter((s) => s.key !== 'thank-you')
 
   const currentIndex = progressSteps.findIndex((s) => s.key === step)

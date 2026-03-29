@@ -35,7 +35,7 @@ const ReservationSummaryContent = () => {
     draft.cakeOption === 'own_cake'
       ? 'Przynoszę własny tort'
       : draft.cakeOption === 'need_bakery_contact'
-      ? 'Proszę o kontakt do cukierni (-5% na hasło SPOKO)'
+      ? 'Proszę o kontakt do cukierni (-5% na hasło SPOKO, opłata talerzykowa 10 zł / os.)'
       : draft.cakeOption === 'skip'
       ? 'Bez tortu'
       : null
@@ -125,12 +125,12 @@ const ReservationSummaryContent = () => {
           <span className="font-medium">{draft.childrenUnder3Count ?? 0}</span>
         </div>
         <div className="flex justify-between">
-          <span>Dzieci 3-12</span>
+          <span>Dzieci 3-8</span>
           <span className="font-medium">{draft.children3to12Count ?? 0}</span>
         </div>
         {childrenMenuLabel && (
           <div className="flex justify-between">
-            <span>Opcja menu dzieci 3-12</span>
+            <span>Opcja menu dzieci 3-8</span>
             <span className="font-medium">{childrenMenuLabel}</span>
           </div>
         )}
@@ -196,7 +196,7 @@ const ReservationSummaryContent = () => {
 
         {children312Total > 0 && (
           <div className="flex justify-between">
-            <span>Dzieci 3-12 (50% pakietu)</span>
+            <span>Dzieci 3-8 (50% pakietu)</span>
             <span className="font-medium">+{children312Total} zł</span>
           </div>
         )}
@@ -204,7 +204,7 @@ const ReservationSummaryContent = () => {
         {(draft.children3to12Count ?? 0) > 0 &&
           draft.childrenMenuOption === 'kids_menu' && (
             <div className="flex justify-between">
-              <span>Menu dziecięce 3-12</span>
+              <span>Menu dziecięce 3-8</span>
               <span className="font-medium">wycena indywidualna</span>
             </div>
           )}

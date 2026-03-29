@@ -18,19 +18,19 @@ const SECTION_TITLES: Record<
   }
 > = {
   silver: {
-    appetizers: 'Przystawka – podawana każdemu gościowi',
-    main: 'Danie główne – podawane indywidualnie',
+    appetizers: 'Przystawka',
+    main: 'Danie główne',
     desserts: 'Deser',
   },
   gold: {
-    appetizers: 'Przystawka – podawana każdemu gościowi',
-    main: 'Dania główne – półmiski na środek stołu',
-    desserts: 'Desery – patery na stół',
+    appetizers: 'Przystawka',
+    main: 'Danie główne',
+    desserts: 'Desery',
   },
   platinum: {
-    appetizers: 'Przystawki – półmiski na środek stołu',
-    main: 'Dania główne – półmiski',
-    desserts: 'Desery – patery na stół',
+    appetizers: 'Przystawki',
+    main: 'Dania główne',
+    desserts: 'Desery',
   },
 }
 
@@ -56,10 +56,10 @@ const PackageDetails = ({ pkg }: Props) => {
       {/* ZUPA */}
       {details.soup && (
         <Section
-          title={`Zupa (250 ml) ${
+          title={`Zupa – 250 ml ${
             details.soup.mode === 'optional'
-              ? `– opcjonalnie (+${details.soup.pricePerPerson} zł / osoba)`
-              : '– obowiązkowa'
+              ? `| opcjonalnie (dopłata | ${details.soup.pricePerPerson} zł / osoba)`
+              : '| wybór obowiązkowy'
           }`}
         >
           <ul className="list-disc pl-5 space-y-1">

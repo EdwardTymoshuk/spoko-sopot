@@ -12,7 +12,8 @@ const StepNavigation = () => {
   const searchParams = useSearchParams()
   const { draft } = useReservationDraft()
 
-  const step = searchParams.get('step')
+  const rawStep = searchParams.get('step')
+  const step = rawStep === 'cake' ? 'desserts' : rawStep
 
   if (!step || !RESERVATION_STEPS.some((s) => s.key === step)) {
     return null

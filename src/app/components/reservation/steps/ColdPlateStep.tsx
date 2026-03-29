@@ -101,7 +101,7 @@ const ColdPlateStep = () => {
           </p>
 
           <p className="font-medium">
-            Dla {adults} osób dorosłych i {children3to12} dzieci w wieku 3-12
+            Dla {adults} osób dorosłych i {children3to12} dzieci w wieku 3-8
             lat polecamy <span className="text-primary">{minSets}</span>{' '}
             {setWord}.
           </p>
@@ -114,7 +114,7 @@ const ColdPlateStep = () => {
           {draft.childrenMenuOption === 'half_package' &&
             (draft.children3to12Count ?? 0) > 0 && (
               <p className="text-xs text-muted-foreground">
-                Dzieci 3-12 lat z opcją „jak dorośli” liczymy jako 50% osoby
+                Dzieci 3-8 lat z opcją „jak dorośli” liczymy jako 50% osoby
                 dorosłej.
               </p>
             )}

@@ -34,7 +34,7 @@ const PremiumMainStep = () => {
     draft.premiumMainSelections,
   ])
   const equivalentGuests = getColdPlateEquivalentGuests(draft)
-  const minPlatters = Math.ceil(equivalentGuests / 6)
+  const recommendedPlatters = Math.ceil(equivalentGuests / 6)
 
   const totalSelected = useMemo(() => {
     return Object.values(selections).reduce((sum, qty) => sum + qty, 0)
@@ -60,10 +60,8 @@ const PremiumMainStep = () => {
     }, 0)
   }, [sideSelections])
 
-  const incrementWithMin = (current: number) =>
-    current === 0 ? minPlatters : current + 1
-  const decrementWithMin = (current: number) =>
-    current <= minPlatters ? 0 : current - 1
+  const increment = (current: number) => current + 1
+  const decrement = (current: number) => Math.max(0, current - 1)
 
   const updatePlatter = (id: string, value: number) => {
     updateDraft('premiumMainSelections', {
@@ -78,11 +76,7 @@ const PremiumMainStep = () => {
       [id]: Math.max(0, value),
     })
   }
-  const hasAnySelection = totalSelected > 0
-  const isAnyBelowMin = Object.values(selections).some(
-    (value) => value > 0 && value < minPlatters
-  )
-  const platterWord = pluralize(minPlatters, [
+  const platterWord = pluralize(recommendedPlatters, [
     'półmisek',
     'półmiski',
     'półmisków',
@@ -103,15 +97,12 @@ const PremiumMainStep = () => {
             Każdy półmisek Premium jest przygotowany orientacyjnie dla 6 osób.
           </p>
           <p className="text-sm font-medium">
-            Dla {adults} osób dorosłych i {children3to12} dzieci w wieku 3-12
-            lat polecamy minimum {minPlatters} {platterWord}.
+            Dla {adults} osób dorosłych i {children3to12} dzieci w wieku 3-8
+            lat rekomendujemy około {recommendedPlatters} {platterWord}.
           </p>
-          {hasAnySelection && isAnyBelowMin && (
-            <p className="text-sm text-destructive">
-              Dla tej liczby gości wymagane minimum {minPlatters} {platterWord}
-              dla każdego wybranego rodzaju półmiska.
-            </p>
-          )}
+          <p className="text-sm text-muted-foreground">
+            Możesz wybrać także 1 półmisek danego rodzaju.
+          </p>
         </div>
       </div>
 
@@ -159,9 +150,7 @@ const PremiumMainStep = () => {
                         variant="outline"
                         size="icon"
                         className="h-8 w-8"
-                        onClick={() =>
-                          updatePlatter(platter.id, decrementWithMin(qty))
-                        }
+                        onClick={() => updatePlatter(platter.id, decrement(qty))}
                         disabled={qty === 0}
                       >
                         <FiMinus className="h-4 w-4" />
@@ -176,9 +165,7 @@ const PremiumMainStep = () => {
                         variant="outline"
                         size="icon"
                         className="h-8 w-8"
-                        onClick={() =>
-                          updatePlatter(platter.id, incrementWithMin(qty))
-                        }
+                        onClick={() => updatePlatter(platter.id, increment(qty))}
                       >
                         <FiPlus className="h-4 w-4" />
                       </Button>

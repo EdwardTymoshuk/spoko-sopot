@@ -42,6 +42,7 @@ export type CalendarAvailabilityVM = {
   date: Date
   isBlocked: boolean
   basePriceFrom: number | null
+  reason?: string | null
 }
 
 export interface ReservationDraft {

@@ -1,8 +1,5 @@
 'use client'
 
-import 'photoswipe/dist/photoswipe.css'
-import { useEffect, useState } from 'react'
-import { IoHeartSharp } from 'react-icons/io5'
 import CustomGallery from '@/app/components/CustomGallery'
 import MainContainer from '@/app/components/MainContainer'
 import MaxWidthWrapper from '@/app/components/MaxWidthWrapper'
@@ -22,6 +19,9 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@/app/components/ui/dialog'
+import 'photoswipe/dist/photoswipe.css'
+import { useEffect, useState } from 'react'
+import { IoHeartSharp } from 'react-icons/io5'
 
 interface NewsItem {
   id: string
@@ -155,7 +155,6 @@ const NewsPage: React.FC = () => {
       try {
         const res = await fetch('/api/news')
         const data = await res.json()
-        console.log('Pobrane dane:', data)
         setNews(data)
       } catch (error) {
         console.error('Błąd pobierania newsów:', error)

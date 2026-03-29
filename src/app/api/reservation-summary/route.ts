@@ -12,6 +12,9 @@ type ReservationSummaryPayload = {
   customerName?: string | null
   customerPhone?: string | null
   customerNotes?: string | null
+  eventDateKey?: string | null
+  eventStartTime?: string | null
+  eventEndTime?: string | null
   consentDataProcessing?: boolean
   consentMarketing?: boolean
   total?: number
@@ -49,6 +52,9 @@ export async function POST(req: Request): Promise<Response> {
     const customerName = body.customerName?.trim() ?? ''
     const customerPhone = body.customerPhone?.trim() ?? ''
     const customerNotes = body.customerNotes?.trim() ?? ''
+    const eventDateKey = body.eventDateKey?.trim() ?? ''
+    const eventStartTime = body.eventStartTime?.trim() ?? ''
+    const eventEndTime = body.eventEndTime?.trim() ?? ''
     const consentDataProcessing = body.consentDataProcessing === true
     const consentMarketing = body.consentMarketing === true
     const total = typeof body.total === 'number' ? body.total : null
@@ -133,7 +139,10 @@ export async function POST(req: Request): Promise<Response> {
     const managerHours = sectionValue(sections, 'Szczegóły wydarzenia', 'Godziny')
     const managerAdults = sectionValue(sections, 'Szczegóły wydarzenia', 'Dorośli')
     const managerKids03 = sectionValue(sections, 'Szczegóły wydarzenia', 'Dzieci 0-3')
-    const managerKids312 = sectionValue(sections, 'Szczegóły wydarzenia', 'Dzieci 3-12')
+    const managerKids312 =
+      sectionValue(sections, 'Szczegóły wydarzenia', 'Dzieci 3-8') !== '—'
+        ? sectionValue(sections, 'Szczegóły wydarzenia', 'Dzieci 3-8')
+        : sectionValue(sections, 'Szczegóły wydarzenia', 'Dzieci 3-12')
     const managerNotes = customerNotes || sectionValue(sections, 'Szczegóły wydarzenia', 'Uwagi')
 
     const customerDisplayName = customerName || 'Dzień dobry'
@@ -192,7 +201,7 @@ export async function POST(req: Request): Promise<Response> {
             <tr><td style="padding:8px;border:1px solid #e5e7eb;background:#f9fafb;">Godziny</td><td style="padding:8px;border:1px solid #e5e7eb;">${escapeHtml(managerHours)}</td></tr>
             <tr><td style="padding:8px;border:1px solid #e5e7eb;background:#f9fafb;">Dorośli</td><td style="padding:8px;border:1px solid #e5e7eb;">${escapeHtml(managerAdults)}</td></tr>
             <tr><td style="padding:8px;border:1px solid #e5e7eb;background:#f9fafb;">Dzieci 0-3</td><td style="padding:8px;border:1px solid #e5e7eb;">${escapeHtml(managerKids03)}</td></tr>
-            <tr><td style="padding:8px;border:1px solid #e5e7eb;background:#f9fafb;">Dzieci 3-12</td><td style="padding:8px;border:1px solid #e5e7eb;">${escapeHtml(managerKids312)}</td></tr>
+            <tr><td style="padding:8px;border:1px solid #e5e7eb;background:#f9fafb;">Dzieci 3-8</td><td style="padding:8px;border:1px solid #e5e7eb;">${escapeHtml(managerKids312)}</td></tr>
             <tr><td style="padding:8px;border:1px solid #e5e7eb;background:#f9fafb;">Suma orientacyjna</td><td style="padding:8px;border:1px solid #e5e7eb;"><strong>${total} zł</strong></td></tr>
           </tbody>
         </table>
@@ -213,7 +222,7 @@ export async function POST(req: Request): Promise<Response> {
       `Godziny: ${managerHours}`,
       `Dorośli: ${managerAdults}`,
       `Dzieci 0-3: ${managerKids03}`,
-      `Dzieci 3-12: ${managerKids312}`,
+      `Dzieci 3-8: ${managerKids312}`,
       `Suma orientacyjna: ${total} zł`,
       '',
       'Pełne podsumowanie znajduje się w załączniku PDF.',
@@ -287,30 +296,52 @@ export async function POST(req: Request): Promise<Response> {
       )
     }
 
-    if (consentMarketing && process.env.MONGODB_URI) {
+    if (process.env.MONGODB_URI) {
       try {
         const client = await MongoClient.connect(process.env.MONGODB_URI)
         const db = client.db()
-        await db.collection('MarketingLeads').updateOne(
-          { email: customerEmail.toLowerCase() },
-          {
-            $set: {
-              email: customerEmail.toLowerCase(),
-              name: customerName || null,
-              phone: customerPhone || null,
-              consentMarketing: true,
-              source: 'reservation-summary',
-              updatedAt: new Date(),
+
+        if (eventDateKey) {
+          await db.collection('ReservationRequests').insertOne({
+            customerEmail: customerEmail.toLowerCase(),
+            customerName: customerName || null,
+            customerPhone: customerPhone || null,
+            customerNotes: customerNotes || null,
+            eventDateKey,
+            eventDate: managerDate || null,
+            eventStartTime: eventStartTime || null,
+            eventEndTime: eventEndTime || null,
+            total,
+            sections,
+            source: 'reservation-summary',
+            status: 'new',
+            createdAt: new Date(),
+          })
+        }
+
+        if (consentMarketing) {
+          await db.collection('MarketingLeads').updateOne(
+            { email: customerEmail.toLowerCase() },
+            {
+              $set: {
+                email: customerEmail.toLowerCase(),
+                name: customerName || null,
+                phone: customerPhone || null,
+                consentMarketing: true,
+                source: 'reservation-summary',
+                updatedAt: new Date(),
+              },
+              $setOnInsert: {
+                createdAt: new Date(),
+              },
             },
-            $setOnInsert: {
-              createdAt: new Date(),
-            },
-          },
-          { upsert: true }
-        )
+            { upsert: true }
+          )
+        }
+
         await client.close()
       } catch (dbError) {
-        console.error('Marketing lead save error:', dbError)
+        console.error('Błąd zapisu zgłoszenia rezerwacji:', dbError)
       }
     }
 

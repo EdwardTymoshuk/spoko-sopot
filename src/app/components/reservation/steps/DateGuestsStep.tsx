@@ -3,19 +3,23 @@
 import PriceCalendar from '@/app/components/reservation/calendar/PriceCalendar'
 import { Card } from '@/app/components/ui/card'
 import { Separator } from '@/app/components/ui/separator'
-import type { ChildrenMenuOption } from '@/app/types/reservation'
+import type {
+  CalendarAvailabilityVM,
+  ChildrenMenuOption,
+} from '@/app/types/reservation'
 import { useReservationDraft } from '@/app/utils/hooks/reservation/ReservationDraftContext'
 import { parseTimeToDecimalHour } from '@/lib/consts'
 import { cn } from '@/lib/utils'
+import { useEffect, useState } from 'react'
 import { FiMinus, FiPlus } from 'react-icons/fi'
 import { MdKeyboardArrowDown } from 'react-icons/md'
 
-const MOCK_AVAILABILITY = [
-  { date: new Date(2026, 0, 10), isBlocked: false, basePriceFrom: 250 },
-  { date: new Date(2026, 0, 11), isBlocked: true, basePriceFrom: 250 },
-  { date: new Date(2026, 0, 14), isBlocked: false, basePriceFrom: 350 },
-  { date: new Date(2026, 0, 15), isBlocked: true, basePriceFrom: null },
-]
+type AvailabilityApiItem = {
+  date: string
+  isBlocked: boolean
+  basePriceFrom: number | null
+  reason?: string | null
+}
 
 const KIDS_MENU_ITEMS = [
   'Mini bruschetta z pomidorem i mozzarellą',
@@ -122,6 +126,7 @@ const OptionCard = ({
 
 const DateGuestsStep = () => {
   const { draft, updateDraft } = useReservationDraft()
+  const [availability, setAvailability] = useState<CalendarAvailabilityVM[]>([])
 
   const adults = draft.adultsCount ?? 10
   const childrenUnder3 = draft.childrenUnder3Count ?? 0
@@ -142,6 +147,58 @@ const DateGuestsStep = () => {
       updateDraft('childrenMenuOption', null)
     }
   }
+
+  useEffect(() => {
+    let cancelled = false
+
+    const fetchAvailability = async () => {
+      try {
+        const res = await fetch('/api/reservation-availability', {
+          cache: 'no-store',
+        })
+
+        if (!res.ok) return
+
+        const payload = (await res.json()) as { days?: AvailabilityApiItem[] }
+        const items = Array.isArray(payload.days) ? payload.days : []
+
+        if (cancelled) return
+
+        const nextAvailability: CalendarAvailabilityVM[] = []
+
+        for (const item of items) {
+          const dateMatch = /^(\d{4})-(\d{2})-(\d{2})$/.exec(item.date)
+          const parsedDate = dateMatch
+            ? new Date(
+                Number(dateMatch[1]),
+                Number(dateMatch[2]) - 1,
+                Number(dateMatch[3])
+              )
+            : new Date(item.date)
+
+          if (Number.isNaN(parsedDate.getTime())) continue
+
+          nextAvailability.push({
+            date: parsedDate,
+            isBlocked: Boolean(item.isBlocked),
+            basePriceFrom:
+              typeof item.basePriceFrom === 'number' ? item.basePriceFrom : null,
+            reason: item.reason ?? null,
+          })
+        }
+
+        setAvailability(nextAvailability)
+      } catch (error) {
+        console.error('Błąd pobierania dostępności kalendarza:', error)
+      }
+    }
+
+    void fetchAvailability()
+
+    return () => {
+      cancelled = true
+    }
+  }, [])
 
   const selectChildrenOption = (value: ChildrenMenuOption) => {
     updateDraft('childrenMenuOption', value)
@@ -169,7 +226,7 @@ const DateGuestsStep = () => {
 
           <PriceCalendar
             value={draft.eventDate ? new Date(draft.eventDate) : undefined}
-            availability={MOCK_AVAILABILITY}
+            availability={availability}
             onChange={(date) => updateDraft('eventDate', date ?? null)}
           />
 
@@ -280,7 +337,7 @@ const DateGuestsStep = () => {
               )}
 
               <p className="text-xs text-muted-foreground">
-                Osoby powyżej 12 roku życia traktujemy jako dorosłych.
+                Osoby powyżej 8 roku życia traktujemy jako dorosłych.
               </p>
             </div>
           </section>
@@ -293,7 +350,7 @@ const DateGuestsStep = () => {
                 Dzieci
               </h3>
               <p className="text-sm text-muted-foreground">
-                0-3 lata: udział bezpłatny. 3-12 lat: wybór jednej z dwóch
+                0-3 lata: udział bezpłatny. 3-8 lat: wybór jednej z dwóch
                 opcji rozliczenia.
               </p>
             </div>
@@ -309,11 +366,11 @@ const DateGuestsStep = () => {
               </div>
 
               <div className="rounded-xl border p-4 space-y-3">
-                <p className="font-medium">Dzieci 3-12 lat</p>
+                <p className="font-medium">Dzieci 3-8 lat</p>
                 <Counter
                   value={children3to12}
                   onChange={updateChildren312}
-                  ariaLabel="liczbę dzieci 3-12 lat"
+                  ariaLabel="liczbę dzieci 3-8 lat"
                 />
               </div>
             </div>
@@ -321,7 +378,7 @@ const DateGuestsStep = () => {
             {shouldPickChildrenOption && (
               <div className="space-y-3">
                 <p className="text-sm font-medium">
-                  Wybierz opcję dla dzieci 3-12 lat
+                  Wybierz opcję dla dzieci 3-8 lat
                 </p>
 
                 <div className="grid grid-cols-1 gap-3">
@@ -357,7 +414,7 @@ const DateGuestsStep = () => {
 
                 {isChildrenOptionMissing && (
                   <p className="text-sm text-destructive">
-                    Wybierz jedną opcję menu dla dzieci 3-12 lat, aby przejść
+                    Wybierz jedną opcję menu dla dzieci 3-8 lat, aby przejść
                     dalej.
                   </p>
                 )}
