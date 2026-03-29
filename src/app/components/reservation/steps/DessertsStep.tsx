@@ -84,19 +84,10 @@ const DessertsStep = () => {
       <div className="space-y-2">
         <h2 className="text-2xl md:text-3xl font-semibold">Desery i tort</h2>
         <p className="text-sm md:text-base text-muted-foreground">
-          Najpierw wybierz desery przygotowywane przez naszą kuchnię, a poniżej
-          zdecyduj, czy planujesz dodatkowo tort.
+          W tej sekcji możesz wybrać desery oraz zdecydować, czy planujesz
+          dodatkowo tort na przyjęcie.
         </p>
       </div>
-
-      <Alert className="border-primary/30 bg-primary/5">
-        <FiInfo className="h-4 w-4 text-primary" />
-        <AlertTitle>Desery od Spoko (rekomendowane)</AlertTitle>
-        <AlertDescription>
-          W pierwszej kolejności zachęcamy do wyboru naszych deserów. To
-          najszybsza i najwygodniejsza opcja organizacyjna.
-        </AlertDescription>
-      </Alert>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 items-start">
         <Card className="p-5 md:p-6 space-y-4 ring-1 ring-primary/20">

@@ -285,11 +285,11 @@ export const PACKAGES: PackageConfig[] = [
     extensionPricePerHour: 500,
 
     summary: [
-      'Przystawka',
-      'Zupa – 250 ml (wybór jednej zupy dla wszystkich gości, wybór obowiązkowy)',
-      'Danie główne (wybór jednego dania dla wszystkich gości, wybór obowiązkowy)',
+      'Przystawka dla każdego gościa',
+      'Zupa (jedna dla wszystkich)',
+      'Danie główne (indywidualnie)',
       'Deser',
-      'Napoje: woda niegazowana w dzbankach (bez limitu)',
+      'Woda bez limitu',
     ],
 
     details: {
@@ -335,11 +335,11 @@ export const PACKAGES: PackageConfig[] = [
     badge: 'Najczęściej wybierany',
 
     summary: [
-      'Przystawka',
-      'Zupa – 250 ml (wybór jednej zupy dla wszystkich gości, wybór obowiązkowy)',
-      'Danie główne (półmiski serwowane w środkach stołu)',
-      'Desery (patery w środkach stołu)',
-      'Napoje: woda niegazowana w dzbankach (bez limitu)',
+      'Przystawka dla każdego gościa',
+      'Zupa (jedna dla wszystkich)',
+      'Dania główne na półmiskach',
+      'Desery na stół',
+      'Woda bez limitu',
     ],
 
     details: {
@@ -389,11 +389,11 @@ export const PACKAGES: PackageConfig[] = [
     extensionPricePerHour: 300,
 
     summary: [
-      'Przystawki (półmiski serwowane w środkach stołu)',
-      'Dania główne (półmiski serwowane w środkach stołu)',
-      'Desery (patery w środkach stołu)',
-      'Napoje: woda niegazowana w dzbankach (bez limitu)',
-      'Zupa opcjonalnie (dopłata 12 zł / osoba lub opcja „Nie, dziękuję” :) )',
+      'Bogate przystawki na stół',
+      'Dania główne na półmiskach',
+      'Desery na stół',
+      'Woda bez limitu',
+      'Zupa opcjonalnie (+12 zł / osoba)',
     ],
 
     details: {
