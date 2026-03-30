@@ -6,7 +6,7 @@ export const fetchCache = 'force-no-store'
 export const revalidate = 0
 
 const BLOCKING_REQUEST_STATUSES = ['accepted', 'confirmed', 'approved'] as const
-const MAX_CONCURRENT_GUESTS = 35
+const MAX_CONCURRENT_GUESTS = 40
 const SLOT_MINUTES = 30
 const DAY_START_MINUTES = 10 * 60
 const DAY_END_MINUTES = 23 * 60

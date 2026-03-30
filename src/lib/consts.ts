@@ -296,7 +296,7 @@ export const PACKAGES: PackageConfig[] = [
       appetizers: [
         'Bruschetta z musem z awokado i krewetką – 1 szt.',
         'Bruschetta z pesto bazyliowym i prosciutto crudo – 1 szt.',
-        'Podana indywidualnie dla każdego gościa',
+        '| podana indywidualnie dla każdego gościa',
       ],
 
       soup: {
@@ -317,6 +317,7 @@ export const PACKAGES: PackageConfig[] = [
         'Roladka z kurczaka nadziewana wędzonym serem, owinięta bekonem, puree ziemniaczane z parmezanem, brokuł bimi, aromatyczna zielona oliwa',
         'lub',
         'Miękka wolno pieczona karkówka, rozpływająca się w ustach, w sosie z leśnych grzybów; podawana z kremowym gratinem ziemniaczanym, delikatnie skropionym oliwą szczypiorkową',
+        '| wybór jednego dania dla wszystkich gości (wybór obowiązkowy)',
       ],
 
       desserts: [
@@ -346,7 +347,7 @@ export const PACKAGES: PackageConfig[] = [
       appetizers: [
         'Bruschetta z musem z awokado i krewetką – 1 szt.',
         'Bruschetta z pesto bazyliowym i prosciutto crudo – 1 szt.',
-        'Podana indywidualnie dla każdego gościa',
+        '| podana indywidualnie dla każdego gościa',
       ],
 
       soup: {
@@ -374,11 +375,18 @@ export const PACKAGES: PackageConfig[] = [
         'Surówki: coleslaw, z marchewki, z buraczków',
         'Sosy: spicy mayo, salsa mexicana',
         '+ sos tatarski',
+        '| półmiski serwowane w środkach stołu',
       ],
 
-      desserts: ['Sernik', 'Szarlotka', 'Brownie', 'Owoce sezonowe'],
+      desserts: [
+        'Sernik',
+        'Szarlotka',
+        'Brownie',
+        'Owoce sezonowe',
+        '| patery w środkach stołu',
+      ],
 
-      drinks: ['Woda niegazowana w dzbankach (bez limitu)'],
+      drinks: ['Woda niegazowana w dzbankach – bez limitu'],
     },
   },
 
@@ -411,6 +419,7 @@ export const PACKAGES: PackageConfig[] = [
         'Z pieczoną szynką, serem goudą i świeżym ogórkiem',
         'Z pieczonym burakiem, serem kozim i miodem',
         'Sałatka Cezarska z kurczakiem (sałata rzymska, sos cezar, grillowany kurczak, jajka przepiórcze, pomidorki cherry, grillowany bekon, parmezan, grzanki żytnie)',
+        '| półmiski serwowane w środkach stołu',
       ],
 
       soup: {
@@ -437,12 +446,19 @@ export const PACKAGES: PackageConfig[] = [
         'Ziemniaczki pieczone + sos tatarski',
         'Ziemniaki duszone z zasmażką z boczku, cebuli, pieczarek i koperku',
         'Surówki: coleslaw, z marchewki, z buraczków',
-        'Sosy: spicy mayo, Ketchup',
+        'Sosy: spicy mayo, ketchup',
+        '| półmiski serwowane w środkach stołu',
       ],
 
-      desserts: ['Sernik', 'Szarlotka', 'Brownie', 'Owoce sezonowe'],
+      desserts: [
+        'Sernik',
+        'Szarlotka',
+        'Brownie',
+        'Owoce sezonowe',
+        '| patery w środkach stołu',
+      ],
 
-      drinks: ['Woda niegazowana w dzbankach (bez limitu)'],
+      drinks: ['Woda niegazowana w dzbankach – bez limitu'],
     },
   },
 ]

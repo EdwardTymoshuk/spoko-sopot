@@ -83,6 +83,17 @@ const toDateKey = (date: Date) => {
   return `${year}-${month}-${day}`
 }
 
+const getAvailabilityLevel = (remainingCapacity: number, totalCapacity: number) => {
+  if (totalCapacity <= 0 || remainingCapacity <= 0) {
+    return { label: 'brak miejsc', tone: 'text-destructive' as const }
+  }
+
+  const ratio = remainingCapacity / totalCapacity
+  if (ratio > 0.6) return { label: 'swobodna dostępność', tone: 'text-emerald-700' as const }
+  if (ratio > 0.3) return { label: 'umiarkowana dostępność', tone: 'text-amber-700' as const }
+  return { label: 'ostatnie miejsca', tone: 'text-orange-700' as const }
+}
+
 type CounterProps = {
   value: number
   min?: number
@@ -152,7 +163,7 @@ const DateGuestsStep = () => {
   const { draft, updateDraft } = useReservationDraft()
   const [availability, setAvailability] = useState<CalendarAvailabilityVM[]>([])
   const [timeSlots, setTimeSlots] = useState<AvailabilitySlotApiItem[]>([])
-  const [maxConcurrentGuests, setMaxConcurrentGuests] = useState(35)
+  const [maxConcurrentGuests, setMaxConcurrentGuests] = useState(40)
 
   const adults = draft.adultsCount ?? 10
   const childrenUnder3 = draft.childrenUnder3Count ?? 0
@@ -284,7 +295,7 @@ const DateGuestsStep = () => {
         setMaxConcurrentGuests(
           typeof payload.capacity === 'number' && payload.capacity > 0
             ? payload.capacity
-            : 35
+            : 40
         )
       } catch (error) {
         console.error('Błąd pobierania dostępności kalendarza:', error)
@@ -332,6 +343,9 @@ const DateGuestsStep = () => {
   )
   const hasAnyStartSlot = availableStartTimes.length > 0
   const exceedsCapacity = requestedGuests > maxConcurrentGuests
+  const selectedStartSlot = draft.eventStartTime
+    ? slotMap.get(draft.eventStartTime)
+    : undefined
 
   return (
     <div className="w-full max-w-7xl mx-auto space-y-5 px-3 pt-5 pb-4 md:p-6">
@@ -359,12 +373,12 @@ const DateGuestsStep = () => {
             onChange={(date) => updateDraft('eventDate', date ?? null)}
           />
 
-          <div className="rounded-xl border p-4 md:p-5 space-y-3">
+          <div className="rounded-2xl border border-primary/15 bg-gradient-to-b from-primary/5 via-background to-background p-4 md:p-5 space-y-4">
             <div className="space-y-1">
               <h4 className="font-semibold">Godziny przyjęcia</h4>
               <p className="text-sm text-muted-foreground">
-                Dostępne godziny są wyliczane na podstawie aktualnych rezerwacji
-                i limitu {maxConcurrentGuests} gości jednocześnie.
+                Godziny są wyliczane automatycznie na podstawie aktualnych
+                rezerwacji i dostępności sali.
               </p>
             </div>
 
@@ -375,7 +389,7 @@ const DateGuestsStep = () => {
                 </span>
                 <div className="relative">
                   <select
-                    className="h-11 w-full appearance-none rounded-lg border bg-background px-3 pr-9 text-sm"
+                    className="h-11 w-full appearance-none rounded-xl border border-border/80 bg-background px-3 pr-9 text-sm shadow-sm"
                     value={draft.eventStartTime ?? ''}
                     onChange={(e) => {
                       updateDraft('eventStartTime', e.target.value || null)
@@ -389,15 +403,18 @@ const DateGuestsStep = () => {
                       const disabled =
                         index >= TIME_OPTIONS.length - 1 || !canStartAtTime(time)
 
-                      const suffix =
+                      const badge =
                         slot && index < TIME_OPTIONS.length - 1
-                          ? ` (${slot.remainingCapacity}/${maxConcurrentGuests} wolnych)`
+                          ? ` • ${getAvailabilityLevel(
+                              slot.remainingCapacity,
+                              maxConcurrentGuests
+                            ).label}`
                           : ''
 
                       return (
                         <option key={time} value={time} disabled={disabled}>
                           {time}
-                          {suffix}
+                          {badge}
                         </option>
                       )
                     })}
@@ -412,7 +429,7 @@ const DateGuestsStep = () => {
                 </span>
                 <div className="relative">
                   <select
-                    className="h-11 w-full appearance-none rounded-lg border bg-background px-3 pr-9 text-sm"
+                    className="h-11 w-full appearance-none rounded-xl border border-border/80 bg-background px-3 pr-9 text-sm shadow-sm"
                     value={draft.eventEndTime ?? ''}
                     onChange={(e) =>
                       updateDraft('eventEndTime', e.target.value || null)
@@ -434,6 +451,28 @@ const DateGuestsStep = () => {
               </label>
             </div>
 
+            {selectedStartSlot && (
+              <div className="rounded-xl border bg-background/80 px-3 py-2 text-sm">
+                <span className="text-muted-foreground">Dostępność o {draft.eventStartTime}: </span>
+                <span
+                  className={cn(
+                    'font-medium',
+                    getAvailabilityLevel(
+                      selectedStartSlot.remainingCapacity,
+                      maxConcurrentGuests
+                    ).tone
+                  )}
+                >
+                  {
+                    getAvailabilityLevel(
+                      selectedStartSlot.remainingCapacity,
+                      maxConcurrentGuests
+                    ).label
+                  }
+                </span>
+              </div>
+            )}
+
             {!draft.eventDate && (
               <p className="text-sm text-muted-foreground">
                 Najpierw wybierz datę w kalendarzu, aby zobaczyć dostępne
@@ -443,9 +482,9 @@ const DateGuestsStep = () => {
 
             {exceedsCapacity && (
               <p className="text-sm text-destructive">
-                Dla {requestedGuests} gości jednocześnie przekraczasz limit
-                sali ({maxConcurrentGuests}). Skontaktuj się z restauracją, aby
-                ustalić indywidualne rozwiązanie.
+                Dla {requestedGuests} gości przekroczony jest limit formularza
+                online ({maxConcurrentGuests} osób). Skontaktuj się z restauracją,
+                aby ustalić indywidualne rozwiązanie.
               </p>
             )}
 

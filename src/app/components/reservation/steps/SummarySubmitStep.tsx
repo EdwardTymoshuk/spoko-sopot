@@ -120,7 +120,7 @@ const SummarySubmitStep = () => {
           draft.cakeOption === 'own_cake'
             ? 'własny tort'
             : draft.cakeOption === 'need_bakery_contact'
-            ? 'kontakt do cukierni (opłata talerzykowa 10 zł / osoba)'
+            ? 'kontakt do cukierni'
             : 'bez tortu',
       })
     }

@@ -56,16 +56,17 @@ const PackageDetails = ({ pkg }: Props) => {
       {/* ZUPA */}
       {details.soup && (
         <Section
-          title={`Zupa – 250 ml ${
+          title={
             details.soup.mode === 'optional'
-              ? `| opcjonalnie (dopłata | ${details.soup.pricePerPerson} zł / osoba)`
-              : '| wybór obowiązkowy'
-          }`}
+              ? `Zupa | opcjonalnie (dopłata | ${details.soup.pricePerPerson} zł / osoba)`
+              : 'Zupa – 250 ml | wybór jednej zupy dla wszystkich gości (wybór obowiązkowy)'
+          }
         >
           <ul className="list-disc pl-5 space-y-1">
             {details.soup.choices.map((s) => (
               <li key={s.value}>{s.label}</li>
             ))}
+            {details.soup.mode === 'optional' && <li>Lub opcja: „Nie, dziękuję” :)</li>}
           </ul>
         </Section>
       )}
