@@ -43,6 +43,8 @@ export type CalendarAvailabilityVM = {
   isBlocked: boolean
   basePriceFrom: number | null
   reason?: string | null
+  occupancyRatio?: number | null
+  occupiedGuestsPeak?: number | null
 }
 
 export interface ReservationDraft {

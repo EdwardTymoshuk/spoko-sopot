@@ -1,5 +1,6 @@
 'use client'
 
+import { Button } from '@/app/components/ui/button'
 import { Separator } from '@/app/components/ui/separator'
 import { useReservationDraft } from '@/app/utils/hooks/reservation/ReservationDraftContext'
 import { useReservationPricing } from '@/app/utils/hooks/reservation/useReservationPricing'
@@ -13,12 +14,33 @@ import {
   PREMIUM_MAIN_SIDE_OPTIONS,
   SOFT_DRINK_OPTIONS,
 } from '@/lib/consts'
+import { FiTrash2 } from 'react-icons/fi'
 
 const stripLeadingEmoji = (value: string) =>
   value.replace(/^[^A-Za-z0-9ĄĆĘŁŃÓŚŹŻąćęłńóśźż]+/, '')
 
+const RemoveSelectionButton = ({
+  label,
+  onClick,
+}: {
+  label: string
+  onClick: () => void
+}) => (
+  <Button
+    type="button"
+    variant="ghost"
+    size="icon"
+    onClick={onClick}
+    className="h-6 w-6 text-muted-foreground hover:text-destructive"
+    aria-label={`Usuń ${label} z podsumowania`}
+    title={`Usuń: ${label}`}
+  >
+    <FiTrash2 className="h-3.5 w-3.5" />
+  </Button>
+)
+
 const ReservationSummaryContent = () => {
-  const { draft } = useReservationDraft()
+  const { draft, updateDraft } = useReservationDraft()
   const specialDietLabels: Record<string, string> = {
     vegetarian: 'wegetariańska',
     lactose_free: 'bez laktozy',
@@ -87,6 +109,48 @@ const ReservationSummaryContent = () => {
   const selectedAlcohols = ALCOHOL_OPTIONS.filter(
     (option) => (draft.alcoholSelections?.[option.id] ?? 0) > 0
   )
+
+  const removeColdPlateSet = (id: string) =>
+    updateDraft('coldPlateSelections', {
+      ...(draft.coldPlateSelections ?? {}),
+      [id]: 0,
+    })
+
+  const removeColdPlateSalad = (id: string) =>
+    updateDraft('coldPlateSaladSelections', {
+      ...(draft.coldPlateSaladSelections ?? {}),
+      [id]: 0,
+    })
+
+  const removePremiumMainPlatter = (id: string) =>
+    updateDraft('premiumMainSelections', {
+      ...(draft.premiumMainSelections ?? {}),
+      [id]: 0,
+    })
+
+  const removePremiumMainSide = (id: string) =>
+    updateDraft('premiumMainSideSelections', {
+      ...(draft.premiumMainSideSelections ?? {}),
+      [id]: 0,
+    })
+
+  const removeDessert = (id: string) =>
+    updateDraft('dessertSelections', {
+      ...(draft.dessertSelections ?? {}),
+      [id]: 0,
+    })
+
+  const removeSoftDrink = (id: string) =>
+    updateDraft('softDrinkSelections', {
+      ...(draft.softDrinkSelections ?? {}),
+      [id]: 0,
+    })
+
+  const removeAlcohol = (id: string) =>
+    updateDraft('alcoholSelections', {
+      ...(draft.alcoholSelections ?? {}),
+      [id]: 0,
+    })
 
   return (
     <div className="space-y-6">
@@ -228,20 +292,32 @@ const ReservationSummaryContent = () => {
             {selectedColdPlateSets.map((set) => (
               <div
                 key={set.id}
-                className="flex justify-between text-xs text-muted-foreground"
+                className="flex items-center justify-between text-xs text-muted-foreground gap-2"
               >
                 <span>{stripLeadingEmoji(set.title)}</span>
-                <span>x{draft.coldPlateSelections?.[set.id] ?? 0}</span>
+                <div className="flex items-center gap-1">
+                  <span>x{draft.coldPlateSelections?.[set.id] ?? 0}</span>
+                  <RemoveSelectionButton
+                    label={stripLeadingEmoji(set.title)}
+                    onClick={() => removeColdPlateSet(set.id)}
+                  />
+                </div>
               </div>
             ))}
 
             {selectedColdPlateSalads.map((salad) => (
               <div
                 key={salad.id}
-                className="flex justify-between text-xs text-muted-foreground"
+                className="flex items-center justify-between text-xs text-muted-foreground gap-2"
               >
                 <span>{stripLeadingEmoji(salad.title)}</span>
-                <span>x{draft.coldPlateSaladSelections?.[salad.id] ?? 0}</span>
+                <div className="flex items-center gap-1">
+                  <span>x{draft.coldPlateSaladSelections?.[salad.id] ?? 0}</span>
+                  <RemoveSelectionButton
+                    label={stripLeadingEmoji(salad.title)}
+                    onClick={() => removeColdPlateSalad(salad.id)}
+                  />
+                </div>
               </div>
             ))}
           </>
@@ -260,22 +336,34 @@ const ReservationSummaryContent = () => {
             {selectedPremiumMainPlatters.map((platter) => (
               <div
                 key={platter.id}
-                className="flex justify-between text-xs text-muted-foreground"
+                className="flex items-center justify-between text-xs text-muted-foreground gap-2"
               >
                 <span>{stripLeadingEmoji(platter.title)}</span>
-                <span>x{draft.premiumMainSelections?.[platter.id] ?? 0}</span>
+                <div className="flex items-center gap-1">
+                  <span>x{draft.premiumMainSelections?.[platter.id] ?? 0}</span>
+                  <RemoveSelectionButton
+                    label={stripLeadingEmoji(platter.title)}
+                    onClick={() => removePremiumMainPlatter(platter.id)}
+                  />
+                </div>
               </div>
             ))}
 
             {selectedPremiumMainSides.map((option) => (
               <div
                 key={option.id}
-                className="flex justify-between text-xs text-muted-foreground"
+                className="flex items-center justify-between text-xs text-muted-foreground gap-2"
               >
                 <span>{stripLeadingEmoji(option.label)}</span>
-                <span>
-                  x{draft.premiumMainSideSelections?.[option.id] ?? 0} (+{(draft.premiumMainSideSelections?.[option.id] ?? 0) * option.price} zł)
-                </span>
+                <div className="flex items-center gap-1">
+                  <span>
+                    x{draft.premiumMainSideSelections?.[option.id] ?? 0} (+{(draft.premiumMainSideSelections?.[option.id] ?? 0) * option.price} zł)
+                  </span>
+                  <RemoveSelectionButton
+                    label={stripLeadingEmoji(option.label)}
+                    onClick={() => removePremiumMainSide(option.id)}
+                  />
+                </div>
               </div>
             ))}
           </>
@@ -292,10 +380,16 @@ const ReservationSummaryContent = () => {
             {selectedDesserts.map((option) => (
               <div
                 key={option.id}
-                className="flex justify-between text-xs text-muted-foreground"
+                className="flex items-center justify-between text-xs text-muted-foreground gap-2"
               >
                 <span>{stripLeadingEmoji(option.title)}</span>
-                <span>x{draft.dessertSelections?.[option.id] ?? 0}</span>
+                <div className="flex items-center gap-1">
+                  <span>x{draft.dessertSelections?.[option.id] ?? 0}</span>
+                  <RemoveSelectionButton
+                    label={stripLeadingEmoji(option.title)}
+                    onClick={() => removeDessert(option.id)}
+                  />
+                </div>
               </div>
             ))}
           </>
@@ -312,10 +406,16 @@ const ReservationSummaryContent = () => {
             {selectedSoftDrinks.map((option) => (
               <div
                 key={option.id}
-                className="flex justify-between text-xs text-muted-foreground"
+                className="flex items-center justify-between text-xs text-muted-foreground gap-2"
               >
                 <span>{stripLeadingEmoji(option.title)}</span>
-                <span>x{draft.softDrinkSelections?.[option.id] ?? 0}</span>
+                <div className="flex items-center gap-1">
+                  <span>x{draft.softDrinkSelections?.[option.id] ?? 0}</span>
+                  <RemoveSelectionButton
+                    label={stripLeadingEmoji(option.title)}
+                    onClick={() => removeSoftDrink(option.id)}
+                  />
+                </div>
               </div>
             ))}
           </>
@@ -332,10 +432,16 @@ const ReservationSummaryContent = () => {
             {selectedAlcohols.map((option) => (
               <div
                 key={option.id}
-                className="flex justify-between text-xs text-muted-foreground"
+                className="flex items-center justify-between text-xs text-muted-foreground gap-2"
               >
                 <span>{stripLeadingEmoji(option.title)}</span>
-                <span>x{draft.alcoholSelections?.[option.id] ?? 0}</span>
+                <div className="flex items-center gap-1">
+                  <span>x{draft.alcoholSelections?.[option.id] ?? 0}</span>
+                  <RemoveSelectionButton
+                    label={stripLeadingEmoji(option.title)}
+                    onClick={() => removeAlcohol(option.id)}
+                  />
+                </div>
               </div>
             ))}
           </>
