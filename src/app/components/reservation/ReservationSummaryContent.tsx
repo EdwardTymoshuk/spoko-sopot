@@ -28,10 +28,10 @@ const RemoveSelectionButton = ({
 }) => (
   <Button
     type="button"
-    variant="destructive"
+    variant="ghost"
     size="icon"
     onClick={onClick}
-    className="h-6 w-6 rounded-md p-0"
+    className="h-6 w-6 p-0 text-destructive/80 hover:text-destructive hover:bg-transparent"
     aria-label={`Usuń ${label} z podsumowania`}
     title={`Usuń: ${label}`}
   >

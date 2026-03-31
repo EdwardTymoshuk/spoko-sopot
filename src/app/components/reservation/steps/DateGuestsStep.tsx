@@ -83,17 +83,6 @@ const toDateKey = (date: Date) => {
   return `${year}-${month}-${day}`
 }
 
-const getAvailabilityLevel = (remainingCapacity: number, totalCapacity: number) => {
-  if (totalCapacity <= 0 || remainingCapacity <= 0) {
-    return { label: 'brak miejsc', tone: 'text-destructive' as const }
-  }
-
-  const ratio = remainingCapacity / totalCapacity
-  if (ratio > 0.6) return { label: 'swobodna dostępność', tone: 'text-emerald-700' as const }
-  if (ratio > 0.3) return { label: 'umiarkowana dostępność', tone: 'text-amber-700' as const }
-  return { label: 'ostatnie miejsca', tone: 'text-orange-700' as const }
-}
-
 type CounterProps = {
   value: number
   min?: number
@@ -343,9 +332,6 @@ const DateGuestsStep = () => {
   )
   const hasAnyStartSlot = availableStartTimes.length > 0
   const exceedsCapacity = requestedGuests > maxConcurrentGuests
-  const selectedStartSlot = draft.eventStartTime
-    ? slotMap.get(draft.eventStartTime)
-    : undefined
 
   return (
     <div className="w-full max-w-7xl mx-auto space-y-5 px-3 pt-5 pb-4 md:p-6">
@@ -399,22 +385,12 @@ const DateGuestsStep = () => {
                   >
                     <option value="">Wybierz</option>
                     {TIME_OPTIONS.map((time, index) => {
-                      const slot = slotMap.get(time)
                       const disabled =
                         index >= TIME_OPTIONS.length - 1 || !canStartAtTime(time)
-
-                      const badge =
-                        slot && index < TIME_OPTIONS.length - 1
-                          ? ` • ${getAvailabilityLevel(
-                              slot.remainingCapacity,
-                              maxConcurrentGuests
-                            ).label}`
-                          : ''
 
                       return (
                         <option key={time} value={time} disabled={disabled}>
                           {time}
-                          {badge}
                         </option>
                       )
                     })}
@@ -450,28 +426,6 @@ const DateGuestsStep = () => {
                 </div>
               </label>
             </div>
-
-            {selectedStartSlot && (
-              <div className="rounded-xl border bg-background/80 px-3 py-2 text-sm">
-                <span className="text-muted-foreground">Dostępność o {draft.eventStartTime}: </span>
-                <span
-                  className={cn(
-                    'font-medium',
-                    getAvailabilityLevel(
-                      selectedStartSlot.remainingCapacity,
-                      maxConcurrentGuests
-                    ).tone
-                  )}
-                >
-                  {
-                    getAvailabilityLevel(
-                      selectedStartSlot.remainingCapacity,
-                      maxConcurrentGuests
-                    ).label
-                  }
-                </span>
-              </div>
-            )}
 
             {!draft.eventDate && (
               <p className="text-sm text-muted-foreground">
