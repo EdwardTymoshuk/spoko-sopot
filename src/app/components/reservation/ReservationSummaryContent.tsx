@@ -153,12 +153,23 @@ const ReservationSummaryContent = () => {
     })
 
   return (
-    <div className="space-y-6">
-      <div className="space-y-1">
+    <div className="flex flex-col max-h-[inherit]">
+      {/* Sticky header */}
+      <div className="shrink-0 px-6 pt-6 pb-4 bg-background">
         <p className="text-lg font-semibold">Podsumowanie</p>
+        <Separator className="mt-4" />
       </div>
 
-      <Separator />
+      {/* Scrollable body */}
+      <div className="
+        flex-1 overflow-y-auto overscroll-contain
+        px-6 pb-6
+        [&::-webkit-scrollbar]:w-1.5
+        [&::-webkit-scrollbar-track]:bg-transparent
+        [&::-webkit-scrollbar-thumb]:rounded-full
+        [&::-webkit-scrollbar-thumb]:bg-zinc-300
+        hover:[&::-webkit-scrollbar-thumb]:bg-zinc-400
+      ">
 
       <div className="space-y-3 text-sm text-zinc-700">
         {/* DATA */}
@@ -503,13 +514,17 @@ const ReservationSummaryContent = () => {
         )}
       </div>
 
-      <Separator />
+      </div>{/* end scrollable body */}
 
-      <div className="flex items-center justify-between">
-        <span className="text-sm text-zinc-500">Suma orientacyjna</span>
-        <span className="text-2xl font-semibold text-zinc-900">
-          {total > 0 ? `${total} zł` : '—'}
-        </span>
+      {/* Sticky footer — total */}
+      <div className="shrink-0 px-6 pb-6 bg-background">
+        <Separator className="mb-4" />
+        <div className="flex items-center justify-between">
+          <span className="text-sm text-zinc-500">Suma orientacyjna</span>
+          <span className="text-2xl font-semibold text-zinc-900">
+            {total > 0 ? `${total} zł` : '—'}
+          </span>
+        </div>
       </div>
 
     </div>

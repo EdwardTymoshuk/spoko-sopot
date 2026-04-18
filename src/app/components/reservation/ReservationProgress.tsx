@@ -27,7 +27,7 @@ export default function ReservationProgress() {
         <span>{progressSteps[safeCurrentIndex]?.label}</span>
       </div>
 
-      <Progress value={progress} />
+      <Progress value={progress} className="h-1" />
     </div>
   )
 }

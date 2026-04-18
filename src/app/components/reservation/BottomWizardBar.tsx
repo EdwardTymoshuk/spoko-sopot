@@ -39,7 +39,7 @@ const BottomWizardBar = () => {
   md:px-4 md:py-3
 "
     >
-      <div className="mx-auto max-w-screen-2xl flex w-full items-center justify-between gap-2 md:grid md:grid-cols-[1fr_auto] md:gap-4">
+      <div className="flex w-full items-center justify-between gap-2 md:grid md:grid-cols-[1fr_auto] md:gap-4">
         {/* LEFT – CENA / DROPDOWN */}
         <div className="md:justify-self-start">
           <Popover open={open} onOpenChange={setOpen}>
@@ -56,12 +56,12 @@ const BottomWizardBar = () => {
     rounded-full
     px-3 md:px-5
     gap-1.5 md:gap-3
-    text-base md:text-base
+    text-sm md:text-base
     font-medium
     shadow-sm
   "
               >
-                <span className="font-semibold">
+                <span className="font-medium md:font-semibold">
                   <span className="hidden md:inline">Suma orientacyjna: </span>
                   {total > 0 ? `${total} zł` : '—'}
                 </span>
@@ -82,10 +82,10 @@ const BottomWizardBar = () => {
 			max-w-[380px]
     max-h-[min(70dvh,560px)]
     md:max-h-[min(80dvh,680px)]
-    overflow-y-auto
+    overflow-hidden
     overscroll-contain
     rounded-2xl
-    p-6
+    p-0
     shadow-xl
     border
     bg-background

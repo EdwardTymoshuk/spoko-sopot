@@ -46,7 +46,7 @@ const ReservationWizardLayoutClient = ({
   `,
             isWelcomeStep || isThankYouStep
               ? 'overflow-y-hidden'
-              : 'pb-[6.25rem] md:pb-0'
+              : 'pb-[4.5rem] md:pb-0'
           )}
         >
           <MainContainer className="h-full !min-h-0">

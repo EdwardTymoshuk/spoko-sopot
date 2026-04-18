@@ -2,6 +2,11 @@
 
 import PriceCalendar from '@/app/components/reservation/calendar/PriceCalendar'
 import { Card } from '@/app/components/ui/card'
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from '@/app/components/ui/popover'
 import { Separator } from '@/app/components/ui/separator'
 import type {
   CalendarAvailabilityVM,
@@ -10,9 +15,9 @@ import type {
 import { useReservationDraft } from '@/app/utils/hooks/reservation/ReservationDraftContext'
 import { parseTimeToDecimalHour } from '@/lib/consts'
 import { cn } from '@/lib/utils'
-import { useCallback, useEffect, useMemo, useState } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { FiMinus, FiPlus } from 'react-icons/fi'
-import { MdKeyboardArrowDown } from 'react-icons/md'
+import { MdCheck, MdKeyboardArrowDown } from 'react-icons/md'
 
 type AvailabilityApiItem = {
   date: string
@@ -148,11 +153,112 @@ const OptionCard = ({
   </button>
 )
 
+type TimeSelectProps = {
+  value: string | null
+  placeholder?: string
+  options: { time: string; disabled: boolean }[]
+  disabled?: boolean
+  onChange: (value: string | null) => void
+}
+
+const TimeSelect = ({
+  value,
+  placeholder = 'Wybierz',
+  options,
+  disabled = false,
+  onChange,
+}: TimeSelectProps) => {
+  const [open, setOpen] = useState(false)
+  const selectedRef = useRef<HTMLButtonElement>(null)
+
+  const handleSelect = (time: string) => {
+    onChange(time)
+    setOpen(false)
+  }
+
+  return (
+    <Popover open={open && !disabled} onOpenChange={(v) => !disabled && setOpen(v)}>
+      <PopoverTrigger asChild>
+        <button
+          type="button"
+          disabled={disabled}
+          className={cn(
+            'flex h-12 w-full items-center justify-between rounded-xl border border-border/80 bg-background px-3 pr-9 text-sm shadow-sm transition-colors',
+            'relative text-left',
+            disabled && 'cursor-not-allowed opacity-50',
+            !disabled && 'hover:border-primary/50 focus:outline-none focus:ring-2 focus:ring-primary/30',
+            open && 'border-primary ring-2 ring-primary/30'
+          )}
+          aria-haspopup="listbox"
+          aria-expanded={open}
+        >
+          <span className={cn(!value && 'text-muted-foreground')}>
+            {value ?? placeholder}
+          </span>
+          <MdKeyboardArrowDown
+            className={cn(
+              'absolute right-2.5 top-1/2 h-5 w-5 -translate-y-1/2 text-muted-foreground transition-transform duration-200',
+              open && 'rotate-180'
+            )}
+          />
+        </button>
+      </PopoverTrigger>
+      <PopoverContent
+        side="bottom"
+        align="start"
+        sideOffset={4}
+        className="w-[var(--radix-popover-trigger-width)] p-0 rounded-xl shadow-lg border overflow-hidden"
+        onOpenAutoFocus={(e) => {
+          e.preventDefault()
+          selectedRef.current?.scrollIntoView({ block: 'center' })
+        }}
+      >
+        <div
+          role="listbox"
+          className="
+            max-h-60 overflow-y-auto overscroll-contain
+            [&::-webkit-scrollbar]:w-1.5
+            [&::-webkit-scrollbar-track]:bg-transparent
+            [&::-webkit-scrollbar-thumb]:rounded-full
+            [&::-webkit-scrollbar-thumb]:bg-zinc-300
+          "
+        >
+          {options.map(({ time, disabled: optDisabled }) => {
+            const selected = time === value
+            return (
+              <button
+                key={time}
+                ref={selected ? selectedRef : undefined}
+                type="button"
+                role="option"
+                aria-selected={selected}
+                disabled={optDisabled}
+                onClick={() => handleSelect(time)}
+                className={cn(
+                  'flex w-full items-center justify-between px-4 py-2.5 text-sm transition-colors',
+                  selected
+                    ? 'bg-primary/10 font-medium text-primary'
+                    : 'text-foreground hover:bg-muted',
+                  optDisabled && 'cursor-not-allowed opacity-35 hover:bg-transparent'
+                )}
+              >
+                {time}
+                {selected && <MdCheck className="h-4 w-4 shrink-0" />}
+              </button>
+            )
+          })}
+        </div>
+      </PopoverContent>
+    </Popover>
+  )
+}
+
 const DateGuestsStep = () => {
   const { draft, updateDraft } = useReservationDraft()
   const [availability, setAvailability] = useState<CalendarAvailabilityVM[]>([])
   const [timeSlots, setTimeSlots] = useState<AvailabilitySlotApiItem[]>([])
   const [maxConcurrentGuests, setMaxConcurrentGuests] = useState(40)
+  const [slotsLoaded, setSlotsLoaded] = useState(false)
 
   const adults = draft.adultsCount ?? 10
   const childrenUnder3 = draft.childrenUnder3Count ?? 0
@@ -227,6 +333,7 @@ const DateGuestsStep = () => {
 
   useEffect(() => {
     let cancelled = false
+    setSlotsLoaded(false)
 
     const fetchAvailability = async () => {
       try {
@@ -281,6 +388,7 @@ const DateGuestsStep = () => {
 
         setAvailability(nextAvailability)
         setTimeSlots(slots)
+        setSlotsLoaded(true)
         setMaxConcurrentGuests(
           typeof payload.capacity === 'number' && payload.capacity > 0
             ? payload.capacity
@@ -305,6 +413,10 @@ const DateGuestsStep = () => {
       return
     }
 
+    // Don't clear saved times before the slots API has responded —
+    // an empty slotMap would invalidate every time incorrectly.
+    if (!slotsLoaded) return
+
     if (draft.eventStartTime && !canStartAtTime(draft.eventStartTime)) {
       updateDraft('eventStartTime', null)
       if (draft.eventEndTime) updateDraft('eventEndTime', null)
@@ -315,6 +427,7 @@ const DateGuestsStep = () => {
       updateDraft('eventEndTime', null)
     }
   }, [
+    slotsLoaded,
     canEndAtTime,
     canStartAtTime,
     draft.eventDate,
@@ -359,7 +472,7 @@ const DateGuestsStep = () => {
             onChange={(date) => updateDraft('eventDate', date ?? null)}
           />
 
-          <div className="rounded-2xl border border-primary/15 bg-gradient-to-b from-primary/5 via-background to-background p-4 md:p-5 space-y-4">
+          <div className="rounded-2xl bg-gradient-to-b from-primary/5 via-background to-background p-4 md:p-5 space-y-4">
             <div className="space-y-1">
               <h4 className="font-semibold">Godziny przyjęcia</h4>
               <p className="text-sm text-muted-foreground">
@@ -369,62 +482,38 @@ const DateGuestsStep = () => {
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-              <label className="space-y-1">
+              <div className="space-y-1">
                 <span className="text-xs uppercase tracking-wide text-muted-foreground">
                   Godzina rozpoczęcia
                 </span>
-                <div className="relative">
-                  <select
-                    className="h-11 w-full appearance-none rounded-xl border border-border/80 bg-background px-3 pr-9 text-sm shadow-sm"
-                    value={draft.eventStartTime ?? ''}
-                    onChange={(e) => {
-                      updateDraft('eventStartTime', e.target.value || null)
-                      updateDraft('eventEndTime', null)
-                    }}
-                    disabled={!draft.eventDate || exceedsCapacity || !hasAnyStartSlot}
-                  >
-                    <option value="">Wybierz</option>
-                    {TIME_OPTIONS.map((time, index) => {
-                      const disabled =
-                        index >= TIME_OPTIONS.length - 1 || !canStartAtTime(time)
+                <TimeSelect
+                  value={draft.eventStartTime ?? null}
+                  disabled={!draft.eventDate || exceedsCapacity || !hasAnyStartSlot}
+                  options={TIME_OPTIONS.map((time, index) => ({
+                    time,
+                    disabled: index >= TIME_OPTIONS.length - 1 || !canStartAtTime(time),
+                  }))}
+                  onChange={(val) => {
+                    updateDraft('eventStartTime', val)
+                    updateDraft('eventEndTime', null)
+                  }}
+                />
+              </div>
 
-                      return (
-                        <option key={time} value={time} disabled={disabled}>
-                          {time}
-                        </option>
-                      )
-                    })}
-                  </select>
-                  <MdKeyboardArrowDown className="pointer-events-none absolute right-2 top-1/2 h-5 w-5 -translate-y-1/2 text-muted-foreground" />
-                </div>
-              </label>
-
-              <label className="space-y-1">
+              <div className="space-y-1">
                 <span className="text-xs uppercase tracking-wide text-muted-foreground">
                   Godzina zakończenia
                 </span>
-                <div className="relative">
-                  <select
-                    className="h-11 w-full appearance-none rounded-xl border border-border/80 bg-background px-3 pr-9 text-sm shadow-sm"
-                    value={draft.eventEndTime ?? ''}
-                    onChange={(e) =>
-                      updateDraft('eventEndTime', e.target.value || null)
-                    }
-                    disabled={!draft.eventDate || !draft.eventStartTime || exceedsCapacity}
-                  >
-                    <option value="">Wybierz</option>
-                    {TIME_OPTIONS.map((time) => {
-                      const disabled = !canEndAtTime(time)
-                      return (
-                        <option key={time} value={time} disabled={disabled}>
-                          {time}
-                        </option>
-                      )
-                    })}
-                  </select>
-                  <MdKeyboardArrowDown className="pointer-events-none absolute right-2 top-1/2 h-5 w-5 -translate-y-1/2 text-muted-foreground" />
-                </div>
-              </label>
+                <TimeSelect
+                  value={draft.eventEndTime ?? null}
+                  disabled={!draft.eventDate || !draft.eventStartTime || exceedsCapacity}
+                  options={TIME_OPTIONS.map((time) => ({
+                    time,
+                    disabled: !canEndAtTime(time),
+                  }))}
+                  onChange={(val) => updateDraft('eventEndTime', val)}
+                />
+              </div>
             </div>
 
             {!draft.eventDate && (
