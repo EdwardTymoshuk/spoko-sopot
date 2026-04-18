@@ -261,6 +261,17 @@ const SummarySubmitStep = () => {
           consentMarketing,
           total: pricing.total,
           sections,
+          reservationData: {
+            adultsCount: draft.adultsCount ?? 1,
+            childrenCount:
+              (draft.childrenUnder3Count ?? 0) + (draft.children3to12Count ?? 0),
+            packageCode: draft.packageType
+              ? (draft.packageType.toUpperCase() as 'SILVER' | 'GOLD' | 'PLATINUM')
+              : null,
+            pricePerPerson: pricing.pricePerPerson,
+            subtotal: pricing.total - pricing.serviceFee,
+            serviceFee: pricing.serviceFee,
+          },
         }),
       })
 

@@ -1,11 +1,21 @@
+import { prisma } from '@/lib/prisma'
+import { PackageCode } from '@prisma/client'
 import { NextResponse } from 'next/server'
-import { MongoClient } from 'mongodb'
 import nodemailer from 'nodemailer'
-import SMTPTransport from 'nodemailer/lib/smtp-transport'
+import type SMTPTransport from 'nodemailer/lib/smtp-transport'
 import { generateReservationSummaryPdf } from './pdfTemplate'
 
 type SummaryItem = { label: string; value: string }
 type SummarySection = { title: string; items: SummaryItem[] }
+
+type ReservationData = {
+  adultsCount: number
+  childrenCount: number
+  packageCode: 'SILVER' | 'GOLD' | 'PLATINUM' | null
+  pricePerPerson: number
+  subtotal: number
+  serviceFee: number
+}
 
 type ReservationSummaryPayload = {
   customerEmail?: string
@@ -19,6 +29,7 @@ type ReservationSummaryPayload = {
   consentMarketing?: boolean
   total?: number
   sections?: SummarySection[]
+  reservationData?: ReservationData
 }
 
 const isValidEmail = (email: string) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)
@@ -296,52 +307,60 @@ export async function POST(req: Request): Promise<Response> {
       )
     }
 
-    if (process.env.MONGODB_URI) {
+    // ── Save to PostgreSQL ────────────────────────────────────────────────────
+    if (eventDateKey) {
       try {
-        const client = await MongoClient.connect(process.env.MONGODB_URI)
-        const db = client.db()
+        const rd = body.reservationData
+        const packageCode =
+          rd?.packageCode && rd.packageCode in PackageCode
+            ? PackageCode[rd.packageCode]
+            : null
 
-        if (eventDateKey) {
-          await db.collection('ReservationRequests').insertOne({
-            customerEmail: customerEmail.toLowerCase(),
-            customerName: customerName || null,
-            customerPhone: customerPhone || null,
-            customerNotes: customerNotes || null,
-            eventDateKey,
-            eventDate: managerDate || null,
-            eventStartTime: eventStartTime || null,
-            eventEndTime: eventEndTime || null,
-            total,
-            sections,
-            source: 'reservation-summary',
-            status: 'new',
-            createdAt: new Date(),
-          })
-        }
+        // Compute event duration in hours from start/end time (fallback: 5h)
+        const durationHours = (() => {
+          if (!eventStartTime || !eventEndTime) return 5
+          const [sh, sm] = eventStartTime.split(':').map(Number)
+          const [eh, em] = eventEndTime.split(':').map(Number)
+          const diff = (eh * 60 + em - (sh * 60 + sm)) / 60
+          return diff > 0 ? Math.round(diff) : 5
+        })()
 
-        if (consentMarketing) {
-          await db.collection('MarketingLeads').updateOne(
-            { email: customerEmail.toLowerCase() },
-            {
-              $set: {
-                email: customerEmail.toLowerCase(),
-                name: customerName || null,
-                phone: customerPhone || null,
-                consentMarketing: true,
-                source: 'reservation-summary',
-                updatedAt: new Date(),
-              },
-              $setOnInsert: {
-                createdAt: new Date(),
+        await prisma.reservation.create({
+          data: {
+            status: 'SENT',
+            eventDate: new Date(eventDateKey),
+            startTime: eventStartTime || null,
+            endTime: eventEndTime || null,
+            adultsCount: rd?.adultsCount ?? 1,
+            childrenCount: rd?.childrenCount ?? 0,
+            eventType: 'OTHER',
+            contact: {
+              create: {
+                name: customerName || '—',
+                phone: customerPhone || '—',
+                email: customerEmail,
+                notes: customerNotes || null,
               },
             },
-            { upsert: true }
-          )
-        }
-
-        await client.close()
+            ...(packageCode && rd
+              ? {
+                  offerSnapshot: {
+                    create: {
+                      packageCode,
+                      servingType: 'standard',
+                      basePricePerAdult: rd.pricePerPerson,
+                      durationHours,
+                      subtotal: rd.subtotal,
+                      serviceFee: rd.serviceFee,
+                      total: total ?? 0,
+                    },
+                  },
+                }
+              : {}),
+          },
+        })
       } catch (dbError) {
-        console.error('Błąd zapisu zgłoszenia rezerwacji:', dbError)
+        console.error('Błąd zapisu rezerwacji do PostgreSQL:', dbError)
       }
     }
 
