@@ -66,6 +66,16 @@ model ReservationContact {
   reservation Reservation @relation(fields: [reservationId], references: [id], onDelete: Cascade)
 }
 
+model CalendarAvailability {
+  id            String   @id @default(uuid())
+  date          DateTime @unique
+  isBlocked     Boolean  @default(false)
+  basePriceFrom Int?
+  notes         String?
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+}
+
 // ─── Enums ────────────────────────────────────────────────────────────────────
 
 enum ReservationStatus {
