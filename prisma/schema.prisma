@@ -24,6 +24,7 @@ model Reservation {
   offerSnapshot ReservationOfferSnapshot?
   extras        ReservationExtra[]
   contact       ReservationContact?
+  summaryPdf   ReservationSummaryPdf?
 }
 
 model ReservationOfferSnapshot {
@@ -66,6 +67,17 @@ model ReservationContact {
   reservation Reservation @relation(fields: [reservationId], references: [id], onDelete: Cascade)
 }
 
+model ReservationSummaryPdf {
+  id            String      @id @default(uuid())
+  reservationId String      @unique
+  filename      String
+  mimeType      String      @default("application/pdf")
+  content       Bytes
+  createdAt     DateTime    @default(now())
+
+  reservation Reservation @relation(fields: [reservationId], references: [id], onDelete: Cascade)
+}
+
 model CalendarAvailability {
   id            String   @id @default(uuid())
   date          DateTime @unique
@@ -91,6 +103,7 @@ enum EventType {
   COMMUNION
   CHRISTENING
   COMPANY_EVENT
+  WEDDING
   OTHER
 }
 

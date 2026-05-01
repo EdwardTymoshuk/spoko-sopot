@@ -264,6 +264,7 @@ const DateGuestsStep = () => {
   const childrenUnder3 = draft.childrenUnder3Count ?? 0
   const children3to12 = draft.children3to12Count ?? 0
   const totalGuests = adults + childrenUnder3 + children3to12
+  const capacityGuests = adults + children3to12
 
   const shouldPickChildrenOption = children3to12 > 0
   const isChildrenOptionMissing =
@@ -281,7 +282,7 @@ const DateGuestsStep = () => {
     () => new Map(TIME_OPTIONS.map((time, index) => [time, index])),
     []
   )
-  const requestedGuests = Math.max(1, totalGuests)
+  const requestedGuests = Math.max(1, capacityGuests)
 
   const updateChildren312 = (value: number) => {
     const next = Math.max(0, value)
@@ -304,32 +305,34 @@ const DateGuestsStep = () => {
     return canHostGuestsInSlot(slotMap.get(time))
   }, [canHostGuestsInSlot, draft.eventDate, slotMap, timeIndexMap])
 
-  const canEndAtTime = useCallback((time: string) => {
-    if (!draft.eventDate || !draft.eventStartTime) return false
+  const getRangeCapacity = useCallback((startTime: string | null | undefined, endTime: string | null | undefined) => {
+    if (!draft.eventDate || !startTime || !endTime) return null
 
-    const startIndex = timeIndexMap.get(draft.eventStartTime)
-    const endIndex = timeIndexMap.get(time)
+    const startIndex = timeIndexMap.get(startTime)
+    const endIndex = timeIndexMap.get(endTime)
     if (
       startIndex === undefined ||
       endIndex === undefined ||
       endIndex <= startIndex
     ) {
-      return false
+      return null
     }
+
+    let minRemaining = Number.POSITIVE_INFINITY
 
     for (let index = startIndex; index < endIndex; index += 1) {
       const slot = slotMap.get(TIME_OPTIONS[index])
-      if (!canHostGuestsInSlot(slot)) return false
+      if (!slot || slot.isExclusive) return 0
+      minRemaining = Math.min(minRemaining, slot.remainingCapacity)
     }
 
-    return true
-  }, [
-    canHostGuestsInSlot,
-    draft.eventDate,
-    draft.eventStartTime,
-    slotMap,
-    timeIndexMap,
-  ])
+    return Number.isFinite(minRemaining) ? Math.max(0, minRemaining) : null
+  }, [draft.eventDate, slotMap, timeIndexMap])
+
+  const canEndAtTime = useCallback((time: string) => {
+    const rangeCapacity = getRangeCapacity(draft.eventStartTime, time)
+    return rangeCapacity !== null && rangeCapacity >= requestedGuests
+  }, [draft.eventStartTime, getRangeCapacity, requestedGuests])
 
   useEffect(() => {
     let cancelled = false
@@ -338,7 +341,7 @@ const DateGuestsStep = () => {
     const fetchAvailability = async () => {
       try {
         const params = new URLSearchParams()
-        params.set('guests', String(Math.max(1, totalGuests)))
+        params.set('guests', String(Math.max(1, capacityGuests)))
         if (draft.eventDate) {
           params.set('date', toDateKey(new Date(draft.eventDate)))
         }
@@ -404,37 +407,14 @@ const DateGuestsStep = () => {
     return () => {
       cancelled = true
     }
-  }, [draft.eventDate, totalGuests])
+  }, [capacityGuests, draft.eventDate])
 
   useEffect(() => {
     if (!draft.eventDate) {
       if (draft.eventStartTime) updateDraft('eventStartTime', null)
       if (draft.eventEndTime) updateDraft('eventEndTime', null)
-      return
     }
-
-    // Don't clear saved times before the slots API has responded —
-    // an empty slotMap would invalidate every time incorrectly.
-    if (!slotsLoaded) return
-
-    if (draft.eventStartTime && !canStartAtTime(draft.eventStartTime)) {
-      updateDraft('eventStartTime', null)
-      if (draft.eventEndTime) updateDraft('eventEndTime', null)
-      return
-    }
-
-    if (draft.eventEndTime && !canEndAtTime(draft.eventEndTime)) {
-      updateDraft('eventEndTime', null)
-    }
-  }, [
-    slotsLoaded,
-    canEndAtTime,
-    canStartAtTime,
-    draft.eventDate,
-    draft.eventStartTime,
-    draft.eventEndTime,
-    updateDraft,
-  ])
+  }, [draft.eventDate, draft.eventStartTime, draft.eventEndTime, updateDraft])
 
   const selectChildrenOption = (value: ChildrenMenuOption) => {
     updateDraft('childrenMenuOption', value)
@@ -445,6 +425,11 @@ const DateGuestsStep = () => {
   )
   const hasAnyStartSlot = availableStartTimes.length > 0
   const exceedsCapacity = requestedGuests > maxConcurrentGuests
+  const selectedRangeCapacity = slotsLoaded
+    ? getRangeCapacity(draft.eventStartTime, draft.eventEndTime)
+    : null
+  const selectedRangeExceedsCapacity =
+    selectedRangeCapacity !== null && requestedGuests > selectedRangeCapacity
 
   return (
     <div className="w-full max-w-7xl mx-auto space-y-5 px-3 pt-5 pb-4 md:p-6">
@@ -524,18 +509,30 @@ const DateGuestsStep = () => {
             )}
 
             {exceedsCapacity && (
-              <p className="text-sm text-destructive">
-                Dla {requestedGuests} gości przekroczony jest limit formularza
-                online ({maxConcurrentGuests} osób). Skontaktuj się z restauracją,
-                aby ustalić indywidualne rozwiązanie.
-              </p>
+              <div className="rounded-lg border border-destructive/30 bg-destructive/5 px-3 py-2 text-sm text-destructive">
+                Rezerwacje online przyjmujemy dla maksymalnie {maxConcurrentGuests}{' '}
+                osób liczonych do pojemności sali. Dzieci do 3 lat nie wliczają
+                się do tego limitu. Jeśli planujesz większe przyjęcie,
+                skontaktuj się z nami - sprawdzimy możliwości i przygotujemy
+                indywidualne rozwiązanie.
+              </div>
             )}
 
             {draft.eventDate && !exceedsCapacity && !hasAnyStartSlot && (
-              <p className="text-sm text-destructive">
-                Na ten dzień nie ma już dostępnych godzin dla {requestedGuests}{' '}
-                gości. Wybierz inną datę.
-              </p>
+              <div className="rounded-lg border border-destructive/30 bg-destructive/5 p-3 text-sm text-destructive">
+                Dla wybranej liczby gości nie mamy już wolnego przedziału
+                godzinowego w tym dniu. Wybierz inną datę albo zmień liczbę
+                gości.
+              </div>
+            )}
+
+            {!exceedsCapacity && selectedRangeExceedsCapacity && draft.eventStartTime && draft.eventEndTime && (
+              <div className="rounded-lg border border-destructive/30 bg-destructive/5 p-3 text-sm text-destructive">
+                W godzinach {draft.eventStartTime}-{draft.eventEndTime} możemy
+                przyjąć maksymalnie {selectedRangeCapacity} osób liczonych do
+                pojemności sali, czyli dorosłych i dzieci powyżej 3 lat. Wybierz
+                inny przedział czasowy albo zmień liczbę gości.
+              </div>
             )}
 
             {isTimeRangeInvalid && (

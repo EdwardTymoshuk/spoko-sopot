@@ -263,8 +263,7 @@ const SummarySubmitStep = () => {
           sections,
           reservationData: {
             adultsCount: draft.adultsCount ?? 1,
-            childrenCount:
-              (draft.childrenUnder3Count ?? 0) + (draft.children3to12Count ?? 0),
+            childrenCount: draft.children3to12Count ?? 0,
             packageCode: draft.packageType
               ? (draft.packageType.toUpperCase() as 'SILVER' | 'GOLD' | 'PLATINUM')
               : null,

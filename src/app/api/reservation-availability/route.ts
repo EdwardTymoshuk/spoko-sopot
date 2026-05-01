@@ -57,6 +57,18 @@ const parseDateKey = (value: string | null): string => {
   return /^\d{4}-\d{2}-\d{2}$/.test(trimmed) ? trimmed : ''
 }
 
+const parseRequestedGuests = (value: string | null) => {
+  const parsed = Number(value)
+  if (!Number.isFinite(parsed)) return 1
+  return Math.max(1, Math.floor(parsed))
+}
+
+const guestWord = (count: number) => {
+  if (count === 1) return 'osobę'
+  if (count >= 2 && count <= 4) return 'osoby'
+  return 'osób'
+}
+
 const isSeasonBlockedDateKey = (dateKey: string) => {
   const match = /^(\d{4})-(\d{2})-(\d{2})$/.exec(dateKey)
   if (!match) return false
@@ -154,15 +166,16 @@ const buildIntervalsForDate = (reservations: NormalizedReservation[]) => {
   return intervals
 }
 
-const summarizeDay = (intervals: IntervalLoad[]) => {
+const summarizeDay = (intervals: IntervalLoad[], requestedGuests: number) => {
   const occupiedGuestsPeak = intervals.reduce((max, interval) => {
     const value = interval.isExclusive ? MAX_CONCURRENT_GUESTS : interval.occupiedGuests
     return Math.max(max, value)
   }, 0)
 
-  const hasAvailableSlots = intervals.some(
-    (interval) => !interval.isExclusive && interval.occupiedGuests < MAX_CONCURRENT_GUESTS
-  )
+  const hasAvailableSlots = intervals.some((interval) => {
+    if (interval.isExclusive) return false
+    return MAX_CONCURRENT_GUESTS - interval.occupiedGuests >= requestedGuests
+  })
 
   return {
     occupancyRatio: clamp(occupiedGuestsPeak / MAX_CONCURRENT_GUESTS, 0, 1),
@@ -184,6 +197,7 @@ const mapBlockedSlots = (reason: string): AvailabilitySlot[] =>
 export async function GET(req: Request) {
   const { searchParams } = new URL(req.url)
   const selectedDateKey = parseDateKey(searchParams.get('date'))
+  const requestedGuests = parseRequestedGuests(searchParams.get('guests'))
 
   try {
     // ── Manual blocked dates from PostgreSQL ─────────────────────────────────
@@ -213,6 +227,7 @@ export async function GET(req: Request) {
         endTime: true,
         adultsCount: true,
         childrenCount: true,
+        extras: { select: { label: true } },
       },
     })
 
@@ -222,12 +237,14 @@ export async function GET(req: Request) {
       const dateKey = toDateKey(r.eventDate)
       if (!dateKey) continue
 
+      const isExclusive = r.extras.some((extra) => extra.label === 'Wyłączność sali')
+
       const normalized: NormalizedReservation = {
         dateKey,
         startTime: r.startTime,
         endTime: r.endTime,
         guests: r.adultsCount + (r.childrenCount ?? 0),
-        isExclusive: false,
+        isExclusive,
       }
 
       const current = reservationsByDate.get(dateKey) ?? []
@@ -253,13 +270,15 @@ export async function GET(req: Request) {
       if (blockedDays.has(dateKey)) return
 
       const intervals = buildIntervalsForDate(reservations)
-      const summary = summarizeDay(intervals)
+      const summary = summarizeDay(intervals, requestedGuests)
 
       dayMap.set(dateKey, {
         date: dateKey,
         isBlocked: summary.isBlocked,
         basePriceFrom: null,
-        reason: summary.isBlocked ? 'Brak dostępnych godzin' : null,
+        reason: summary.isBlocked
+          ? 'Brak dostępnych godzin dla tej liczby gości'
+          : null,
         occupancyRatio: summary.occupancyRatio,
         occupiedGuestsPeak: summary.occupiedGuestsPeak,
       })
@@ -281,7 +300,7 @@ export async function GET(req: Request) {
           slots = intervals.map((interval, index) => {
             const occupiedGuests = interval.isExclusive ? MAX_CONCURRENT_GUESTS : interval.occupiedGuests
             const remainingCapacity = Math.max(0, MAX_CONCURRENT_GUESTS - occupiedGuests)
-            const isBlocked = interval.isExclusive || remainingCapacity <= 0
+            const isBlocked = interval.isExclusive || remainingCapacity < requestedGuests
 
             return {
               time: SLOT_START_TIMES[index],
@@ -290,9 +309,11 @@ export async function GET(req: Request) {
               isExclusive: interval.isExclusive,
               isBlocked,
               reason: interval.isExclusive
-                ? 'Termin na wyłączność sali'
+                ? 'W tym czasie sala jest zarezerwowana na wyłączność.'
                 : isBlocked
-                ? 'Brak miejsc w tym czasie'
+                ? remainingCapacity > 0
+                  ? 'W tym czasie możemy przyjąć jeszcze maksymalnie ' + remainingCapacity + ' ' + guestWord(remainingCapacity) + '.'
+                  : 'Ten czas jest już w pełni zarezerwowany.'
                 : null,
             }
           })

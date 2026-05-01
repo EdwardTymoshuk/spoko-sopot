@@ -52,6 +52,48 @@ const sectionValue = (
     .find((section) => section.title === sectionTitle)
     ?.items.find((item) => item.label === itemLabel)?.value ?? '—'
 
+const buildReservationExtrasFromSections = (sections: SummarySection[]) => {
+  const extras: {
+    type: 'SPECIAL_DIET'
+    label: string
+    quantity: number
+    unitPrice: number
+    totalPrice: number
+    metadata: { source: string; summaryLabel: string }
+  }[] = []
+
+  const addDietExtra = (summaryLabel: string, prefix: string) => {
+    const value = sectionValue(sections, 'Szczegóły wydarzenia', summaryLabel)
+    if (!value || value === '—') return
+
+    extras.push({
+      type: 'SPECIAL_DIET',
+      label: prefix + ': ' + value,
+      quantity: 1,
+      unitPrice: 0,
+      totalPrice: 0,
+      metadata: { source: 'reservation-summary', summaryLabel },
+    })
+  }
+
+  addDietExtra('Potrzeby żywieniowe', 'Dieta specjalna')
+  addDietExtra('Szczegóły potrzeb żywieniowych', 'Dieta specjalna - szczegóły')
+
+  const hallExclusivity = sectionValue(sections, 'Szczegóły wydarzenia', 'Wyłączność sali')
+  if (hallExclusivity.toLowerCase() === 'tak') {
+    extras.push({
+      type: 'SPECIAL_DIET',
+      label: 'Wyłączność sali',
+      quantity: 1,
+      unitPrice: 0,
+      totalPrice: 0,
+      metadata: { source: 'reservation-summary', summaryLabel: 'Wyłączność sali' },
+    })
+  }
+
+  return extras
+}
+
 const generatePdfBuffer = async (sections: SummarySection[], total: number) =>
   generateReservationSummaryPdf(sections, total)
 
@@ -311,6 +353,7 @@ export async function POST(req: Request): Promise<Response> {
     if (eventDateKey) {
       try {
         const rd = body.reservationData
+        const reservationExtras = buildReservationExtrasFromSections(sections)
         const packageCode =
           rd?.packageCode && rd.packageCode in PackageCode
             ? PackageCode[rd.packageCode]
@@ -354,6 +397,20 @@ export async function POST(req: Request): Promise<Response> {
                       serviceFee: rd.serviceFee,
                       total: total ?? 0,
                     },
+                  },
+                }
+              : {}),
+            summaryPdf: {
+              create: {
+                filename: pdfName,
+                mimeType: 'application/pdf',
+                content: pdfBuffer,
+              },
+            },
+            ...(reservationExtras.length > 0
+              ? {
+                  extras: {
+                    create: reservationExtras,
                   },
                 }
               : {}),
