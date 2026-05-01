@@ -49,6 +49,7 @@ export const RESERVATION_STEPS = [
         start !== null &&
         end !== null &&
         end > start &&
+        !draft.dateGuestsCapacityExceeded &&
         ((draft.children3to12Count ?? 0) === 0 ||
           Boolean(draft.childrenMenuOption))
       )
@@ -142,6 +143,7 @@ export const RESERVATION_STEPS = [
       const start = parseTimeToDecimalHour(draft.eventStartTime)
       const end = parseTimeToDecimalHour(draft.eventEndTime)
       if (start === null || end === null) return false
+      if (draft.hallExclusivityUnavailable) return false
 
       return end > start
     },

@@ -51,6 +51,7 @@ export interface ReservationDraft {
   eventDate: Date | null
   eventStartTime?: string | null
   eventEndTime?: string | null
+  dateGuestsCapacityExceeded?: boolean
   adultsCount: number | null
   childrenUnder3Count?: number
   children3to12Count?: number
@@ -77,6 +78,7 @@ export interface ReservationDraft {
   softDrinkSelections?: SoftDrinkSelection
   alcoholSelections?: AlcoholSelection
   hallExclusivity?: HallExclusivityOption | null
+  hallExclusivityUnavailable?: boolean
 
   cakeOption?: CakeOption | null
 }

@@ -5,14 +5,34 @@ import type { HallExclusivityOption } from '@/app/types/reservation'
 import { useReservationDraft } from '@/app/utils/hooks/reservation/ReservationDraftContext'
 import { calculateHallExclusivityCharge, parseTimeToDecimalHour } from '@/lib/consts'
 import { cn } from '@/lib/utils'
+import Link from 'next/link'
+import { useEffect, useMemo, useState } from 'react'
 
 const OPTIONS: { value: HallExclusivityOption; label: string }[] = [
   { value: 'no', label: 'Nie potrzebuję wyłączności sali' },
   { value: 'yes', label: 'Chcę zamknąć salę na wyłączność' },
 ]
 
+type AvailabilitySlotApiItem = {
+  time: string
+  occupiedGuests: number
+  remainingCapacity: number
+  isExclusive: boolean
+  isBlocked: boolean
+  reason?: string | null
+}
+
+const toDateKey = (date: Date) => {
+  const year = date.getFullYear()
+  const month = String(date.getMonth() + 1).padStart(2, '0')
+  const day = String(date.getDate()).padStart(2, '0')
+  return `${year}-${month}-${day}`
+}
+
 const HallExclusivityStep = () => {
   const { draft, updateDraft } = useReservationDraft()
+  const [timeSlots, setTimeSlots] = useState<AvailabilitySlotApiItem[]>([])
+  const [slotsLoaded, setSlotsLoaded] = useState(false)
   const start = parseTimeToDecimalHour(draft.eventStartTime)
   const end = parseTimeToDecimalHour(draft.eventEndTime)
   const isTimeInvalid =
@@ -27,6 +47,81 @@ const HallExclusivityStep = () => {
     startTime: draft.eventStartTime,
     endTime: draft.eventEndTime,
   })
+
+  useEffect(() => {
+    let cancelled = false
+    setSlotsLoaded(false)
+
+    const fetchAvailability = async () => {
+      if (!draft.eventDate) {
+        setTimeSlots([])
+        setSlotsLoaded(true)
+        return
+      }
+
+      try {
+        const params = new URLSearchParams()
+        params.set('date', toDateKey(new Date(draft.eventDate)))
+        params.set('guests', '1')
+
+        const res = await fetch(`/api/reservation-availability?${params.toString()}`, {
+          cache: 'no-store',
+        })
+
+        if (!res.ok) {
+          setTimeSlots([])
+          setSlotsLoaded(true)
+          return
+        }
+
+        const payload = (await res.json()) as { slots?: AvailabilitySlotApiItem[] }
+        if (cancelled) return
+
+        setTimeSlots(Array.isArray(payload.slots) ? payload.slots : [])
+        setSlotsLoaded(true)
+      } catch (error) {
+        console.error('Błąd sprawdzania dostępności wyłączności sali:', error)
+        if (!cancelled) {
+          setTimeSlots([])
+          setSlotsLoaded(true)
+        }
+      }
+    }
+
+    void fetchAvailability()
+
+    return () => {
+      cancelled = true
+    }
+  }, [draft.eventDate])
+
+  const selectedRangeSlots = useMemo(() => {
+    if (start === null || end === null || end <= start) return []
+
+    return timeSlots.filter((slot) => {
+      const slotStart = parseTimeToDecimalHour(slot.time)
+      return slotStart !== null && slotStart >= start && slotStart < end
+    })
+  }, [end, start, timeSlots])
+
+  const hasExclusiveConflict = selectedRangeSlots.some((slot) => slot.isExclusive)
+  const hasOccupiedConflict = selectedRangeSlots.some((slot) => slot.occupiedGuests > 0)
+  const shouldCheckExclusivity =
+    draft.hallExclusivity === 'yes' &&
+    Boolean(draft.eventDate) &&
+    start !== null &&
+    end !== null &&
+    end > start
+  const isCheckingExclusivity = shouldCheckExclusivity && !slotsLoaded
+  const isExclusivityUnavailable =
+    shouldCheckExclusivity &&
+    (isCheckingExclusivity || hasExclusiveConflict || hasOccupiedConflict)
+
+  useEffect(() => {
+    if (draft.hallExclusivityUnavailable !== isExclusivityUnavailable) {
+      updateDraft('hallExclusivityUnavailable', isExclusivityUnavailable)
+    }
+  }, [draft.hallExclusivityUnavailable, isExclusivityUnavailable, updateDraft])
 
   return (
     <div className="w-full max-w-7xl mx-auto space-y-6 p-4 md:p-6">
@@ -134,7 +229,12 @@ const HallExclusivityStep = () => {
             <button
               key={option.value}
               type="button"
-              onClick={() => updateDraft('hallExclusivity', option.value)}
+              onClick={() => {
+                updateDraft('hallExclusivity', option.value)
+                if (option.value === 'no') {
+                  updateDraft('hallExclusivityUnavailable', false)
+                }
+              }}
               className={cn(
                 'w-full rounded-xl border p-4 text-left transition-all',
                 draft.hallExclusivity === option.value
@@ -163,6 +263,42 @@ const HallExclusivityStep = () => {
                 Uzupełnij poprawne godziny przyjęcia w kroku „Data i liczba
                 gości”.
               </p>
+            )}
+
+            {isCheckingExclusivity && (
+              <p className="text-sm text-muted-foreground">
+                Sprawdzamy, czy wyłączność sali jest dostępna w wybranych
+                godzinach.
+              </p>
+            )}
+
+            {!isCheckingExclusivity && hasOccupiedConflict && !hasExclusiveConflict && (
+              <div className="rounded-lg border border-destructive/30 bg-destructive/5 p-3 text-sm text-destructive">
+                W wybranych godzinach nie możemy już przygotować sali na
+                wyłączność. Możesz kontynuować rezerwację bez wyłączności albo
+                wrócić do kroku{' '}
+                <Link
+                  href="/reservation?step=date-guests"
+                  className="font-semibold underline underline-offset-2"
+                >
+                  Data i liczba gości
+                </Link>{' '}
+                i wybrać inny dzień lub przedział godzinowy.
+              </div>
+            )}
+
+            {!isCheckingExclusivity && hasExclusiveConflict && (
+              <div className="rounded-lg border border-destructive/30 bg-destructive/5 p-3 text-sm text-destructive">
+                Wybrane godziny są już niedostępne dla kolejnej rezerwacji.
+                Wróć do kroku{' '}
+                <Link
+                  href="/reservation?step=date-guests"
+                  className="font-semibold underline underline-offset-2"
+                >
+                  Data i liczba gości
+                </Link>{' '}
+                i wybierz inny dzień lub przedział godzinowy.
+              </div>
             )}
 
             {billableHours > 0 && (

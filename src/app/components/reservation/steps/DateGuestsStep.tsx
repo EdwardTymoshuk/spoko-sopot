@@ -430,6 +430,13 @@ const DateGuestsStep = () => {
     : null
   const selectedRangeExceedsCapacity =
     selectedRangeCapacity !== null && requestedGuests > selectedRangeCapacity
+  const shouldBlockStep = exceedsCapacity || selectedRangeExceedsCapacity
+
+  useEffect(() => {
+    if (draft.dateGuestsCapacityExceeded !== shouldBlockStep) {
+      updateDraft('dateGuestsCapacityExceeded', shouldBlockStep)
+    }
+  }, [draft.dateGuestsCapacityExceeded, shouldBlockStep, updateDraft])
 
   return (
     <div className="w-full max-w-7xl mx-auto space-y-5 px-3 pt-5 pb-4 md:p-6">
