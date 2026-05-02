@@ -241,13 +241,12 @@ const ReservationSummaryContent = () => {
             </span>
           </div>
         )}
-        {draft.specialDiets?.includes('other') &&
-          draft.specialDietComment?.trim() && (
-            <div className="flex justify-between items-start gap-3 text-xs text-muted-foreground">
-              <span>Szczegóły</span>
-              <span className="text-right">{draft.specialDietComment.trim()}</span>
-            </div>
-          )}
+        {draft.specialDietComment?.trim() && (
+          <div className="flex justify-between items-start gap-3 text-xs text-muted-foreground">
+            <span>Szczegóły</span>
+            <span className="text-right">{draft.specialDietComment.trim()}</span>
+          </div>
+        )}
         {draft.summaryNotes?.trim() && (
           <div className="flex justify-between items-start gap-3">
             <span>Uwagi</span>

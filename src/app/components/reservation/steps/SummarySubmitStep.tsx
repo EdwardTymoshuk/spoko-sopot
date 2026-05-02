@@ -142,7 +142,7 @@ const SummarySubmitStep = () => {
       })
     }
 
-    if (draft.specialDiets?.includes('other') && draft.specialDietComment?.trim()) {
+    if (draft.specialDietComment?.trim()) {
       details.push({
         label: 'Szczegóły potrzeb żywieniowych',
         value: draft.specialDietComment.trim(),
