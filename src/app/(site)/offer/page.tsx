@@ -7,7 +7,6 @@ import { Button } from '@/app/components/ui/button'
 import { Separator } from '@/app/components/ui/separator'
 import Image from 'next/image'
 import { FiCalendar, FiMail, FiPhoneCall } from 'react-icons/fi'
-import { MdOutlineKeyboardArrowRight } from 'react-icons/md'
 
 /**
  * ReservationLandingPage
@@ -106,73 +105,62 @@ const ReservationLandingPage = () => {
               />
             </div>
 
-            {/* CTA */}
-            <h2 className="text-3xl text-center md:text-start md:text-4xl font-semibold text-secondary">
-              Zaplanuj swoje przyjęcie
-            </h2>
-
-            <div className="space-y-4">
-              <p className="text-zinc-400 leading-relaxed text-center md:text-start">
-                Skontaktuj się z nami telefonicznie, mailowo albo wypełnij
-                formularz online. Przygotujemy propozycję menu i przebiegu
-                wydarzenia dopasowaną do liczby gości oraz charakteru
-                przyjęcia.
+            <div className="mx-auto w-full max-w-xl space-y-5 py-4 text-center md:mx-0 md:text-start">
+              <p className="text-xs font-semibold uppercase tracking-[0.22em] text-primary">
+                Rezerwacja online
               </p>
 
-              <div className="flex flex-col md:flex-row gap-3">
-                <Button
-                  asChild
-                  size="lg"
-                  className="w-full md:w-auto gap-2 rounded-lg font-semibold"
-                >
-                  <a href="tel:+48530659666">
-                    <FiPhoneCall className="h-4 w-4" />
-                    Zadzwoń: 530 659 666
-                  </a>
-                </Button>
+              <h2 className="text-3xl font-semibold text-secondary md:text-4xl">
+                Zaplanuj swoje przyjęcie
+              </h2>
 
+              <p className="text-zinc-400 leading-relaxed">
+                Opowiedz nam o planowanym wydarzeniu, a przygotujemy propozycję
+                dopasowaną do liczby gości, charakteru spotkania i oczekiwanej
+                formy serwisu.
+              </p>
+
+              <div className="flex justify-center md:justify-start">
                 <Button
                   asChild
                   size="lg"
-                  className="w-full md:w-auto gap-2 rounded-lg font-semibold"
+                  className="h-12 gap-2 rounded-lg bg-secondary px-6 font-semibold text-white shadow-none hover:bg-secondary/90"
                 >
-                  <a href="/reservation">
+                  <a
+                    href="https://spokosopot.pl/reservation"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
                     <FiCalendar className="h-4 w-4" />
-                    Zarezerwuj online
-                  </a>
-                </Button>
-
-                <Button
-                  asChild
-                  size="lg"
-                  variant="outline"
-                  className="w-full md:w-auto gap-2 rounded-lg font-semibold"
-                >
-                  <a href="mailto:info@spokosopot.pl">
-                    <FiMail className="h-4 w-4" />
-                    Napisz: info@spokosopot.pl
+                    Przejdź do formularza
                   </a>
                 </Button>
               </div>
-            </div>
 
-            {false && (
-              <div className="flex w-full items-center justify-center md:justify-start">
+              <div className="mx-auto flex w-full max-w-sm items-center gap-4 text-xs uppercase tracking-[0.18em] text-zinc-400 md:mx-0">
+                <Separator className="flex-1" />
+                <span>kontakt bezpośredni</span>
+                <Separator className="flex-1" />
+              </div>
+
+              <div className="flex flex-col items-center gap-3 text-sm font-medium text-zinc-500 sm:flex-row sm:justify-center sm:gap-6 md:justify-start">
                 <a
-                  href="/reservation"
-                  target="_blank"
-                  rel="noopener noreferrer"
+                  href="tel:+48530659666"
+                  className="inline-flex items-center gap-2 transition-colors hover:text-secondary"
                 >
-                  <Button
-                    size="lg"
-                    className="py-6 px-4 text-lg flex items-center w-fit gap-2"
-                  >
-                    Przejdź do planowania
-                    <MdOutlineKeyboardArrowRight className="w-5 h-5" />
-                  </Button>
+                  <FiPhoneCall className="h-4 w-4 text-primary" />
+                  530 659 666
+                </a>
+
+                <a
+                  href="mailto:info@spokosopot.pl"
+                  className="inline-flex items-center gap-2 transition-colors hover:text-secondary"
+                >
+                  <FiMail className="h-4 w-4 text-primary" />
+                  info@spokosopot.pl
                 </a>
               </div>
-            )}
+            </div>
           </div>
         </section>
       </MaxWidthWrapper>
