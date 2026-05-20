@@ -6,7 +6,7 @@ import PageHeaderContainer from '@/app/components/PageHeaderComponent'
 import { Button } from '@/app/components/ui/button'
 import { Separator } from '@/app/components/ui/separator'
 import Image from 'next/image'
-import { FiMail, FiPhoneCall } from 'react-icons/fi'
+import { FiCalendar, FiMail, FiPhoneCall } from 'react-icons/fi'
 import { MdOutlineKeyboardArrowRight } from 'react-icons/md'
 
 /**
@@ -113,16 +113,17 @@ const ReservationLandingPage = () => {
 
             <div className="space-y-4">
               <p className="text-zinc-400 leading-relaxed text-center md:text-start">
-                Skontaktuj się z nami telefonicznie lub mailowo, a przygotujemy
-                propozycję menu i przebiegu wydarzenia dopasowaną do liczby
-                gości oraz charakteru przyjęcia.
+                Skontaktuj się z nami telefonicznie, mailowo albo wypełnij
+                formularz online. Przygotujemy propozycję menu i przebiegu
+                wydarzenia dopasowaną do liczby gości oraz charakteru
+                przyjęcia.
               </p>
 
               <div className="flex flex-col md:flex-row gap-3">
                 <Button
                   asChild
                   size="lg"
-                  className="w-full md:w-auto gap-2 font-semibold"
+                  className="w-full md:w-auto gap-2 rounded-lg font-semibold"
                 >
                   <a href="tel:+48530659666">
                     <FiPhoneCall className="h-4 w-4" />
@@ -133,8 +134,19 @@ const ReservationLandingPage = () => {
                 <Button
                   asChild
                   size="lg"
+                  className="w-full md:w-auto gap-2 rounded-lg font-semibold"
+                >
+                  <a href="/reservation">
+                    <FiCalendar className="h-4 w-4" />
+                    Zarezerwuj online
+                  </a>
+                </Button>
+
+                <Button
+                  asChild
+                  size="lg"
                   variant="outline"
-                  className="w-full md:w-auto gap-2 font-semibold"
+                  className="w-full md:w-auto gap-2 rounded-lg font-semibold"
                 >
                   <a href="mailto:info@spokosopot.pl">
                     <FiMail className="h-4 w-4" />

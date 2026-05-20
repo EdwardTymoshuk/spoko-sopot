@@ -16,6 +16,7 @@ export interface MongoDBReview {
   date: string
 }
 export type MenuItemCategory =
+  | 'Pizza'
   | 'Dania główne'
   | 'Burgery'
   | 'Makarony/Ravioli'
@@ -56,7 +57,6 @@ export type MenuItemCategory =
   | 'Napoje łekkoprocentowe'
   | 'Inne'
 
-// Тип для позицій меню
 export interface MenuItemType {
   id: string
   name: string
@@ -70,4 +70,16 @@ export interface MenuItemType {
   isOrderable?: boolean
   createdAt: Date
   updatedAt: Date
+}
+
+export interface MenuDownloadDocument {
+  id: string
+  title: string
+  type: 'menu' | 'drinks' | 'other'
+  url: string
+  fileName?: string
+  size?: number
+  isActive: boolean
+  sortOrder: number
+  uploadedAt?: string
 }

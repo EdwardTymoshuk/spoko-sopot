@@ -128,37 +128,31 @@ export const OPINIONS: MongoDBReview[] = [
   },
 ]
 
-// Масив дозволених категорій
-export const allowedCategories: MenuItemCategory[] = [
-  'Dania główne',
-  'Burgery',
-  'Makarony/Ravioli',
-  'Dla dzieci',
-  'Dodatki',
-  'Desery',
-  'Napoje',
+export const foodMenuItemCategories: MenuItemCategory[] = [
   'Śniadania',
   'Przystawki',
   'Zupy',
+  'Dania główne',
+  'Dania rybne',
+  'Dania mięsne',
+  'Owoce morza',
+  'Burgery',
+  'Makarony/Ravioli',
   'Bowle',
   'Vege',
-  'Dania rybne',
-  'Owoce morza',
-  'Dania mięsne',
+  'Pizza',
+  'Dla dzieci',
+  'Dodatki',
+  'Desery',
+]
+
+export const drinkMenuItemCategories: MenuItemCategory[] = [
+  'Napoje zimne',
+  'Drinki',
   'Klasyczne koktaile',
   'Na ciepło',
   'Herbata',
   'Kawa',
-  'Napoje zimne',
-  'Piwo butelkowe',
-  'Piwo bezalkoholowe',
-  'Piwo beczkowe',
-  'Piwo smakowe',
-  'Wina Białe',
-  'Wina Czerwone',
-  'Wina Musujące',
-  'Wina Różowe',
-  'Drinki',
   'Whisky',
   'Rum',
   'Gin',
@@ -166,7 +160,28 @@ export const allowedCategories: MenuItemCategory[] = [
   'Cognac / Brandy',
   'Wódka',
   'Napoje alkoholowe',
+  'Piwo beczkowe',
+  'Piwo butelkowe',
+  'Piwo bezalkoholowe',
+  'Piwo smakowe',
+  'Wina Białe',
+  'Wina Czerwone',
+  'Wina Musujące',
+  'Wina Różowe',
+  'Napoje',
   'Napoje bezalkoholowe',
   'Napoje łekkoprocentowe',
+]
+
+export const allowedCategories: MenuItemCategory[] = [
+  ...foodMenuItemCategories,
+  ...drinkMenuItemCategories,
   'Inne',
 ]
+
+export const menuCategoryOrder = new Map(
+  allowedCategories.map((category, index) => [category, index])
+)
+
+export const getMenuCategorySortIndex = (category: string) =>
+  menuCategoryOrder.get(category as MenuItemCategory) ?? 999

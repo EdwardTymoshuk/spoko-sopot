@@ -7,6 +7,35 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+// ─── Online ordering menu ────────────────────────────────────────────────────
+
+model MenuItem {
+  id            String   @id @default(uuid())
+  name          String
+  price         Int
+  description   String?
+  image         String?
+  category      String
+  isRecommended Boolean  @default(false)
+  isActive      Boolean  @default(true)
+  isOrderable   Boolean  @default(false)
+  isOnMainPage  Boolean  @default(false)
+  isArchived    Boolean  @default(false)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+}
+
+model Settings {
+  id                   String  @id @default(uuid())
+  isOrderingOpen       Boolean @default(true)
+  orderWaitTime        Int     @default(30)
+  deliveryCost         Int     @default(0)
+  deliveryZones        Json    @default("[]")
+  menuDocuments        Json    @default("[]")
+  pizzaCategoryEnabled Boolean @default(true)
+  pizzaAvailability    Json    @default("[]")
+}
+
 // ─── Reservation domain ───────────────────────────────────────────────────────
 
 model Reservation {
