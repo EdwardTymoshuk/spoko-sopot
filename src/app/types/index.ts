@@ -6,6 +6,19 @@ export interface NavBarItem {
 export interface CarouselImage {
   src: string
   srcMobile?: string
+  eyebrow?: string
+  title?: string
+  description?: string
+  primaryCta?: {
+    label: string
+    href: string
+    external?: boolean
+  }
+  secondaryCta?: {
+    label: string
+    href: string
+    external?: boolean
+  }
 }
 
 export interface MongoDBReview {

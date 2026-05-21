@@ -37,13 +37,12 @@ const NavBar = ({
                 className={cn(
                   'relative inline-flex items-center px-2 py-2 transition-colors duration-300',
                   isColumn
-                    ? 'w-full rounded-md border-l-2 border-transparent pl-4'
+                    ? 'w-full border-l-4 border-transparent py-3 pl-4'
                     : 'after:absolute after:bottom-0 after:left-2 after:right-2 after:h-px after:origin-center after:scale-x-0 after:bg-primary after:transition-transform after:duration-300',
                   itemClassName,
                   {
                     'text-zinc-950 after:scale-x-100': isActive && !isColumn,
-                    'border-primary bg-primary/10 text-zinc-950':
-                      isActive && isColumn,
+                    'border-primary text-zinc-950': isActive && isColumn,
                     'hover:text-primary': true,
                   }
                 )}

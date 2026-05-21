@@ -2,13 +2,10 @@
 
 import { OPINIONS } from '@/config'
 import { startTransition, useEffect, useMemo, useState } from 'react'
-import { MdOutlineKeyboardArrowRight } from 'react-icons/md'
 import { MongoDBReview } from '../types'
 import LoadingButton from './LoadingButton'
 import MaxWidthWrapper from './MaxWidthWrapper'
 import OpinionBlock from './OpinionBlock'
-import PageContainer from './PageContainer'
-import PageSubHeader from './PageSubHeader'
 import {
   Carousel,
   CarouselContent,
@@ -68,56 +65,64 @@ const Opinions: React.FC = () => {
   }
 
   return (
-    <MaxWidthWrapper>
-      <PageSubHeader title="Nasi goście o nas" />
+    <section className="w-full bg-[#f7f3ec] py-20">
+      <MaxWidthWrapper>
+        <div className="mb-10 flex flex-col gap-5 md:flex-row md:items-end md:justify-between">
+          <div>
+            <p className="text-xs font-semibold uppercase tracking-[0.22em] text-primary">
+              Opinie gości
+            </p>
+            <h2 className="mt-4 text-4xl font-semibold leading-tight text-secondary md:text-5xl">
+              Nasi goście o nas
+            </h2>
+          </div>
 
-      <PageContainer className="pt-0 pb-4">
-        <div className="inline-flex items-center gap-3 rounded-full border px-4 py-2 text-sm">
-          <span className="font-semibold">
+          <div className="inline-flex w-fit items-center gap-3 border border-zinc-200 px-4 py-2 text-sm text-zinc-500">
+            <span className="font-semibold text-secondary">
             {averageRating ?? fallbackAverage ?? 0} / 5
           </span>
-          <span className="text-muted-foreground">
+            <span>
             Średnia ocena {totalReviews ? `(${totalReviews} opinii)` : ''}
           </span>
+          </div>
         </div>
-      </PageContainer>
 
-      <Carousel className="w-full h-full">
-        <CarouselContent className="relative h-full m-0">
+        <Carousel className="h-full w-full">
+          <CarouselContent className="relative m-0 h-full">
           {reviews.map((review, index) => (
               <CarouselItem
                 key={index}
-                className="relative h-full p-4 self-center"
+                className="relative h-full p-3 self-center md:basis-1/2"
               >
                 <OpinionBlock opinion={review} />
               </CarouselItem>
             ))}
-        </CarouselContent>
-        <CarouselNext />
-        <CarouselPrevious />
-      </Carousel>
+          </CarouselContent>
+          <CarouselNext className="right-[-3.5rem] hidden h-11 w-11 border-0 bg-transparent text-primary shadow-none hover:bg-transparent md:flex" />
+          <CarouselPrevious className="left-[-3.5rem] hidden h-11 w-11 border-0 bg-transparent text-primary shadow-none hover:bg-transparent md:flex" />
+        </Carousel>
 
-      <PageContainer className="pt-2 pb-8">
-        <div className="flex flex-col sm:flex-row gap-3 items-center justify-center">
+        <div className="mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row">
           <LoadingButton
             isLoading={isLoading}
             onClick={navigateToGoogleReviews}
             variant="default"
+            className="w-full max-w-72 gap-2.5 rounded-lg bg-secondary px-6 font-semibold text-white shadow-none hover:bg-secondary/90 sm:w-auto sm:max-w-none"
           >
-            Zobacz więcej <MdOutlineKeyboardArrowRight />
+            Zobacz więcej opinii
           </LoadingButton>
 
           <a
             href="https://search.google.com/local/writereview?placeid=ChIJH1Ln3m4L_UYR73bJ708kSjI"
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex items-center justify-center rounded-lg border border-primary px-4 py-2 text-sm font-medium text-primary hover:bg-primary/10 transition-colors"
+            className="inline-flex h-11 w-full max-w-72 items-center justify-center rounded-lg border border-zinc-300 px-5 text-sm font-semibold text-secondary transition-colors hover:border-primary hover:text-primary sm:w-auto sm:max-w-none"
           >
             Zostaw opinię w Google
           </a>
         </div>
-      </PageContainer>
-    </MaxWidthWrapper>
+      </MaxWidthWrapper>
+    </section>
   )
 }
 

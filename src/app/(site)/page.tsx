@@ -1,216 +1,134 @@
 'use client'
 
 import { Button } from '@/app/components/ui/button'
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from '@/app/components/ui/popover'
 import { Separator } from '@/app/components/ui/separator'
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from '@/app/components/ui/tooltip'
-import { useMenu } from '@/context/MenuContext'
-import { cn } from '@/lib/utils'
-import { useRouter } from 'next/navigation'
-import { startTransition, useEffect, useState } from 'react'
+import Image from 'next/image'
+import Link from 'next/link'
 import { FaLocationDot } from 'react-icons/fa6'
-import { FiCalendar, FiMail, FiPhoneCall } from 'react-icons/fi'
+import { FiCalendar, FiPhoneCall } from 'react-icons/fi'
 import { MdOutlineKeyboardArrowRight } from 'react-icons/md'
 import HeroCarousel from '../components/HeroCarousel'
 import MainContainer from '../components/MainContainer'
 import MaxWidthWrapper from '../components/MaxWidthWrapper'
 import Opinions from '../components/Opinions'
-import PageContainer from '../components/PageContainer'
-import PageSubHeader from '../components/PageSubHeader'
 
 const Home: React.FC = () => {
-  const { refetch } = useMenu()
-  const [isLoading, setIsLoading] = useState(false)
-  const [isOrderingOpen, setIsOrderingOpen] = useState(false)
-
-  const router = useRouter()
-
-  // Navigates to the external order page
-  const navigateToOrderPage = async () => {
-    setIsLoading(true)
-    startTransition(() => {
-      router.push('https://order.spokosopot.pl')
-    })
-  }
-
-  useEffect(() => {
-    const fetchSettings = async () => {
-      try {
-        // Fetch settings from the API with no caching to ensure fresh data
-        const response = await fetch('/api/settings', { cache: 'no-store' })
-        const data = await response.json()
-
-        // Update state only if the value has changed
-        setIsOrderingOpen((prev) => {
-          if (prev !== data.isOrderingOpen) {
-            refetch() // Trigger refetch only when `isOrderingOpen` changes
-          }
-          return data.isOrderingOpen
-        })
-      } catch (error) {
-        console.error('Error fetching settings:', error)
-      }
-    }
-
-    fetchSettings() // Fetch settings once when the component mounts
-  }, [refetch]) // Runs only once on mount
-
   return (
     <MainContainer className="w-full">
       <div className="flex flex-col w-full">
         {/* Hero section with carousel */}
         <HeroCarousel />
-
-        {/* Mobile order button with tooltip */}
-        <div className="p-4 md:hidden">
-          <TooltipProvider delayDuration={150}>
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <Button
-                  size="lg"
-                  onClick={isOrderingOpen ? navigateToOrderPage : () => {}}
-                  className={cn('w-full text-lg font-semibold', {
-                    'text-text-secondary': isOrderingOpen,
-                    'text-gray-400 opacity-60 cursor-not-allowed':
-                      !isOrderingOpen,
-                  })}
-                >
-                  {isOrderingOpen ? (
-                    'ZAMÓW ONLINE'
-                  ) : (
-                    <p className="leading-none">
-                      <span>ZAMÓW ONLINE</span>
-                      <span className="block text-sm">
-                        (tymczasowo niedostępne<i className="text-danger">*</i>)
-                      </span>
-                    </p>
-                  )}
-                </Button>
-              </TooltipTrigger>
-              {!isOrderingOpen && (
-                <TooltipContent>
-                  <p>Usługa zamawiania online jest tymczasowo niedostępna.</p>
-                  <p>
-                    W celu słożenia zamówienia prosimy o kontakt telefoniczny.
-                  </p>
-                </TooltipContent>
-              )}
-            </Tooltip>
-          </TooltipProvider>
-        </div>
       </div>
 
-      <PageContainer className="md:hidden">
-        <span className="font-special text-4xl text-center pt-4">lub</span>
-      </PageContainer>
-
       {/* Visit us section */}
-      <section className="w-full bg-background">
-        <div className="w-full md:max-w-screen-2xl md:mx-auto md:px-8 2xl:p-0 flex flex-col md:flex-row-reverse items-stretch">
-          <MaxWidthWrapper className="min-h-full flex-grow">
-            <div className="flex flex-col justify-between items-center h-full py-10 md:py-14">
-              <PageSubHeader title="Odwiedź nas" className="p-0 pb-8" />
-              <PageContainer className="md:text-2xl flex flex-col gap-4">
-                <div>
-                  <p className="flex gap-1 items-center text-secondary">
-                    <FaLocationDot className="text-secondary" /> Hestii 3,
-                    81-731 Sopot
+      <section className="w-full bg-[#f7f3ec] py-20">
+        <MaxWidthWrapper>
+          <div className="grid items-stretch gap-10 lg:grid-cols-[0.85fr_1.15fr]">
+            <div className="flex flex-col justify-center">
+              <p className="text-xs font-semibold uppercase tracking-[0.22em] text-primary">
+                Hestii 3, Sopot
+              </p>
+
+              <h2 className="mt-4 text-4xl font-semibold leading-tight text-secondary md:text-5xl">
+                Wpadnij do Spoko
+              </h2>
+
+              <p className="mt-5 max-w-xl text-base leading-relaxed text-zinc-500 md:text-lg">
+                Jesteśmy blisko plaży i sopockiego rytmu. Przyjdź na śniadanie,
+                spokojny obiad, kawę albo kolację po spacerze nad morzem.
+              </p>
+
+              <div className="mt-8 grid gap-4 text-sm text-zinc-600 sm:grid-cols-2">
+                <div className="border-l border-primary/45 pl-4">
+                  <p className="font-semibold text-secondary">Adres</p>
+                  <p className="mt-1 flex items-center gap-2">
+                    <FaLocationDot className="text-primary" />
+                    Hestii 3, 81-731 Sopot
                   </p>
                 </div>
-                <div className="text-center">
-                  <p>Pon-pt: 10:00 - 19:00</p>
+
+                <div className="border-l border-primary/45 pl-4">
+                  <p className="font-semibold text-secondary">Godziny</p>
+                  <p className="mt-1">Pon-pt: 10:00 - 19:00</p>
                   <p>Sob-niedz: 8:00 - 19:00</p>
                 </div>
-              </PageContainer>
+              </div>
 
-              {/* Reservation popover */}
-              <Popover>
-                <PopoverTrigger asChild>
-                  <Button
-                    size="lg"
-                    variant="outline"
-                    className="text-xs sm:text-sm md:text-base w-full font-semibold md:w-fit flex items-center gap-2 border-primary text-primary hover:bg-primary hover:text-text-secondary whitespace-normal leading-tight text-center px-4"
-                  >
-                    <FiCalendar className="h-4 w-4 shrink-0" />
-                    Rezerwacja stolika
-                  </Button>
-                </PopoverTrigger>
-                <PopoverContent>
-                  <div className="text-center">
-                    <p className="mt-2">
-                      <h3 className="font-bold text-secondary">Zadzwoń</h3>
-                      <a
-                        href="tel:+48530659666"
-                        className="text-text-secondary hover:underline"
-                      >
-                        +48 530 659 666
-                      </a>
-                    </p>
-                    <p className="mt-1">
-                      <h3 className="font-bold text-secondary">Napisz</h3>
-                      <a
-                        href="mailto:info@spokosopot.pl"
-                        className="text-text-secondary hover:underline"
-                      >
-                        info@spokosopot.pl
-                      </a>
-                    </p>
-                  </div>
-                </PopoverContent>
-              </Popover>
+              <div className="mt-8 flex flex-col gap-3 sm:flex-row">
+                <Button
+                  asChild
+                  size="lg"
+                  className="gap-2.5 rounded-lg bg-secondary px-6 font-semibold text-white shadow-none hover:bg-secondary/90"
+                >
+                  <a href="tel:+48530659666">
+                    <FiPhoneCall className="h-4 w-4" />
+                    Zarezerwuj stolik
+                  </a>
+                </Button>
+
+                <Button
+                  asChild
+                  size="lg"
+                  variant="outline"
+                  className="rounded-lg border-zinc-300 px-6 font-semibold text-secondary hover:border-primary hover:text-primary"
+                >
+                  <Link href="/contact">Kontakt</Link>
+                </Button>
+              </div>
             </div>
-          </MaxWidthWrapper>
 
-          <div className="w-full py-2 md:px-8">
-            <iframe
-              src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3554.356080609364!2d18.58294595188907!3d54.43213053637157!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x46fd0b6edee7521f%3A0x324a244fefc976ef!2sRestauracja%20Spoko%20Sopot!5e0!3m2!1suk!2spl!4v1721160082108!5m2!1suk!2spl"
-              width="100%"
-              height="450"
-              style={{ border: 0 }}
-              allowFullScreen
-              loading="lazy"
-              referrerPolicy="no-referrer-when-downgrade"
-            ></iframe>
+            <div className="overflow-hidden rounded-lg border border-zinc-200 bg-white shadow-sm">
+              <iframe
+                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3554.356080609364!2d18.58294595188907!3d54.43213053637157!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x46fd0b6edee7521f%3A0x324a244fefc976ef!2sRestauracja%20Spoko%20Sopot!5e0!3m2!1suk!2spl!4v1721160082108!5m2!1suk!2spl"
+                width="100%"
+                height="460"
+                style={{ border: 0 }}
+                allowFullScreen
+                loading="lazy"
+                referrerPolicy="no-referrer-when-downgrade"
+                title="Mapa Restauracji Spoko Sopot"
+              ></iframe>
+            </div>
           </div>
-        </div>
+        </MaxWidthWrapper>
       </section>
 
-      <section className="w-full bg-background">
-        <MaxWidthWrapper>
-          <PageSubHeader title="Eventy i przyjęcia" className="pt-12 pb-6" />
+      <div className="flex w-full justify-center bg-[#f7f3ec]">
+        <Separator className="my-0 w-40 bg-[#ded8cc] sm:w-72 md:w-full md:max-w-4xl" />
+      </div>
 
-          <div className="flex flex-col md:flex-row justify-between rounded-2xl overflow-hidden mb-14 bg-muted/15">
-            <div className="p-6 md:p-8 space-y-4 bg-transparent">
-              <h3 className="text-2xl md:text-3xl font-semibold leading-tight text-text-secondary">
-                Organizujemy przyjęcia okolicznościowe i eventy firmowe
-              </h3>
-              <p className="text-sm md:text-base text-muted-foreground leading-relaxed max-w-2xl">
-                Zadbamy o menu, obsługę i klimat Twojego wydarzenia od A do Z.
-                Napisz lub zadzwoń, a przygotujemy propozycję dopasowaną do
-                liczby gości i charakteru przyjęcia.
+      <section className="w-full bg-[#f7f3ec] py-20">
+        <MaxWidthWrapper>
+          <div className="grid gap-10 md:grid-cols-[1.1fr_0.9fr] md:items-end">
+            <div>
+              <p className="text-xs font-semibold uppercase tracking-[0.22em] text-primary">
+                Przyjęcia i eventy
+              </p>
+
+              <h2 className="mt-4 max-w-3xl text-4xl font-semibold leading-tight text-secondary md:text-5xl">
+                Spotkania rodzinne i firmowe z dopracowanym menu
+              </h2>
+
+              <p className="mt-5 max-w-2xl text-base leading-relaxed text-zinc-500 md:text-lg">
+                Przygotujemy propozycję dopasowaną do liczby gości, charakteru
+                spotkania i oczekiwanej formy serwisu. Ty opowiadasz nam o
+                wydarzeniu, my pomagamy ułożyć resztę.
               </p>
             </div>
-            <div className="hidden md:flex self-stretch items-center">
-              <Separator orientation="vertical" className="h-1/2" />
-            </div>
-            <div className="p-6 md:p-8 flex flex-col gap-3 bg-transparent md:pl-8">
+
+            <div className="flex flex-col gap-3 md:items-end">
               <Button
                 asChild
                 size="lg"
-                className="w-full justify-center gap-2 font-semibold"
+                className="h-12 w-full justify-center gap-2.5 rounded-lg bg-secondary px-6 font-semibold text-white shadow-none hover:bg-secondary/90 sm:w-72"
               >
-                <a href="tel:+48530659666">
-                  <FiPhoneCall className="h-4 w-4" />
-                  Zadzwoń: 530 659 666
+                <a
+                  href="https://spokosopot.pl/reservation"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  <FiCalendar className="h-4 w-4" />
+                  Zarezerwuj przyjęcie
                 </a>
               </Button>
 
@@ -218,80 +136,99 @@ const Home: React.FC = () => {
                 asChild
                 size="lg"
                 variant="outline"
-                className="w-full justify-center gap-2 font-semibold"
+                className="h-12 w-full justify-center gap-2.5 rounded-lg border-zinc-300 bg-transparent px-6 font-semibold text-secondary hover:border-primary hover:text-primary sm:w-72"
               >
-                <a href="mailto:info@spokosopot.pl">
-                  <FiMail className="h-4 w-4" />
-                  Napisz: info@spokosopot.pl
-                </a>
-              </Button>
-
-              <Button
-                size="lg"
-                variant="ghost"
-                className="w-full justify-center gap-2 font-semibold"
-                onClick={() => router.push('/offer')}
-              >
-                Zobacz ofertę eventową
-                <MdOutlineKeyboardArrowRight />
+                <Link href="/offer">
+                  Zobacz ofertę eventową
+                  <MdOutlineKeyboardArrowRight />
+                </Link>
               </Button>
             </div>
           </div>
         </MaxWidthWrapper>
       </section>
 
-      <MaxWidthWrapper>
-        <Opinions />
+      <div className="flex w-full justify-center bg-[#f7f3ec]">
+        <Separator className="my-0 w-40 bg-[#ded8cc] sm:w-72 md:w-full md:max-w-4xl" />
+      </div>
 
-        {/* {(() => {
-          if (loading) {
-            // Show skeletons while loading
-            return (
-              <>
-                <PageSubHeader title="Nasze specjale" />
-                <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
-                  {Array.from({ length: 8 }).map((_, i) => (
-                    <Skeleton key={i} className="h-[300px] w-full rounded-lg" />
-                  ))}
-                </div>
-              </>
-            )
-          }
+      <section className="w-full bg-[#f7f3ec] py-20">
+        <MaxWidthWrapper>
+          <div className="grid items-center gap-10 lg:grid-cols-[0.9fr_1.1fr]">
+            <div className="relative aspect-[4/5] overflow-hidden rounded-lg border border-zinc-200 bg-white shadow-sm sm:aspect-[16/10] lg:aspect-[4/5]">
+              <Image
+                src="/img/team.jpg"
+                alt="Zespół Restauracji Spoko w Sopocie"
+                fill
+                sizes="(min-width: 1024px) 42vw, 100vw"
+                className="object-cover"
+              />
+            </div>
 
-          const filteredItems = menuItems.filter(
-            (menuItem: MenuItemType) => menuItem.isOnMainPage === true
-          )
+            <div>
+              <p className="text-xs font-semibold uppercase tracking-[0.22em] text-primary">
+                O nas
+              </p>
 
-          if (filteredItems.length === 0) {
-            return null
-          }
+              <h2 className="mt-4 max-w-3xl text-4xl font-semibold leading-tight text-secondary md:text-5xl">
+                Restauracja w Sopocie przy plaży, z tarasem i widokiem na morze
+              </h2>
 
-          return (
-            <>
-              <PageSubHeader title="Nasze specjale" />
-              <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
-                {filteredItems
-                  .slice(0, 8)
-                  .map((menuItem: MenuItemType, index: number) => (
-                    <MenuItem
-                      key={menuItem.id}
-                      name={menuItem.name}
-                      price={menuItem.price}
-                      description={menuItem.description}
-                      image={menuItem.image}
-                    />
-                  ))}
+              <p className="mt-5 max-w-2xl text-base leading-relaxed text-zinc-500 md:text-lg">
+                Spoko to restauracja w Sopocie przy samej plaży, kilka kroków
+                od morza. Mamy taras, widok na Zatokę i swobodny, nadmorski
+                klimat, który dobrze pasuje do śniadania, spokojnego obiadu
+                albo kolacji po spacerze.
+              </p>
+
+              <p className="mt-4 max-w-2xl text-base leading-relaxed text-zinc-500 md:text-lg">
+                W karcie znajdziesz śniadania, obiady, kolacje, napoje i
+                sezonowe propozycje kuchni nadmorskiej. Na co dzień dbamy o
+                przyjazne powitanie, sprawną obsługę i atmosferę, w której
+                można zostać na dłużej. Zapraszamy też gości z psami.
+              </p>
+
+              <div className="mt-8 grid gap-6 border-y border-[#ded8cc] py-6 sm:grid-cols-3">
+                {[
+                  [
+                    'Taras i widok',
+                    'Restauracja przy plaży, z miejscem na spokojny posiłek nad morzem.',
+                  ],
+                  [
+                    'Karta na cały dzień',
+                    'Śniadania, obiady, kolacje, napoje i sezonowe propozycje.',
+                  ],
+                  [
+                    'Zwierzęta mile widziane',
+                    'Swobodna atmosfera dla gości, rodzin i czworonożnych towarzyszy.',
+                  ],
+                ].map(([title, description]) => (
+                  <div key={title}>
+                    <div className="mb-3 h-1 w-10 rounded-full bg-primary" />
+                    <p className="font-semibold text-secondary">{title}</p>
+                    <p className="mt-2 text-sm leading-relaxed text-zinc-500">
+                      {description}
+                    </p>
+                  </div>
+                ))}
               </div>
-            </>
-          )
-        })()}
 
-        <PageContainer className="pt-2 pb-8">
-          <LoadingButton isLoading={isLoading} onClick={navigateToMenu}>
-            Sprawdź menu <MdOutlineKeyboardArrowRight />
-          </LoadingButton>
-        </PageContainer> */}
-      </MaxWidthWrapper>
+              <div className="mt-8 border-t border-[#ded8cc] pt-6">
+                <p className="max-w-2xl text-base leading-relaxed text-zinc-500">
+                  O miejscu najlepiej opowiadają goście: wracają za atmosferą,
+                  spokojnym tempem i jedzeniem, które pasuje do sopockiego dnia.
+                </p>
+              </div>
+            </div>
+          </div>
+        </MaxWidthWrapper>
+      </section>
+
+      <div className="flex w-full justify-center bg-[#f7f3ec]">
+        <Separator className="my-0 w-40 bg-[#ded8cc] sm:w-72 md:w-full md:max-w-4xl" />
+      </div>
+
+      <Opinions />
     </MainContainer>
   )
 }

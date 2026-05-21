@@ -50,21 +50,21 @@ const Header = () => {
   }, [])
 
   return (
-    <header className="fixed inset-x-0 top-0 z-30 min-h-20 border-b border-zinc-200/70 bg-[#f7f3ec]/95 px-4 py-3 text-zinc-900 shadow-sm backdrop-blur-md">
-      <div className="mx-auto flex items-center justify-between">
-        <div className="flex justify-start md:hidden">
+    <header className="fixed inset-x-0 top-0 z-30 h-14 border-b border-[#ded8cc] bg-[#f4efe6] px-4 text-zinc-900 shadow-sm md:h-18">
+      <div className="mx-auto flex h-full items-center justify-between">
+        <div className="flex w-10 justify-start md:hidden">
           <FaBars
-            className="cursor-pointer text-2xl text-zinc-800 transition-all duration-300 hover:text-primary"
+            className="cursor-pointer text-xl text-zinc-800 transition-all duration-300 hover:text-primary"
             onClick={toggleMenu}
           />
         </div>
 
-        <div className="flex-grow flex justify-center md:justify-start md:flex-1">
+        <div className="flex flex-grow justify-end md:justify-start md:flex-1">
           <Link href="/">
             <img
               src="img/logo-spoko-2.png"
               alt="Spoko Restaurant Logo"
-              className="max-h-12"
+              className="max-h-9 md:max-h-11"
             />
           </Link>
         </div>
@@ -124,8 +124,8 @@ const Header = () => {
             className="fixed inset-0 z-40 bg-black/60 transition-opacity duration-300 md:hidden"
             onClick={toggleMenu}
           ></div>
-          <div className="fixed inset-0 z-50 flex w-3/4 min-w-[200px] max-w-[400px] translate-x-0 transform flex-col justify-between border-r border-zinc-200/70 bg-[#f7f3ec]/98 p-4 text-zinc-900 backdrop-blur-md transition-all duration-300 ease-in-out md:hidden">
-            <div className="flex justify-between items-center">
+          <div className="fixed inset-0 z-[60] flex h-dvh w-full transform flex-col justify-between bg-[#f7f3ec] p-6 text-zinc-900 transition-all duration-300 ease-in-out md:hidden">
+            <div className="flex items-center justify-between border-b border-zinc-200 pb-5">
               <div>
                 <FaTimes
                   className="cursor-pointer text-2xl text-zinc-800 transition-all duration-300 hover:text-primary"
@@ -143,12 +143,12 @@ const Header = () => {
               </div>
             </div>
             <NavBar
-              className="mt-8"
-              itemClassName="text-xl text-zinc-700"
+              className="mt-10"
+              itemClassName="text-2xl text-zinc-700"
               isColumn
               toggleMenu={toggleMenu}
             />
-            <div className="mt-8 flex flex-col gap-2">
+            <div className="mt-10 flex flex-col gap-3">
               <TooltipProvider delayDuration={0}>
                 <Tooltip>
                   <TooltipTrigger asChild>
@@ -191,7 +191,7 @@ const Header = () => {
 
               <Button
                 variant="outline"
-                className="w-full rounded-lg border-zinc-200 text-zinc-700 hover:border-primary hover:text-primary"
+                className="w-full rounded-lg border-zinc-300 text-zinc-700 hover:border-primary hover:text-primary"
                 onClick={navigateToOrderPage}
               >
                 ŚLEDŹ ZAMÓWIENIE

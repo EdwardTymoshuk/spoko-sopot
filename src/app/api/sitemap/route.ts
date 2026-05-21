@@ -21,12 +21,6 @@ export async function GET() {
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://spokosopot.pl/about</loc>
-    <lastmod>2024-12-01</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
     <loc>https://spokosopot.pl/gallery</loc>
     <lastmod>2024-12-01</lastmod>
     <changefreq>monthly</changefreq>

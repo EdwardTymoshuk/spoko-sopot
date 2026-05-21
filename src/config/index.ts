@@ -9,12 +9,8 @@ export const isOrderingOpen = false
 
 export const NAVBAR_ITEMS: NavBarItem[] = [
   {
-    label: 'GŁÓWNA',
-    link: '/',
-  },
-  {
     label: 'O NAS',
-    link: '/about',
+    link: '/',
   },
   {
     label: 'OFERTA',
@@ -42,18 +38,68 @@ export const CAROUSEL_MAIN_IMAGES: CarouselImage[] = [
   {
     src: '/img/carousel/carousel-1.jpg',
     srcMobile: '/img/carousel/carousel-1-mobile.jpg',
+    eyebrow: 'Restauracja nad morzem',
+    title: 'Spokojny smak Sopotu',
+    description:
+      'Śniadania, obiady, kolacje i spotkania przy stole kilka kroków od plaży.',
+    primaryCta: {
+      label: 'Zobacz menu',
+      href: '/menu',
+    },
+    secondaryCta: {
+      label: 'Zarezerwuj przyjęcie',
+      href: 'https://spokosopot.pl/reservation',
+      external: true,
+    },
   },
   {
     src: '/img/carousel/carousel-2.jpg',
     srcMobile: '/img/carousel/carousel-2-mobile.jpg',
+    eyebrow: 'Menu sezonowe',
+    title: 'Karta pełna prostych, dobrych rzeczy',
+    description:
+      'Od śniadań po kolacje: kuchnia Spoko oparta na świeżych składnikach i swobodnej atmosferze.',
+    primaryCta: {
+      label: 'Przejdź do menu',
+      href: '/menu',
+    },
+    secondaryCta: {
+      label: 'Odwiedź nas',
+      href: '/contact',
+    },
   },
   {
     src: '/img/carousel/carousel-3.jpg',
     srcMobile: '/img/carousel/carousel-3-mobile.jpg',
+    eyebrow: 'Przyjęcia i eventy',
+    title: 'Zorganizuj spotkanie w Spoko',
+    description:
+      'Przygotujemy menu, oprawę i obsługę dla rodzinnych przyjęć, kolacji grupowych i wydarzeń firmowych.',
+    primaryCta: {
+      label: 'Zarezerwuj online',
+      href: 'https://spokosopot.pl/reservation',
+      external: true,
+    },
+    secondaryCta: {
+      label: 'Zobacz ofertę',
+      href: '/offer',
+    },
   },
   {
     src: '/img/carousel/carousel-4.jpg',
-    srcMobile: '/img/carousel/carousel-4-mobile.jpg',
+    srcMobile: '/img/carousel/carousel-4-mobile.webp',
+    eyebrow: 'Sopot, Hestii 3',
+    title: 'Wpadnij na śniadanie, obiad albo wieczór ze znajomymi',
+    description:
+      'Codziennie blisko morza, w luźnym rytmie i z kartą, do której chce się wracać.',
+    primaryCta: {
+      label: 'Sprawdź lokalizację',
+      href: '/contact',
+    },
+    secondaryCta: {
+      label: 'Galeria',
+      href: '/gallery',
+    },
   },
 ]
 
