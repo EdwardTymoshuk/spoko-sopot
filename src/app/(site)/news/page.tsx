@@ -44,7 +44,7 @@ const NewsPage = async () => {
             <p className="text-xs font-semibold uppercase tracking-[0.22em] text-primary">
               Co nowego
             </p>
-            <h2 className="mt-4 max-w-3xl font-serif text-4xl leading-tight text-secondary md:text-6xl">
+            <h2 className="mt-4 max-w-3xl text-4xl font-semibold leading-tight text-secondary md:text-5xl">
               Wydarzenia i aktualności
             </h2>
             <p className="mt-5 max-w-2xl text-base leading-relaxed text-zinc-500 md:text-lg">
@@ -86,7 +86,7 @@ const NewsPage = async () => {
                   ) : null}
                 </div>
 
-                <h3 className="mt-5 font-serif text-3xl leading-tight text-zinc-950 md:text-5xl">
+                <h3 className="mt-5 text-3xl font-semibold leading-tight text-zinc-950 md:text-5xl">
                   {featuredItem.title}
                 </h3>
 
@@ -144,7 +144,7 @@ const NewsPage = async () => {
                   ) : null}
                 </div>
 
-                <h3 className="mt-4 font-serif text-2xl leading-tight text-zinc-950">
+                <h3 className="mt-4 text-2xl font-semibold leading-tight text-zinc-950">
                   <Link href={`/news/${item.slug}`}>{item.title}</Link>
                 </h3>
 

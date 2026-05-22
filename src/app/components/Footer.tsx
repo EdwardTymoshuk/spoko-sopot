@@ -46,7 +46,7 @@ const Footer = () => {
 					</div>
 				</div>
 				<div className='flex justify-center items-center gap-8'>
-					<span className='text-center text-text-foreground'>© 2024 Spoko Sopot. All rights reserved.</span>
+					<span className='text-center text-text-foreground'>© 2026 Spoko Sopot. All rights reserved.</span>
 				</div>
 			</div>
 		</footer>
