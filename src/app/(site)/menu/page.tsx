@@ -79,28 +79,30 @@ const buildMenuSections = (items: MenuItemType[]): PublicMenuSection[] => {
 }
 
 const MenuDocumentCard = ({ document }: { document: MenuDownloadDocument }) => (
-  <article className="flex flex-wrap items-center gap-x-5 gap-y-1">
-    <span className="font-serif text-lg leading-tight text-primary">
+  <article className="grid grid-cols-[minmax(0,1fr)_auto] items-center gap-4">
+    <span className="min-w-0 font-serif text-lg leading-tight text-primary">
       {document.title}
     </span>
 
-    <div className="flex items-center gap-2.5">
+    <div className="flex shrink-0 items-center gap-3 text-right">
       <a
         href={document.url}
         target="_blank"
         rel="noreferrer"
-        className="inline-flex items-center gap-1 text-xs font-medium text-zinc-500 transition hover:text-primary"
+        aria-label={`Podejrzyj PDF: ${document.title}`}
+        className="inline-flex items-center gap-1.5 text-sm font-medium text-zinc-600 transition hover:text-primary"
       >
-        <ExternalLink className="size-3" />
-        Podgląd
+        <ExternalLink className="size-4 stroke-[2.25]" />
+        <span>Podgląd</span>
       </a>
       <a
         href={document.url}
         download={document.fileName}
-        className="inline-flex items-center gap-1 text-xs font-semibold text-zinc-800 transition hover:text-primary"
+        aria-label={`Pobierz PDF: ${document.title}`}
+        className="inline-flex items-center gap-1.5 text-sm font-semibold text-zinc-900 transition hover:text-primary"
       >
-        <Download className="size-3" />
-        Pobierz
+        <Download className="size-4 stroke-[2.25]" />
+        <span>Pobierz</span>
       </a>
     </div>
   </article>
@@ -247,7 +249,7 @@ const MenuPage = () => {
   const sections = useMemo(() => buildMenuSections(items), [items])
 
   return (
-    <MainContainer className="pt-20 bg-[#f5f1ea] pb-8">
+    <MainContainer className="pt-14 pb-8">
       <PageHeaderContainer
         description="Zapraszamy do odkrycia wyjątkowych smaków, które przygotowaliśmy specjalnie dla Was. Nasze menu to starannie skomponowana oferta, która łączy w sobie tradycję z nowoczesnością, wykorzystując najlepsze składniki sezonowe. Smacznego!"
         title="Menu"
@@ -258,12 +260,12 @@ const MenuPage = () => {
       <MaxWidthWrapper className="space-y-14">
         {menuDocuments.length > 0 ? (
           <section className="-mt-3 border-y border-zinc-300/80 py-4">
-            <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
+            <div className="grid gap-4 lg:grid-cols-[1fr_auto] lg:items-center">
               <p className="text-sm text-zinc-500">
                 Wolisz przejrzeć klasyczną kartę? Dostępna jest także wersja
                 PDF.
               </p>
-              <div className="flex flex-wrap gap-x-8 gap-y-3">
+              <div className="grid gap-3 lg:flex lg:flex-wrap lg:justify-end lg:gap-x-8 lg:gap-y-3">
                 {menuDocuments.map((document) => (
                   <MenuDocumentCard key={document.id} document={document} />
                 ))}

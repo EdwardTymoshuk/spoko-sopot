@@ -12,7 +12,7 @@ import { CarouselImage } from '@/app/types'
 import { CAROUSEL_MAIN_IMAGES } from '@/config'
 import Image from 'next/image'
 import Link from 'next/link'
-import { useMemo } from 'react'
+import { useEffect, useState } from 'react'
 import { RxDoubleArrowDown } from 'react-icons/rx'
 
 const defaultHeroCopy = {
@@ -22,18 +22,64 @@ const defaultHeroCopy = {
     'Kuchnia, wydarzenia i spotkania przy stole kilka kroków od plaży.',
 }
 
-const HeroCarousel = () => {
-  const banners = useMemo<CarouselImage[]>(
-    () =>
-      CAROUSEL_MAIN_IMAGES.map((img) => ({
-        ...img,
-      })),
-    []
-  )
+const normalizeBanner = (item: any): CarouselImage | null => {
+  const src = item.src || item.image || item.imageUrl || item.desktopImage
+  if (!src || typeof src !== 'string') return null
 
-  // ------------------------------------------------------
-  // SKELETON (full screen) while banners are loading
-  // ------------------------------------------------------
+  return {
+    src,
+    srcMobile: item.srcMobile || item.mobileImage || item.mobileImageUrl || src,
+    eyebrow: item.eyebrow || item.label || defaultHeroCopy.eyebrow,
+    title: item.title || defaultHeroCopy.title,
+    description: item.description || defaultHeroCopy.description,
+    primaryCta: item.primaryCta,
+    secondaryCta: item.secondaryCta,
+  }
+}
+
+const HeroCarousel = () => {
+  const [banners, setBanners] =
+    useState<CarouselImage[]>(CAROUSEL_MAIN_IMAGES)
+
+  useEffect(() => {
+    let isMounted = true
+
+    const loadBanners = async () => {
+      try {
+        const response = await fetch(`/api/main-banners?timestamp=${Date.now()}`, {
+          cache: 'no-store',
+        })
+
+        if (!response.ok) return
+
+        const data = await response.json()
+        if (!isMounted || !Array.isArray(data)) return
+
+        const nextBanners = data
+          .filter((item) => item?.isActive !== false && item?.isArchived !== true)
+          .sort(
+            (a, b) =>
+              Number(a?.sortOrder ?? a?.order ?? 0) -
+              Number(b?.sortOrder ?? b?.order ?? 0)
+          )
+          .map(normalizeBanner)
+          .filter((item): item is CarouselImage => Boolean(item))
+
+        if (nextBanners.length > 0) {
+          setBanners(nextBanners)
+        }
+      } catch (error) {
+        console.error('Błąd pobierania banerów głównych:', error)
+      }
+    }
+
+    loadBanners()
+
+    return () => {
+      isMounted = false
+    }
+  }, [])
+
   return (
     <div className="relative flex-grow overflow-hidden bg-zinc-900">
       <div className="relative h-screen w-full">
@@ -58,12 +104,13 @@ const HeroCarousel = () => {
                     />
                   </picture>
 
-                  <div className="absolute inset-0 bg-gradient-to-r from-black/86 via-black/52 to-black/16" />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/55 via-transparent to-black/24" />
+                  <div className="absolute inset-0 bg-gradient-to-r from-black/50 via-black/20 to-black/5" />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/45 via-transparent to-black/20" />
 
                   <div className="absolute inset-x-0 bottom-0 top-20 flex items-center">
                     <div className="mx-auto w-full max-w-screen-2xl px-6 md:px-10">
-                      <div className="max-w-2xl text-white drop-shadow-[0_2px_18px_rgba(0,0,0,0.55)]">
+                      <div className="relative z-10 max-w-2xl text-white drop-shadow-[0_2px_18px_rgba(0,0,0,0.55)]">
+                        <div className="pointer-events-none absolute -inset-x-5 -inset-y-6 -z-10 bg-gradient-to-r from-black/68 via-black/36 to-transparent blur-md md:-inset-x-8 md:-inset-y-8" />
                         <p className="mb-4 text-xs font-semibold uppercase tracking-[0.24em] text-primary">
                           {item.eyebrow ?? defaultHeroCopy.eyebrow}
                         </p>

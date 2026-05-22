@@ -28,7 +28,9 @@ const NavBar = ({
         })}
       >
         {NAVBAR_ITEMS.map((item) => {
-          const isActive = pathName === item.link
+          const isActive =
+            pathName === item.link ||
+            (item.link !== '/' && pathName.startsWith(`${item.link}/`))
 
           return (
             <li key={item.link} onClick={toggleMenu}>
@@ -37,8 +39,8 @@ const NavBar = ({
                 className={cn(
                   'relative inline-flex items-center px-2 py-2 transition-colors duration-300',
                   isColumn
-                    ? 'w-full border-l-4 border-transparent py-3 pl-4'
-                    : 'after:absolute after:bottom-0 after:left-2 after:right-2 after:h-px after:origin-center after:scale-x-0 after:bg-primary after:transition-transform after:duration-300',
+                    ? 'w-full border-l-[5px] border-transparent py-3 pl-4'
+                    : 'after:absolute after:bottom-0 after:left-2 after:right-2 after:h-0.5 after:origin-center after:scale-x-0 after:bg-primary after:transition-transform after:duration-300',
                   itemClassName,
                   {
                     'text-zinc-950 after:scale-x-100': isActive && !isColumn,

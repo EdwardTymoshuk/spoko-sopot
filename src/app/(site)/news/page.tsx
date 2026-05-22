@@ -1,244 +1,189 @@
-'use client'
-
-import CustomGallery from '@/app/components/CustomGallery'
 import MainContainer from '@/app/components/MainContainer'
 import MaxWidthWrapper from '@/app/components/MaxWidthWrapper'
 import PageHeaderContainer from '@/app/components/PageHeaderComponent'
 import { Button } from '@/app/components/ui/button'
 import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-} from '@/app/components/ui/card'
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-} from '@/app/components/ui/dialog'
-import 'photoswipe/dist/photoswipe.css'
-import { useEffect, useState } from 'react'
-import { IoHeartSharp } from 'react-icons/io5'
+  formatDate,
+  getNewsItems,
+  isNewsEnded,
+  type NewsItem,
+} from '@/lib/news'
+import Image from 'next/image'
+import Link from 'next/link'
+import { FiArrowRight, FiCalendar, FiClock } from 'react-icons/fi'
 
-interface NewsItem {
-  id: string
-  title: React.ReactNode
-  image: string
-  description: string
-  fullDescription: string
-  galleryImages: { src: string; thumbnail: string }[]
+export const dynamic = 'force-dynamic'
+
+const getDateSummary = (item: NewsItem) => {
+  const startDate = formatDate(item.eventStartDate)
+  const endDate = formatDate(item.eventEndDate)
+
+  if (startDate && endDate && startDate !== endDate) {
+    return `${startDate} - ${endDate}`
+  }
+
+  return startDate
 }
 
-const valentinesEvent: NewsItem = {
-  id: 'valentines-2026',
-  title: (
-    <span className="flex items-center justify-center gap-2">
-      <IoHeartSharp className="text-danger" />
-      Wieczór Walentynkowy w Spoko
-      <IoHeartSharp className="text-danger" />
-    </span>
-  ),
-  image: '/img/news/valentines-day-2026/valentines-1.webp',
-  description:
-    'Romantyczny wieczór dla dwojga – specjalne menu, muzyka na żywo i wyjątkowy klimat.',
-  fullDescription: `
-    <section class="space-y-7">
-  
-      <!-- HEADER -->
-      <div class="text-center space-y-2">
-        <h3 class="text-2xl font-semibold text-secondary">
-          🌹 Walentynki w Spoko
-        </h3>
-        <p class="text-sm text-secondary">
-          14 lutego • 17:00 – 19:00
-        </p>
-      </div>
-  
-      <p class="text-base leading-relaxed">
-        Zapraszamy na wyjątkowy wieczór walentynkowy w romantycznej oprawie:
-        <strong>czerwone akcenty, świece, żywe kwiaty</strong> i atmosfera idealna na randkę ❤️
-      </p>
-  
-      <!-- MENU -->
-      <div class="rounded-xl border p-5 space-y-4 bg-muted/30">
-        <div class="flex items-center justify-between">
-          <h4 class="text-lg font-semibold flex items-center gap-2">
-            🍽 Menu walentynkowe
-          </h4>
-          <span class="text-sm font-medium text-secondary">
-            400 zł / para
-          </span>
-        </div>
-  
-        <ul class="space-y-3 text-sm">
-  
-          <li>
-            🥂 <strong>Przystawka (do wyboru):</strong><br/>
-            burrata z truflą i gruszką <span class="text-muted-foreground">lub</span>
-            rostbef z chipsen z parmezanu
-          </li>
-  
-          <li>
-            🍖 <strong>Danie główne (do wyboru):</strong><br/>
-            kaczka z purée dyniowym <span class="text-muted-foreground">lub</span>
-            sandacz z kruszonką z topinamburu
-          </li>
-  
-          <li>
-            🍰 <strong>Deser do dzielenia:</strong><br/>
-            fondant Yin & Yang + sorbet gruszkowy
-          </li>
-  
-          <li>
-            🍸 <strong>2 drinki (do wyboru):</strong><br/>
-            Cierpki Pocałunek • Spice Girl • Smak Jego Ust • Trzeźwy Kapitan
-          </li>
-  
-        </ul>
-      </div>
-  
-      <!-- ATRAKCJE -->
-      <div class="space-y-3">
-        <h4 class="text-lg font-semibold flex items-center gap-2">
-          🎶 Atrakcje wieczoru
-        </h4>
-        <ul class="list-disc list-inside text-sm space-y-1">
-          <li>Muzyka na żywo – wokal & elektroniczne pianino</li>
-          <li>Cupidon na sali – subtelnie, z humorem</li>
-          <li>Urocze niespodzianki na stołach</li>
-        </ul>
-      </div>
-  
-      <!-- CTA -->
-      <div class="rounded-xl bg-secondary/10 p-5 text-center space-y-2">
-        <p class="font-medium text-base">
-          Liczba miejsc ograniczona
-        </p>
-        <p class="text-sm">
-        📞 <a href="tel:+48530659666" class="font-semibold text-secondary hover:underline">
-        530 659 666
-      </a><br/>
-      
-      ✉️ <a href="mailto:info@spokosopot.pl" class="font-semibold text-secondary hover:underline">
-        info@spokosopot.pl
-      </a>
-      
-        </p>
-      </div>
-  
-    </section>
-  `,
-
-  galleryImages: [
-    {
-      src: '/img/news/valentines-day-2026/valentines-1.webp',
-      thumbnail: '/img/news/valentines-day-2026/valentines-1.webp',
-    },
-    {
-      src: '/img/news/valentines-day-2026/valentines-2.webp',
-      thumbnail: '/img/news/valentines-day-2026/valentines-2.webp',
-    },
-  ],
-}
-
-const NewsPage: React.FC = () => {
-  const [news, setNews] = useState<NewsItem[]>([])
-  const [openDialogId, setOpenDialogId] = useState<string | null>(null)
-
-  const allNews = [valentinesEvent, ...news]
-
-  useEffect(() => {
-    const fetchNews = async () => {
-      try {
-        const res = await fetch('/api/news')
-        const data = await res.json()
-        setNews(data)
-      } catch (error) {
-        console.error('Błąd pobierania newsów:', error)
-      }
-    }
-
-    fetchNews()
-  }, [])
+const NewsPage = async () => {
+  const allNews = await getNewsItems()
+  const [featuredItem, ...otherItems] = allNews
 
   return (
-    <MainContainer className="pt-20 pb-8">
+    <MainContainer className="pt-14 pb-24">
       <PageHeaderContainer
         title="Aktualności"
         image="/img/news-page.jpg"
         imageMobile="/img/news-page-mobile.jpg"
-        description="Bądź na bieżąco z tym, co dzieje się w naszej restauracji. Nowości, wydarzenia i limitowane oferty specjalnie dla Ciebie."
+        description="Wydarzenia, sezonowe propozycje i ważne informacje z restauracji Spoko w Sopocie."
       />
-      <MaxWidthWrapper>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 items-stretch">
-          {[valentinesEvent, ...news].map((item) => (
-            <Card
-              key={item.id}
-              className="h-full flex flex-col w-full max-w-96"
-            >
-              <div className="relative w-full h-64">
-                <img
-                  src={item.image}
-                  alt={item.id}
-                  className="w-full h-full object-cover object-top rounded-t-lg"
-                />
-              </div>
-              <CardHeader>
-                <CardTitle className="text-secondary text-center">
-                  {item.title}
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="flex flex-col flex-grow w-full">
-                <p className="mb-4">{item.description}</p>
-                <div className="mt-auto self-center">
-                  <Button onClick={() => setOpenDialogId(item.id)}>
-                    Sprawdź
-                  </Button>
-                </div>
-              </CardContent>
-            </Card>
-          ))}
+
+      <MaxWidthWrapper className="py-12 md:py-20">
+        <div className="mb-12 grid items-end gap-6 md:grid-cols-[1fr_auto]">
+          <div>
+            <p className="text-xs font-semibold uppercase tracking-[0.22em] text-primary">
+              Co nowego
+            </p>
+            <h2 className="mt-4 max-w-3xl font-serif text-4xl leading-tight text-secondary md:text-6xl">
+              Wydarzenia i aktualności
+            </h2>
+            <p className="mt-5 max-w-2xl text-base leading-relaxed text-zinc-500 md:text-lg">
+              Publikujemy tu specjalne wieczory, sezonowe propozycje i
+              informacje, które warto znać przed wizytą w Spoko.
+            </p>
+          </div>
+
+          <p className="text-sm font-medium text-zinc-400">
+            {allNews.length} {allNews.length === 1 ? 'wpis' : 'wpisów'}
+          </p>
         </div>
 
-        {allNews.map((item) => (
-          <Dialog
-            key={item.id}
-            open={openDialogId === item.id}
-            onOpenChange={(open) => {
-              if (!open) {
-                setOpenDialogId(null)
-              }
-            }}
-          >
-            <DialogContent className="w-full md:w-auto max-w-[90%] md:max-w-3xl h-auto max-h-[80vh] overflow-y-auto p-4">
-              <DialogHeader>
-                <DialogTitle className="text-center pt-4"></DialogTitle>
-                <DialogDescription className="text-text-secondary text-start">
-                  <CustomGallery images={item.galleryImages} />
-                  <div className="mt-6">
-                    <div
-                      className="text-lg"
-                      dangerouslySetInnerHTML={{
-                        __html: item.fullDescription,
-                      }}
-                    />
-                  </div>
-                </DialogDescription>
-              </DialogHeader>
-              <DialogFooter className="sm:justify-center">
-                <h2 className="text-secondary text-center text-lg italic">
-                  Do zobaczenia w Spoko :)
-                </h2>
-              </DialogFooter>
-            </DialogContent>
-          </Dialog>
-        ))}
+        {featuredItem ? (
+          <article className="mb-8 overflow-hidden rounded-lg border border-zinc-200 bg-white/65 shadow-sm">
+            <div className="grid gap-0 lg:grid-cols-[1.05fr_0.95fr]">
+              <Link
+                href={`/news/${featuredItem.slug}`}
+                className="relative block min-h-[320px] overflow-hidden"
+              >
+                <Image
+                  src={featuredItem.image}
+                  alt=""
+                  fill
+                  sizes="(min-width: 1024px) 50vw, 100vw"
+                  className="object-cover transition duration-500 hover:scale-105"
+                  priority
+                />
+              </Link>
+
+              <div className="flex flex-col justify-center p-7 md:p-10">
+                <div className="flex flex-wrap items-center gap-2">
+                  <NewsStatus item={featuredItem} />
+                  {formatDate(featuredItem.publishedAt) ? (
+                    <span className="inline-flex items-center gap-1.5 text-xs font-medium uppercase tracking-[0.12em] text-zinc-400">
+                      <FiClock className="h-3.5 w-3.5" />
+                      {formatDate(featuredItem.publishedAt)}
+                    </span>
+                  ) : null}
+                </div>
+
+                <h3 className="mt-5 font-serif text-3xl leading-tight text-zinc-950 md:text-5xl">
+                  {featuredItem.title}
+                </h3>
+
+                {getDateSummary(featuredItem) ? (
+                  <p className="mt-4 inline-flex items-center gap-2 text-sm font-semibold text-secondary">
+                    <FiCalendar className="h-4 w-4 text-primary" />
+                    {getDateSummary(featuredItem)}
+                  </p>
+                ) : null}
+
+                <p className="mt-5 text-base leading-relaxed text-zinc-500">
+                  {featuredItem.description}
+                </p>
+
+                <Button
+                  asChild
+                  className="mt-8 h-11 w-fit gap-2 rounded-lg bg-secondary px-5 text-sm font-semibold text-white hover:bg-secondary/90"
+                >
+                  <Link href={`/news/${featuredItem.slug}`}>
+                    Czytaj więcej
+                    <FiArrowRight className="h-4 w-4" />
+                  </Link>
+                </Button>
+              </div>
+            </div>
+          </article>
+        ) : null}
+
+        <div className="grid grid-cols-1 gap-5 md:grid-cols-2 xl:grid-cols-3">
+          {otherItems.map((item) => (
+            <article
+              key={item.id}
+              className="group flex h-full flex-col overflow-hidden rounded-lg border border-zinc-200 bg-white/55 shadow-sm transition hover:-translate-y-0.5 hover:bg-white/75 hover:shadow-md"
+            >
+              <Link
+                href={`/news/${item.slug}`}
+                className="relative block aspect-[16/10] overflow-hidden"
+              >
+                <Image
+                  src={item.image}
+                  alt=""
+                  fill
+                  sizes="(min-width: 1280px) 30vw, (min-width: 768px) 45vw, 100vw"
+                  className="object-cover transition duration-500 group-hover:scale-105"
+                />
+              </Link>
+
+              <div className="flex flex-1 flex-col p-6">
+                <div className="flex flex-wrap items-center gap-2">
+                  <NewsStatus item={item} />
+                  {formatDate(item.publishedAt) ? (
+                    <span className="text-xs font-medium uppercase tracking-[0.12em] text-zinc-400">
+                      {formatDate(item.publishedAt)}
+                    </span>
+                  ) : null}
+                </div>
+
+                <h3 className="mt-4 font-serif text-2xl leading-tight text-zinc-950">
+                  <Link href={`/news/${item.slug}`}>{item.title}</Link>
+                </h3>
+
+                {getDateSummary(item) ? (
+                  <p className="mt-3 inline-flex items-center gap-2 text-sm font-medium text-zinc-500">
+                    <FiCalendar className="h-4 w-4 text-primary" />
+                    {getDateSummary(item)}
+                  </p>
+                ) : null}
+
+                <p className="mt-4 flex-1 text-sm leading-relaxed text-zinc-500">
+                  {item.description}
+                </p>
+
+                <Link
+                  href={`/news/${item.slug}`}
+                  className="mt-6 inline-flex w-fit items-center gap-2 text-sm font-semibold text-secondary transition hover:text-primary"
+                >
+                  Czytaj więcej
+                  <FiArrowRight className="h-4 w-4" />
+                </Link>
+              </div>
+            </article>
+          ))}
+        </div>
       </MaxWidthWrapper>
     </MainContainer>
   )
 }
+
+const NewsStatus = ({ item }: { item: NewsItem }) =>
+  isNewsEnded(item) ? (
+    <span className="rounded-full bg-zinc-100 px-2.5 py-1 text-[0.65rem] font-semibold uppercase tracking-[0.12em] text-zinc-500">
+      Zakończone
+    </span>
+  ) : (
+    <span className="rounded-full bg-primary/15 px-2.5 py-1 text-[0.65rem] font-semibold uppercase tracking-[0.12em] text-secondary">
+      Aktualne
+    </span>
+  )
 
 export default NewsPage

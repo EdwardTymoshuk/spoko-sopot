@@ -4,7 +4,7 @@ import MainContainer from '../components/MainContainer'
 
 const PrivacyPolicy: React.FC = () => {
 	return (
-		<MainContainer className="max-w-3xl mx-auto px-6 pb-8 pt-20">
+		<MainContainer className="max-w-3xl mx-auto px-6 pb-8 pt-14">
 			<h1 className="text-3xl font-bold mb-4">Polityka Prywatności</h1>
 			<p>
 				Szanujemy Twoją prywatność i dbamy o ochronę Twoich danych osobowych. Ta polityka prywatności

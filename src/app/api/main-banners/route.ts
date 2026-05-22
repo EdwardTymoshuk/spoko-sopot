@@ -4,11 +4,24 @@ import { NextResponse } from 'next/server'
 // API route to fetch main banners from the database
 export async function GET() {
   try {
+    if (!process.env.MONGODB_URI) {
+      return NextResponse.json([], {
+        headers: {
+          'Cache-Control': 'no-store',
+        },
+      })
+    }
+
     const client = await MongoClient.connect(process.env.MONGODB_URI!)
     const db = client.db()
 
-    // Pobranie banerów z kolekcji 'MainBanner'
-    const banners = await db.collection('MainBanner').find().toArray()
+    const banners = await db
+      .collection('MainBanner')
+      .find({
+        $and: [{ isActive: { $ne: false } }, { isArchived: { $ne: true } }],
+      })
+      .sort({ sortOrder: 1, order: 1, createdAt: -1 })
+      .toArray()
     client.close()
 
     const response = NextResponse.json(banners)

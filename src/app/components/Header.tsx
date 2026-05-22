@@ -3,17 +3,11 @@
 'use client'
 
 import { Button } from '@/app/components/ui/button'
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from '@/app/components/ui/tooltip'
-import { cn } from '@/lib/utils'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { startTransition, useEffect, useState } from 'react'
 import { FaBars, FaTimes } from 'react-icons/fa'
+import { FiPhoneCall } from 'react-icons/fi'
 import LoadingButton from './LoadingButton'
 import NavBar from './NavBar'
 
@@ -62,7 +56,7 @@ const Header = () => {
         <div className="flex flex-grow justify-end md:justify-start md:flex-1">
           <Link href="/">
             <img
-              src="img/logo-spoko-2.png"
+              src="/img/logo-spoko-2.png"
               alt="Spoko Restaurant Logo"
               className="max-h-9 md:max-h-11"
             />
@@ -77,44 +71,32 @@ const Header = () => {
         </div>
 
         <div className="hidden md:flex md:flex-1 md:gap-2 items-center md:justify-end">
-          <TooltipProvider delayDuration={200}>
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <LoadingButton
-                  isLoading={isLoading}
-                  variant="default"
-                  onClick={isOrderingOpen ? navigateToOrderPage : () => {}}
-                  className={cn(
-                    'h-11 rounded-lg border border-primary/20 bg-primary px-5 text-xs font-semibold uppercase tracking-[0.08em] text-zinc-950 shadow-none hover:bg-primary/90',
-                    {
-                      'border-zinc-200 bg-zinc-100 text-zinc-400 opacity-100 hover:bg-zinc-100 cursor-not-allowed':
-                        !isOrderingOpen,
-                    }
-                  )}
-                >
-                  {isOrderingOpen ? (
-                    'ZAMÓW ONLINE'
-                  ) : (
-                    <p>
-                      <span>ZAMÓW ONLINE</span>
-                      <span className="block text-xs">
-                        (tymczasowo niedostępne<i className="text-red-800">*</i>{' '}
-                        )
-                      </span>
-                    </p>
-                  )}
-                </LoadingButton>
-              </TooltipTrigger>
-              {!isOrderingOpen && (
-                <TooltipContent>
-                  <p>Usługa zamawiania online jest tymczasowo niedostępna. </p>
-                  <p>
-                    W celu złożenia zamówienia prosimy o kontakt telefoniczny.
-                  </p>
-                </TooltipContent>
-              )}
-            </Tooltip>
-          </TooltipProvider>
+          {isLoading ? (
+            <LoadingButton
+              isLoading={isLoading}
+              variant="default"
+              className="h-11 rounded-lg border border-primary/20 bg-primary px-5 text-xs font-semibold uppercase tracking-[0.08em] text-zinc-950 shadow-none hover:bg-primary/90"
+            />
+          ) : isOrderingOpen ? (
+            <LoadingButton
+              isLoading={false}
+              variant="default"
+              onClick={navigateToOrderPage}
+              className="h-11 rounded-lg border border-primary/20 bg-primary px-5 text-xs font-semibold uppercase tracking-[0.08em] text-zinc-950 shadow-none hover:bg-primary/90"
+            >
+              ZAMÓW ONLINE
+            </LoadingButton>
+          ) : (
+            <Button
+              asChild
+              className="h-9 gap-2 rounded-lg border border-secondary/15 bg-white/70 px-4 text-sm font-semibold text-secondary shadow-none hover:border-secondary/30 hover:bg-white"
+            >
+              <a href="tel:+48530659666">
+                <FiPhoneCall className="h-3.5 w-3.5" />
+                Kontakt
+              </a>
+            </Button>
+          )}
         </div>
       </div>
 
@@ -135,7 +117,7 @@ const Header = () => {
               <div className="flex">
                 <Link href="/">
                   <img
-                    src="img/logo-spoko-2.png"
+                    src="/img/logo-spoko-2.png"
                     alt="Spoko Restaurant Logo"
                     className="max-h-12"
                   />
@@ -149,45 +131,30 @@ const Header = () => {
               toggleMenu={toggleMenu}
             />
             <div className="mt-10 flex flex-col gap-3">
-              <TooltipProvider delayDuration={0}>
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <Button
-                      onClick={isOrderingOpen ? navigateToOrderPage : () => {}}
-                      className={cn(
-                        'w-full rounded-lg bg-primary text-center text-sm font-semibold text-zinc-950 hover:bg-primary/90',
-                        {
-                          'bg-zinc-100 text-zinc-400 opacity-100 hover:bg-zinc-100 cursor-not-allowed':
-                            !isOrderingOpen,
-                        }
-                      )}
-                    >
-                      {isOrderingOpen ? (
-                        'ZAMÓW ONLINE'
-                      ) : (
-                        <p>
-                          <span>ZAMÓW ONLINE</span>
-                          <span className="block text-sm">
-                            (tymczasowo niedostępne
-                            <i className="text-red-800">*</i> )
-                          </span>
-                        </p>
-                      )}
-                    </Button>
-                  </TooltipTrigger>
-                  {!isOrderingOpen && (
-                    <TooltipContent>
-                      <p>
-                        Usługa zamawiania online jest tymczasowo niedostępna.{' '}
-                      </p>
-                      <p>
-                        W celu złożenia zamówienia prosimy o kontakt
-                        telefoniczny.
-                      </p>
-                    </TooltipContent>
-                  )}
-                </Tooltip>
-              </TooltipProvider>
+              {isLoading ? (
+                <LoadingButton
+                  isLoading={isLoading}
+                  variant="default"
+                  className="w-full rounded-lg bg-primary text-center text-sm font-semibold text-zinc-950 hover:bg-primary/90"
+                />
+              ) : isOrderingOpen ? (
+                <Button
+                  onClick={navigateToOrderPage}
+                  className="w-full rounded-lg bg-primary text-center text-sm font-semibold text-zinc-950 hover:bg-primary/90"
+                >
+                  ZAMÓW ONLINE
+                </Button>
+              ) : (
+                <Button
+                  asChild
+                  className="w-full gap-2.5 rounded-lg bg-primary text-center text-sm font-semibold text-zinc-950 hover:bg-primary/90"
+                >
+                  <a href="tel:+48530659666">
+                    <FiPhoneCall className="h-4 w-4" />
+                    Kontakt telefoniczny
+                  </a>
+                </Button>
+              )}
 
               <Button
                 variant="outline"

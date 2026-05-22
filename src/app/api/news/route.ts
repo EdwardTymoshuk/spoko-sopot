@@ -1,28 +1,11 @@
-import { MongoClient } from 'mongodb'
+import { getNewsItems } from '@/lib/news'
 import { NextResponse } from 'next/server'
 
 export const dynamic = 'force-dynamic'
 
 export async function GET() {
   try {
-    const client = await MongoClient.connect(process.env.MONGODB_URI!)
-    const db = client.db()
-
-    const news = await db.collection('News').find().toArray()
-
-    client.close()
-
-    const formattedNews = news.map((item) => ({
-      id: item._id.toString(),
-      title: item.title,
-      image: item.image || '',
-      description: item.description,
-      fullDescription: item.fullDescription || '',
-      galleryImages: (item.galleryImages || []).map((img: string) => ({
-        src: img,
-        thumbnail: img,
-      })),
-    }))
+    const formattedNews = await getNewsItems()
 
     return NextResponse.json(formattedNews, {
       headers: {

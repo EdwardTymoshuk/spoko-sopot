@@ -7,7 +7,7 @@ const Footer = () => {
 			<div className='px-8 flex justify-center'>
 				<Link href='/'>
 					<img
-						src='img/logo-spoko-2.png'
+						src='/img/logo-spoko-2.png'
 						alt='Spoko Restaurant Logo'
 						className='h-auto w-36'
 					/>
