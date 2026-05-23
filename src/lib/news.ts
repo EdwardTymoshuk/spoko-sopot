@@ -1,3 +1,4 @@
+import { fetchAdminJson } from './adminApi'
 import { MongoClient } from 'mongodb'
 
 export interface NewsGalleryImage {
@@ -164,20 +165,33 @@ export const sortNewsItems = (items: NewsItem[]) =>
     return bDate - aDate
   })
 
-export async function getNewsItems(): Promise<NewsItem[]> {
+const getAdminNewsItems = async () => {
+  const items = await fetchAdminJson<unknown[]>('/api/public/news')
+  if (!Array.isArray(items)) return []
+
+  return sortNewsItems(items.map(normalizeNewsItem))
+}
+
+const getLegacyNewsItems = async () => {
   if (!process.env.MONGODB_URI) {
     return [valentinesEvent]
   }
 
+  const client = await MongoClient.connect(process.env.MONGODB_URI)
+  const db = client.db()
+  const news = await db.collection('News').find().toArray()
+
+  await client.close()
+
+  return sortNewsItems([valentinesEvent, ...news.map(normalizeNewsItem)])
+}
+
+export async function getNewsItems(): Promise<NewsItem[]> {
   try {
-    const client = await MongoClient.connect(process.env.MONGODB_URI)
-    const db = client.db()
+    const adminNews = await getAdminNewsItems()
+    if (adminNews.length > 0) return adminNews
 
-    const news = await db.collection('News').find().toArray()
-
-    await client.close()
-
-    return sortNewsItems([valentinesEvent, ...news.map(normalizeNewsItem)])
+    return getLegacyNewsItems()
   } catch (error) {
     console.error('Błąd pobierania aktualności:', error)
     return [valentinesEvent]

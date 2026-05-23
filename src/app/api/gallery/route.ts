@@ -3,6 +3,7 @@ import {
   GalleryCategory,
   GalleryPhoto,
 } from '@/lib/gallery'
+import { fetchAdminJson } from '@/lib/adminApi'
 import { MongoClient } from 'mongodb'
 import { NextResponse } from 'next/server'
 
@@ -45,6 +46,21 @@ const normalizeGalleryPhoto = (item: any, index: number): GalleryPhoto | null =>
 
 export async function GET() {
   try {
+    const adminItems = await fetchAdminJson<unknown[]>('/api/public/gallery')
+    if (Array.isArray(adminItems)) {
+      const adminPhotos = adminItems
+        .map(normalizeGalleryPhoto)
+        .filter((item): item is GalleryPhoto => Boolean(item))
+
+      if (adminPhotos.length > 0) {
+        return NextResponse.json(adminPhotos, {
+          headers: {
+            'Cache-Control': 'no-store',
+          },
+        })
+      }
+    }
+
     if (!process.env.MONGODB_URI) {
       return NextResponse.json(fallbackGalleryPhotos)
     }
@@ -80,4 +96,3 @@ export async function GET() {
     })
   }
 }
-
