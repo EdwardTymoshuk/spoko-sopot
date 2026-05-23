@@ -14,7 +14,7 @@ import {
   FiArrowLeft,
   FiCalendar,
   FiClock,
-  FiExternalLink,
+  FiMail,
   FiPhoneCall,
 } from 'react-icons/fi'
 import NewsEntryGallery from './NewsEntryGallery'
@@ -80,7 +80,7 @@ const NewsDetailsPage = async ({ params }: NewsDetailsPageProps) => {
   return (
     <MainContainer className="pt-14 pb-24">
       <section className="pt-6 md:pt-12 lg:pt-14">
-        <MaxWidthWrapper className="max-w-7xl">
+        <MaxWidthWrapper className="max-w-screen-2xl">
           <Link
             href="/news"
             className="inline-flex items-center gap-2 text-sm font-semibold text-zinc-500 transition hover:text-primary"
@@ -89,7 +89,7 @@ const NewsDetailsPage = async ({ params }: NewsDetailsPageProps) => {
             Wróć do aktualności
           </Link>
 
-          <header className="mt-10 max-w-5xl border-b border-zinc-200 pb-10">
+          <header className="mt-10 border-b border-zinc-200 pb-10">
             <div className="flex flex-wrap items-center gap-3">
               <span className="text-xs font-semibold uppercase tracking-[0.22em] text-primary">
                 Aktualności
@@ -123,8 +123,8 @@ const NewsDetailsPage = async ({ params }: NewsDetailsPageProps) => {
             </div>
           </header>
 
-          <div className="grid gap-10 py-10 md:py-14 lg:grid-cols-[minmax(0,1fr)_320px]">
-            <div className="min-w-0 max-w-5xl">
+          <div className="grid gap-10 py-10 md:py-14 lg:grid-cols-[minmax(0,1fr)_320px] xl:grid-cols-[minmax(0,1fr)_340px] 2xl:gap-14">
+            <div className="min-w-0">
               <article>
                 <div
                   className="text-base leading-relaxed text-zinc-600 [&_a]:font-semibold [&_a]:text-secondary [&_a]:transition [&_a:hover]:text-primary [&_h2]:mb-4 [&_h2]:text-3xl [&_h2]:font-semibold [&_h2]:text-zinc-950 [&_h3]:text-2xl [&_h3]:font-semibold [&_h3]:text-zinc-950 [&_li]:mb-2 [&_p]:mb-6 [&_section]:space-y-8 [&_strong]:text-zinc-950"
@@ -158,8 +158,8 @@ const NewsDetailsPage = async ({ params }: NewsDetailsPageProps) => {
                 Chcesz dopytać o szczegóły?
               </h2>
               <p className="mt-3 text-sm leading-relaxed text-zinc-500">
-                Skontaktuj się z nami telefonicznie albo sprawdź formularz
-                rezerwacji przyjęć.
+                Skontaktuj się z nami telefonicznie albo napisz wiadomość,
+                jeśli chcesz ustalić szczegóły.
               </p>
 
               <div className="mt-6 grid gap-3">
@@ -178,12 +178,10 @@ const NewsDetailsPage = async ({ params }: NewsDetailsPageProps) => {
                   className="h-11 gap-2 rounded-lg border-zinc-300 text-sm font-semibold text-secondary hover:border-primary hover:text-primary"
                 >
                   <a
-                    href="https://spokosopot.pl/reservation"
-                    target="_blank"
-                    rel="noreferrer"
+                    href={`mailto:info@spokosopot.pl?subject=${encodeURIComponent(`Pytanie o wydarzenie: ${item.title}`)}`}
                   >
-                    Formularz rezerwacji
-                    <FiExternalLink className="h-4 w-4" />
+                    <FiMail className="h-4 w-4" />
+                    Napisz
                   </a>
                 </Button>
               </div>

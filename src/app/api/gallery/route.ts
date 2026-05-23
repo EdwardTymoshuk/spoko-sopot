@@ -44,6 +44,17 @@ const normalizeGalleryPhoto = (item: any, index: number): GalleryPhoto | null =>
   }
 }
 
+const mergePhotos = (photos: GalleryPhoto[]) => {
+  const seen = new Set<string>()
+
+  return photos.filter((photo) => {
+    const key = photo.src || photo.id
+    if (seen.has(key)) return false
+    seen.add(key)
+    return true
+  })
+}
+
 export async function GET() {
   try {
     const adminItems = await fetchAdminJson<unknown[]>('/api/public/gallery')
@@ -53,7 +64,7 @@ export async function GET() {
         .filter((item): item is GalleryPhoto => Boolean(item))
 
       if (adminPhotos.length > 0) {
-        return NextResponse.json(adminPhotos, {
+        return NextResponse.json(mergePhotos([...adminPhotos, ...fallbackGalleryPhotos]), {
           headers: {
             'Cache-Control': 'no-store',
           },

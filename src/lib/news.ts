@@ -165,6 +165,16 @@ export const sortNewsItems = (items: NewsItem[]) =>
     return bDate - aDate
   })
 
+const mergeNewsItems = (items: NewsItem[]) => {
+  const bySlug = new Map<string, NewsItem>()
+
+  items.forEach((item) => {
+    bySlug.set(item.slug || item.id, item)
+  })
+
+  return sortNewsItems(Array.from(bySlug.values()))
+}
+
 const getAdminNewsItems = async () => {
   const items = await fetchAdminJson<unknown[]>('/api/public/news')
   if (!Array.isArray(items)) return []
@@ -189,7 +199,9 @@ const getLegacyNewsItems = async () => {
 export async function getNewsItems(): Promise<NewsItem[]> {
   try {
     const adminNews = await getAdminNewsItems()
-    if (adminNews.length > 0) return adminNews
+    if (adminNews.length > 0) {
+      return mergeNewsItems([...adminNews, valentinesEvent])
+    }
 
     return getLegacyNewsItems()
   } catch (error) {

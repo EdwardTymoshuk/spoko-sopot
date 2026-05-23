@@ -24,6 +24,20 @@ const categories: Array<{ id: 'all' | GalleryCategory; label: string }> = [
   { id: 'details', label: galleryCategoryLabels.details },
 ]
 
+const withNaturalDimensions = async (photo: GalleryPhoto): Promise<GalleryPhoto> =>
+  new Promise((resolve) => {
+    const image = new window.Image()
+    image.onload = () => {
+      resolve({
+        ...photo,
+        width: image.naturalWidth || photo.width,
+        height: image.naturalHeight || photo.height,
+      })
+    }
+    image.onerror = () => resolve(photo)
+    image.src = photo.src
+  })
+
 const GalleryPage = () => {
   const [photos, setPhotos] = useState<GalleryPhoto[]>(fallbackGalleryPhotos)
   const [activeCategory, setActiveCategory] = useState<'all' | GalleryCategory>(
@@ -43,7 +57,12 @@ const GalleryPage = () => {
 
         if (!isMounted) return
 
-        setPhotos(Array.isArray(data) && data.length > 0 ? data : fallbackGalleryPhotos)
+        const nextPhotos = Array.isArray(data) && data.length > 0 ? data : fallbackGalleryPhotos
+        const photosWithDimensions = await Promise.all(
+          nextPhotos.map((photo) => withNaturalDimensions(photo))
+        )
+
+        setPhotos(photosWithDimensions)
       } catch (error) {
         console.error('Błąd pobierania galerii:', error)
         if (isMounted) setPhotos(fallbackGalleryPhotos)

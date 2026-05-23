@@ -3,6 +3,7 @@
 import type { NewsGalleryImage } from '@/lib/news'
 import Image from 'next/image'
 import 'photoswipe/dist/photoswipe.css'
+import { useEffect, useState } from 'react'
 import { Gallery, Item } from 'react-photoswipe-gallery'
 
 interface NewsEntryGalleryProps {
@@ -10,6 +11,40 @@ interface NewsEntryGalleryProps {
 }
 
 const NewsEntryGallery = ({ images }: NewsEntryGalleryProps) => {
+  const [items, setItems] = useState(images)
+
+  useEffect(() => {
+    let isMounted = true
+
+    const loadDimensions = async () => {
+      const nextItems = await Promise.all(
+        images.map(
+          (item) =>
+            new Promise<NewsGalleryImage>((resolve) => {
+              const image = new window.Image()
+              image.onload = () => {
+                resolve({
+                  ...item,
+                  width: image.naturalWidth || item.width,
+                  height: image.naturalHeight || item.height,
+                })
+              }
+              image.onerror = () => resolve(item)
+              image.src = item.src
+            })
+        )
+      )
+
+      if (isMounted) setItems(nextItems)
+    }
+
+    loadDimensions()
+
+    return () => {
+      isMounted = false
+    }
+  }, [images])
+
   if (images.length <= 1) {
     return null
   }
@@ -17,7 +52,7 @@ const NewsEntryGallery = ({ images }: NewsEntryGalleryProps) => {
   return (
     <Gallery>
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-        {images.map((image, index) => (
+        {items.map((image, index) => (
           <Item
             key={`${image.src}-${index}`}
             original={image.src}
