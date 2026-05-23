@@ -79,7 +79,7 @@ const NewsDetailsPage = async ({ params }: NewsDetailsPageProps) => {
 
   return (
     <MainContainer className="pt-14 pb-24">
-      <section className="pt-6 md:pt-12 lg:pt-14">
+      <section className="w-full pt-6 md:pt-12 lg:pt-14">
         <MaxWidthWrapper className="max-w-screen-2xl">
           <Link
             href="/news"
