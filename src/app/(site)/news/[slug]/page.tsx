@@ -175,7 +175,7 @@ const NewsDetailsPage = async ({ params }: NewsDetailsPageProps) => {
                 <Button
                   asChild
                   variant="outline"
-                  className="h-11 gap-2 rounded-lg border-zinc-300 text-sm font-semibold text-secondary hover:border-primary hover:text-primary"
+                  className="h-11 gap-2 rounded-lg border-zinc-300 text-sm font-semibold text-zinc-800 hover:border-primary hover:text-zinc-950"
                 >
                   <a
                     href={`mailto:info@spokosopot.pl?subject=${encodeURIComponent(`Pytanie o wydarzenie: ${item.title}`)}`}

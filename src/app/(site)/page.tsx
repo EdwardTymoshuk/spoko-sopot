@@ -70,7 +70,7 @@ const Home: React.FC = () => {
                   asChild
                   size="lg"
                   variant="outline"
-                  className="rounded-lg border-zinc-300 px-6 font-semibold text-secondary hover:border-primary hover:text-primary"
+                  className="rounded-lg border-zinc-300 px-6 font-semibold text-zinc-800 hover:border-primary hover:text-zinc-950"
                 >
                   <Link href="/contact">Kontakt</Link>
                 </Button>
@@ -136,7 +136,7 @@ const Home: React.FC = () => {
                 asChild
                 size="lg"
                 variant="outline"
-                className="h-12 w-full justify-center gap-2.5 rounded-lg border-zinc-300 bg-transparent px-6 font-semibold text-secondary hover:border-primary hover:text-primary sm:w-72"
+                className="h-12 w-full justify-center gap-2.5 rounded-lg border-zinc-300 bg-transparent px-6 font-semibold text-zinc-800 hover:border-primary hover:text-zinc-950 sm:w-72"
               >
                 <Link href="/offer">
                   Zobacz ofertę eventową

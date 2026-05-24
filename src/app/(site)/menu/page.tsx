@@ -86,7 +86,7 @@ const MenuDocumentCard = ({ document }: { document: MenuDownloadDocument }) => (
 
     <div className="flex shrink-0 items-center gap-3 text-right">
       <a
-        href={document.url}
+        href={`/api/menu-documents/${encodeURIComponent(document.id)}?mode=preview`}
         target="_blank"
         rel="noreferrer"
         aria-label={`Podejrzyj PDF: ${document.title}`}
@@ -96,8 +96,7 @@ const MenuDocumentCard = ({ document }: { document: MenuDownloadDocument }) => (
         <span>Podgląd</span>
       </a>
       <a
-        href={document.url}
-        download={document.fileName}
+        href={`/api/menu-documents/${encodeURIComponent(document.id)}?mode=download`}
         aria-label={`Pobierz PDF: ${document.title}`}
         className="inline-flex items-center gap-1.5 text-sm font-semibold text-zinc-900 transition hover:text-primary"
       >

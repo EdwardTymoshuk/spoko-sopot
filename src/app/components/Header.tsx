@@ -89,7 +89,7 @@ const Header = () => {
           ) : (
             <Button
               asChild
-              className="h-9 gap-2 rounded-lg border border-secondary/15 bg-white/70 px-4 text-sm font-semibold text-secondary shadow-none hover:border-secondary/30 hover:bg-white"
+              className="h-9 gap-2 rounded-lg border border-zinc-300 bg-white/70 px-4 text-sm font-semibold text-zinc-800 shadow-none hover:border-primary hover:bg-white hover:text-zinc-950"
             >
               <a href="tel:+48530659666">
                 <FiPhoneCall className="h-3.5 w-3.5" />
