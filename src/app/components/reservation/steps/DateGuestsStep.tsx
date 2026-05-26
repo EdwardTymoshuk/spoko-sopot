@@ -464,7 +464,7 @@ const DateGuestsStep = () => {
             onChange={(date) => updateDraft('eventDate', date ?? null)}
           />
 
-          <div className="rounded-2xl bg-gradient-to-b from-primary/5 via-background to-background p-4 md:p-5 space-y-4">
+          <div className="rounded-2xl border border-border bg-white p-4 md:p-5 space-y-4">
             <div className="space-y-1">
               <h4 className="font-semibold">Godziny przyjęcia</h4>
               <p className="text-sm text-muted-foreground">

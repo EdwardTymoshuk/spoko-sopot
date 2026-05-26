@@ -15,7 +15,7 @@ const ThankYouStep = () => {
 
   return (
     <div className="min-h-[100dvh] md:min-h-full flex flex-col md:flex-row w-full bg-background overflow-hidden">
-      <div className="relative h-[40vh] md:h-auto md:min-h-full md:w-2/5">
+      <div className="relative h-[45vh] md:h-auto md:min-h-full md:w-1/2 shrink-0">
         <div
           className={`absolute inset-0 bg-gradient-to-br from-zinc-100 via-zinc-200/70 to-zinc-100 transition-opacity duration-500 ${
             isImageLoaded ? 'opacity-0' : 'opacity-100'
@@ -34,8 +34,8 @@ const ThankYouStep = () => {
         <div className="absolute inset-0 bg-gradient-to-t from-black/25 via-black/10 to-white/5 md:from-black/15 md:via-transparent md:to-transparent" />
       </div>
 
-      <div className="relative flex items-start md:items-center w-full md:w-3/5 px-4 sm:px-6 md:px-16 lg:px-24 py-6 md:py-0">
-        <div className="relative -mt-14 md:mt-0 bg-white rounded-xl shadow-sm md:shadow-none p-6 sm:p-8 md:p-0 max-w-xl space-y-7">
+      <div className="relative flex items-start md:items-center w-full md:w-1/2 px-6 sm:px-10 md:px-14 lg:px-20 py-6 md:py-0">
+        <div className="relative -mt-12 md:mt-0 bg-white md:bg-transparent rounded-xl md:rounded-none shadow-sm md:shadow-none p-6 sm:p-8 md:p-0 w-full max-w-lg space-y-7">
           <h2 className="text-3xl sm:text-4xl md:text-5xl font-serif leading-tight">
             Dziękujemy za zgłoszenie
           </h2>

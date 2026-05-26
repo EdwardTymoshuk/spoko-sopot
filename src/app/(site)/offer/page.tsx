@@ -6,7 +6,9 @@ import PageHeaderContainer from '@/app/components/PageHeaderComponent'
 import { Button } from '@/app/components/ui/button'
 import { Separator } from '@/app/components/ui/separator'
 import Image from 'next/image'
+import Link from 'next/link'
 import { FiCalendar, FiMail, FiPhoneCall } from 'react-icons/fi'
+import { HiArrowRight } from 'react-icons/hi2'
 
 const ReservationLandingPage = () => {
   return (
@@ -50,7 +52,7 @@ const ReservationLandingPage = () => {
               sposób podania dań, aż po menu dopasowane do charakteru spotkania.
             </p>
 
-            <div className="mt-8 grid gap-6 border-y border-[#ded8cc] py-6 sm:grid-cols-3">
+            <div className="mt-8 grid gap-6 border-t border-[#ded8cc] pt-6 sm:grid-cols-3">
               {[
                 ['Menu', 'Serwowane, półmiski lub forma dopasowana do spotkania.'],
                 ['Obsługa', 'Sprawny rytm wydarzenia i opieka nad gośćmi.'],
@@ -67,6 +69,15 @@ const ReservationLandingPage = () => {
                   </p>
                 </div>
               ))}
+            </div>
+
+            <div className="mt-8 pt-2">
+              <Button asChild size="lg" className="px-8 py-6 text-base gap-2">
+                <Link href="/reservation?step=welcome">
+                  Rezerwuj przyjęcie
+                  <HiArrowRight className="text-lg" />
+                </Link>
+              </Button>
             </div>
           </div>
         </section>

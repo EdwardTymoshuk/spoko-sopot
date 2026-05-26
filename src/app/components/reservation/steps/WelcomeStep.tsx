@@ -17,7 +17,7 @@ const WelcomeStep = () => {
   return (
     <div className="h-[100dvh] md:h-full flex flex-col md:flex-row w-full bg-background overflow-hidden">
       {/* IMAGE */}
-      <div className="relative h-[40vh] md:h-auto md:w-2/5">
+      <div className="relative h-[45vh] md:h-auto md:w-1/2 shrink-0">
         <Image
           fill
           src="/img/offer/reservation-welcome.webp"
@@ -25,14 +25,13 @@ const WelcomeStep = () => {
           className="object-cover"
           priority
         />
-        {/* subtle overlay for mobile */}
         <div className="absolute inset-0 bg-black/10 md:hidden" />
       </div>
 
       {/* CONTENT */}
-      <div className="relative flex items-start md:items-center w-full md:w-3/5 px-4 sm:px-6 md:px-16 lg:px-24">
+      <div className="relative flex items-start md:items-center w-full md:w-1/2 px-6 sm:px-10 md:px-14 lg:px-20">
         {/* Card */}
-        <div className="relative -mt-16 md:mt-0 bg-white rounded-xl shadow-sm md:shadow-none p-6 sm:p-8 md:p-0 max-w-xl space-y-8">
+        <div className="relative -mt-12 md:mt-0 bg-white md:bg-transparent rounded-xl md:rounded-none shadow-sm md:shadow-none p-6 sm:p-8 md:p-0 w-full max-w-lg space-y-8">
           {/* Heading */}
           <h1 className="text-3xl sm:text-4xl md:text-5xl font-serif leading-tight">
             Zaplanujmy Twoje wydarzenie krok po kroku
