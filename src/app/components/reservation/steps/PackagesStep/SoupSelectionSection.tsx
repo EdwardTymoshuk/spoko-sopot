@@ -19,7 +19,7 @@ const SoupSelectionSection = ({ packageType }: Props) => {
   const value = draft.wantsSoup === false ? 'none' : draft.soupChoice ?? ''
 
   return (
-    <div className="rounded-2xl border bg-muted/40 p-6 space-y-5">
+    <div className="rounded-2xl border bg-white p-6 space-y-5">
       {/* HEADER */}
       <div>
         <h3 className="text-lg font-semibold">Zupa (250 ml)</h3>

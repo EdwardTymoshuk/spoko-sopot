@@ -46,12 +46,12 @@ const PackageExtension = () => {
 
       <label
         className={`
-          flex items-center gap-4 p-5 rounded-xl border bg-muted/40 
+          flex items-center gap-4 p-5 rounded-xl border bg-white
           transition
           ${
             isDisabled
               ? 'opacity-50 cursor-not-allowed'
-              : 'cursor-pointer hover:bg-muted'
+              : 'cursor-pointer hover:bg-zinc-50'
           }
         `}
       >

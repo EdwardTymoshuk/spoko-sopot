@@ -39,7 +39,7 @@ const PackageDetails = ({ pkg }: Props) => {
   const titles = SECTION_TITLES[type]
 
   return (
-    <section className="rounded-2xl border bg-muted/40 p-8">
+    <section className="rounded-2xl border bg-white p-8">
       <h3 className="mb-10 text-2xl font-semibold">
         Szczegóły pakietu {title}
       </h3>

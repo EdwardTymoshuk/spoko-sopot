@@ -183,7 +183,7 @@ const TimeSelect = ({
           type="button"
           disabled={disabled}
           className={cn(
-            'flex h-12 w-full items-center justify-between rounded-xl border border-border/80 bg-background px-3 pr-9 text-sm shadow-sm transition-colors',
+            'flex h-12 w-full items-center justify-between rounded-xl border border-border/80 bg-white px-3 pr-9 text-sm shadow-sm transition-colors',
             'relative text-left',
             disabled && 'cursor-not-allowed opacity-50',
             !disabled && 'hover:border-primary/50 focus:outline-none focus:ring-2 focus:ring-primary/30',
@@ -656,7 +656,7 @@ const DateGuestsStep = () => {
                 </div>
 
                 {draft.childrenMenuOption === 'kids_menu' && (
-                  <div className="rounded-xl border bg-muted/30 p-4">
+                  <div className="rounded-xl border bg-white p-4">
                     <p className="text-sm font-medium mb-2">
                       Proponowane menu dziecięce:
                     </p>

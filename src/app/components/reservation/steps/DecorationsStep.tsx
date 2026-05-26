@@ -29,7 +29,7 @@ const DecorationsStep = () => {
           </div>
 
           {/* Included items */}
-          <div className="rounded-2xl border border-primary/20 bg-gradient-to-b from-primary/5 to-background overflow-hidden">
+          <div className="rounded-2xl border border-primary/20 bg-white overflow-hidden">
             <div className="border-b border-primary/15 px-5 py-3.5">
               <p className="inline-flex items-center gap-2 text-sm font-semibold text-primary">
                 <Sparkles className="h-4 w-4" />

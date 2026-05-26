@@ -50,7 +50,7 @@ const PackageCard = ({
       onClick={onSelect}
       className={cn(
         'relative flex cursor-pointer flex-col gap-6 rounded-2xl border-2 p-6 transition-all',
-        'bg-background',
+        'bg-white',
         !selected && 'hover:border-primary-foreground/50',
         selected && 'shadow-sm',
         selected && isSilver && 'border-slate-400 ring-2 ring-slate-300/60',

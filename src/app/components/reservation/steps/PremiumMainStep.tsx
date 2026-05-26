@@ -236,7 +236,7 @@ const PremiumMainStep = () => {
             </div>
           ))}
 
-          <div className="rounded-lg border bg-muted/30 p-3 text-sm text-muted-foreground">
+          <div className="rounded-lg border bg-white p-3 text-sm text-muted-foreground">
             Dodatki dobieramy do finalnego układu menu i liczby gości.
           </div>
         </Card>

@@ -150,7 +150,7 @@ const HallExclusivityStep = () => {
 
         <div className="overflow-x-auto rounded-lg border">
           <table className="w-full min-w-[540px] text-sm">
-            <thead className="bg-muted/40">
+            <thead className="bg-zinc-50">
               <tr>
                 <th className="px-4 py-2 text-left font-semibold">Dzień</th>
                 <th className="px-4 py-2 text-left font-semibold">Godziny</th>
@@ -249,7 +249,7 @@ const HallExclusivityStep = () => {
 
         {draft.hallExclusivity === 'yes' && (
           <div className="space-y-4 border-t pt-4">
-            <div className="rounded-lg border bg-muted/25 p-4 space-y-2">
+            <div className="rounded-lg border bg-white p-4 space-y-2">
               <p className="text-sm text-muted-foreground">Godziny przyjęcia</p>
               <p className="font-medium">
                 {draft.eventStartTime && draft.eventEndTime
