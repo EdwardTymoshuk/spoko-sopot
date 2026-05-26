@@ -155,7 +155,7 @@ const ReservationSummaryContent = () => {
   return (
     <div className="flex flex-col max-h-[inherit]">
       {/* Sticky header */}
-      <div className="shrink-0 px-6 pt-6 pb-4 bg-background">
+      <div className="shrink-0 px-6 pt-6 pb-4 bg-inherit">
         <p className="text-lg font-semibold">Podsumowanie</p>
         <Separator className="mt-4" />
       </div>
@@ -308,7 +308,7 @@ const ReservationSummaryContent = () => {
               <span className="font-medium">+{coldPlateTotal} zł</span>
             </div>
 
-            <div className="space-y-1 rounded-lg border bg-muted/20 px-3 py-2">
+            <div className="space-y-1 rounded-lg border bg-white px-3 py-2">
               {selectedColdPlateSets.map((set) => (
                 <div
                   key={set.id}
@@ -354,7 +354,7 @@ const ReservationSummaryContent = () => {
               </span>
             </div>
 
-            <div className="space-y-1 rounded-lg border bg-muted/20 px-3 py-2">
+            <div className="space-y-1 rounded-lg border bg-white px-3 py-2">
               {selectedPremiumMainPlatters.map((platter) => (
                 <div
                   key={platter.id}
@@ -400,7 +400,7 @@ const ReservationSummaryContent = () => {
               <span className="font-medium">+{dessertsTotal} zł</span>
             </div>
 
-            <div className="space-y-1 rounded-lg border bg-muted/20 px-3 py-2">
+            <div className="space-y-1 rounded-lg border bg-white px-3 py-2">
               {selectedDesserts.map((option) => (
                 <div
                   key={option.id}
@@ -428,7 +428,7 @@ const ReservationSummaryContent = () => {
               <span className="font-medium">+{softDrinksTotal} zł</span>
             </div>
 
-            <div className="space-y-1 rounded-lg border bg-muted/20 px-3 py-2">
+            <div className="space-y-1 rounded-lg border bg-white px-3 py-2">
               {selectedSoftDrinks.map((option) => (
                 <div
                   key={option.id}
@@ -456,7 +456,7 @@ const ReservationSummaryContent = () => {
               <span className="font-medium">+{alcoholTotal} zł</span>
             </div>
 
-            <div className="space-y-1 rounded-lg border bg-muted/20 px-3 py-2">
+            <div className="space-y-1 rounded-lg border bg-white px-3 py-2">
               {selectedAlcohols.map((option) => (
                 <div
                   key={option.id}
@@ -516,7 +516,7 @@ const ReservationSummaryContent = () => {
       </div>{/* end scrollable body */}
 
       {/* Sticky footer — total */}
-      <div className="shrink-0 px-6 pb-6 bg-background">
+      <div className="shrink-0 px-6 pb-6 bg-inherit">
         <Separator className="mb-4" />
         <div className="flex items-center justify-between">
           <span className="text-sm text-zinc-500">Suma orientacyjna</span>

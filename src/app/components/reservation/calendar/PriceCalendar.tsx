@@ -113,6 +113,7 @@ const PriceCalendar = ({ value, onChange, availability }: Props) => {
             className="
               w-full
               mx-auto
+              bg-white
               [--cell-size:2.15rem]
               sm:[--cell-size:2.55rem]
               md:[--cell-size:4rem]
