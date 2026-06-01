@@ -7,7 +7,7 @@ import { ReservationDraftProvider } from '@/app/utils/hooks/reservation/Reservat
 import { RESERVATION_STEPS } from '@/lib/consts'
 import { cn } from '@/lib/utils'
 import { useSearchParams } from 'next/navigation'
-import { ReactNode, useRef } from 'react'
+import { ReactNode, useEffect, useRef } from 'react'
 
 const ReservationWizardLayoutClient = ({
   children,
@@ -24,9 +24,19 @@ const ReservationWizardLayoutClient = ({
   const isWizardStep =
     step !== null && RESERVATION_STEPS.some((s) => s.key === step)
 
+  useEffect(() => {
+    document.documentElement.classList.add('reservation-wizard-lock')
+    document.body.classList.add('reservation-wizard-lock')
+
+    return () => {
+      document.documentElement.classList.remove('reservation-wizard-lock')
+      document.body.classList.remove('reservation-wizard-lock')
+    }
+  }, [])
+
   return (
     <ReservationDraftProvider>
-      <div className="flex h-[100dvh] max-h-[100dvh] min-h-0 flex-col overflow-hidden bg-background md:h-screen md:max-h-screen">
+      <div className="fixed inset-0 flex h-[100dvh] max-h-[100dvh] min-h-0 w-full flex-col overflow-hidden bg-background md:h-screen md:max-h-screen">
         {isWizardStep && !isThankYouStep && (
           <header className="z-40 shrink-0 border-b bg-secondary">
             <div className="mx-auto px-4 py-4">

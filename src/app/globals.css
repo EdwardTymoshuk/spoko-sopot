@@ -81,6 +81,19 @@
     font-family: 'Unbounded', sans-serif;
   }
 
+  html.reservation-wizard-lock,
+  body.reservation-wizard-lock {
+    height: 100%;
+    overflow: hidden;
+    overscroll-behavior: none;
+  }
+
+  body.reservation-wizard-lock {
+    position: fixed;
+    inset: 0;
+    width: 100%;
+  }
+
   h1,
   h2,
   h3,
