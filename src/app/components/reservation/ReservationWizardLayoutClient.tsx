@@ -41,15 +41,20 @@ const ReservationWizardLayoutClient = ({
             `
     flex-1
     min-h-0
-    overflow-y-auto
-    overscroll-contain
-  `,
+            overflow-y-auto
+            overscroll-contain
+          `,
             isWelcomeStep || isThankYouStep
-              ? 'overflow-y-hidden'
+              ? 'overflow-y-auto md:overflow-y-hidden'
               : 'pb-[4.5rem] md:pb-0'
           )}
         >
-          <MainContainer className="h-full !min-h-0">
+          <MainContainer
+            className={cn(
+              '!min-h-0',
+              isWelcomeStep || isThankYouStep ? 'md:h-full' : 'h-full'
+            )}
+          >
             <div
               className={cn(
                 'mx-auto w-full md:flex md:justify-center',

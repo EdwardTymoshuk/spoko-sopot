@@ -6,11 +6,15 @@ const Footer = () => {
 		<footer className='bg-secondary text-text-primary py-8'>
 			<div className='px-8 flex justify-center'>
 				<Link href='/'>
-					<img
-						src='/img/logo-spoko-2.png'
-						alt='Spoko Restaurant Logo'
-						className='h-auto w-36'
+					<span
+						aria-hidden='true'
+						className='block h-16 w-36 bg-white'
+						style={{
+							WebkitMask: "url('/img/logo-spoko.svg') center / contain no-repeat",
+							mask: "url('/img/logo-spoko.svg') center / contain no-repeat",
+						}}
 					/>
+					<span className='sr-only'>Spoko Sopot</span>
 				</Link>
 			</div>
 			<div className='container mx-auto flex flex-col justify-between items-center gap-4'>
