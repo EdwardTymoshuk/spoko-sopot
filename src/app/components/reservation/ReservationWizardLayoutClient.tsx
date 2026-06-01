@@ -26,9 +26,9 @@ const ReservationWizardLayoutClient = ({
 
   return (
     <ReservationDraftProvider>
-      <div className="h-[100svh] min-h-[100svh] md:h-screen flex flex-col bg-background overflow-hidden">
+      <div className="flex h-[100dvh] max-h-[100dvh] min-h-0 flex-col overflow-hidden bg-background md:h-screen md:max-h-screen">
         {isWizardStep && !isThankYouStep && (
-          <header className="shrink-0 sticky top-0 z-40 bg-secondary border-b">
+          <header className="z-40 shrink-0 border-b bg-secondary">
             <div className="mx-auto px-4 py-4">
               <ReservationProgress />
             </div>
@@ -38,15 +38,10 @@ const ReservationWizardLayoutClient = ({
         <div
           ref={viewportRef}
           className={cn(
-            `
-    flex-1
-    min-h-0
-            overflow-y-auto
-            overscroll-contain
-          `,
+            'min-h-0 flex-1 overflow-y-auto overscroll-contain',
             isWelcomeStep || isThankYouStep
-              ? 'overflow-y-auto md:overflow-y-hidden'
-              : 'pb-[4.5rem] md:pb-0'
+              ? 'md:overflow-y-hidden'
+              : ''
           )}
         >
           <MainContainer
@@ -69,7 +64,7 @@ const ReservationWizardLayoutClient = ({
         </div>
 
         {isWizardStep && !isThankYouStep && (
-          <footer className="fixed inset-x-0 bottom-0 z-40 md:static md:inset-auto">
+          <footer className="z-40 shrink-0">
             <BottomWizardBar />
           </footer>
         )}
