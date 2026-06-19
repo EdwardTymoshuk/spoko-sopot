@@ -15,16 +15,26 @@ export async function GET() {
       },
     })
 
-    const response = NextResponse.json(
-      menuItems.sort((a, b) => {
-        const categoryDiff =
-          getMenuCategorySortIndex(a.category) -
-          getMenuCategorySortIndex(b.category)
+    const sortedItems = menuItems.sort((a, b) => {
+      const categoryDiff =
+        getMenuCategorySortIndex(a.category) -
+        getMenuCategorySortIndex(b.category)
 
-        if (categoryDiff !== 0) return categoryDiff
-        return a.name.localeCompare(b.name, 'pl')
-      })
-    )
+      if (categoryDiff !== 0) return categoryDiff
+      return a.name.localeCompare(b.name, 'pl')
+    })
+
+    const latestUpdatedAt = sortedItems.reduce<Date | null>((latest, item) => {
+      const updatedAt =
+        item.updatedAt instanceof Date ? item.updatedAt : new Date(item.updatedAt)
+      if (Number.isNaN(updatedAt.getTime())) return latest
+      return !latest || updatedAt > latest ? updatedAt : latest
+    }, null)
+
+    const response = NextResponse.json({
+      items: sortedItems,
+      updatedAt: latestUpdatedAt?.toISOString() ?? null,
+    })
 
     response.headers.set('Cache-Control', 'no-cache, no-store, must-revalidate')
     response.headers.set(

@@ -28,6 +28,19 @@ const priceFormatter = new Intl.NumberFormat('pl-PL', {
   maximumFractionDigits: 0,
 })
 
+const formatMenuUpdatedAt = (value: string | null) => {
+  if (!value) return null
+
+  const date = new Date(value)
+  if (Number.isNaN(date.getTime())) return null
+
+  return new Intl.DateTimeFormat('pl-PL', {
+    dateStyle: 'long',
+    timeStyle: 'short',
+    timeZone: 'Europe/Warsaw',
+  }).format(date)
+}
+
 const groupItemsByCategory = (
   items: MenuItemType[],
   categories: readonly string[]
@@ -203,6 +216,7 @@ const MenuSection = ({ section }: { section: PublicMenuSection }) => (
 
 const MenuPage = () => {
   const [menuDocuments, setMenuDocuments] = useState<MenuDownloadDocument[]>([])
+  const [menuUpdatedAt, setMenuUpdatedAt] = useState<string | null>(null)
   const [items, setItems] = useState<MenuItemType[]>([])
   const [isLoading, setIsLoading] = useState(true)
 
@@ -218,19 +232,31 @@ const MenuPage = () => {
           }),
         ])
 
-        const [nextItems, nextDocuments] = await Promise.all([
+        const [nextItemsPayload, nextDocuments] = await Promise.all([
           itemsResponse.ok ? itemsResponse.json() : Promise.resolve([]),
           documentsResponse.ok ? documentsResponse.json() : Promise.resolve([]),
         ])
 
         if (!isMounted) return
 
-        setItems(Array.isArray(nextItems) ? nextItems : [])
+        const nextItems = Array.isArray(nextItemsPayload)
+          ? nextItemsPayload
+          : Array.isArray(nextItemsPayload?.items)
+            ? nextItemsPayload.items
+            : []
+        const nextMenuUpdatedAt =
+          !Array.isArray(nextItemsPayload) && typeof nextItemsPayload?.updatedAt === 'string'
+            ? nextItemsPayload.updatedAt
+            : null
+
+        setItems(nextItems)
+        setMenuUpdatedAt(nextMenuUpdatedAt)
         setMenuDocuments(Array.isArray(nextDocuments) ? nextDocuments : [])
       } catch (error) {
         console.error('Error fetching public menu:', error)
         if (isMounted) {
           setItems([])
+          setMenuUpdatedAt(null)
           setMenuDocuments([])
         }
       } finally {
@@ -246,6 +272,7 @@ const MenuPage = () => {
   }, [])
 
   const sections = useMemo(() => buildMenuSections(items), [items])
+  const formattedMenuUpdatedAt = formatMenuUpdatedAt(menuUpdatedAt)
 
   return (
     <MainContainer className="pt-14 pb-8">
@@ -260,10 +287,17 @@ const MenuPage = () => {
         {menuDocuments.length > 0 ? (
           <section className="-mt-3 border-y border-zinc-300/80 py-4">
             <div className="grid gap-4 lg:grid-cols-[1fr_auto] lg:items-center">
-              <p className="text-sm text-zinc-500">
-                Wolisz przejrzeć klasyczną kartę? Dostępna jest także wersja
-                PDF.
-              </p>
+              <div className="space-y-1">
+                <p className="text-sm text-zinc-500">
+                  Wolisz przejrzeć klasyczną kartę? Dostępna jest także wersja
+                  PDF.
+                </p>
+                {formattedMenuUpdatedAt ? (
+                  <p className="text-xs text-zinc-400">
+                    Menu zaktualizowane: {formattedMenuUpdatedAt}
+                  </p>
+                ) : null}
+              </div>
               <div className="grid gap-3 lg:flex lg:flex-wrap lg:justify-end lg:gap-x-8 lg:gap-y-3">
                 {menuDocuments.map((document) => (
                   <MenuDocumentCard key={document.id} document={document} />
@@ -271,6 +305,12 @@ const MenuPage = () => {
               </div>
             </div>
           </section>
+        ) : null}
+
+        {formattedMenuUpdatedAt && menuDocuments.length === 0 ? (
+          <p className="-mt-6 text-center text-xs text-zinc-400">
+            Menu zaktualizowane: {formattedMenuUpdatedAt}
+          </p>
         ) : null}
 
         {sections.length > 0 ? (
