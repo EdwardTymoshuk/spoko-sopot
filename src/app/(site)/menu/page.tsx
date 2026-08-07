@@ -3,6 +3,13 @@
 import MaxWidthWrapper from '@/app/components/MaxWidthWrapper'
 import MainContainer from '@/app/components/MainContainer'
 import PageHeaderContainer from '@/app/components/PageHeaderComponent'
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogTitle,
+  DialogTrigger,
+} from '@/app/components/ui/dialog'
 import { MenuDownloadDocument, MenuItemType, MenuOptionGroup } from '@/app/types'
 import {
   drinkMenuItemCategories,
@@ -162,11 +169,32 @@ const MenuItemRow = ({ item }: { item: MenuItemType }) => (
   <li className="py-4">
     <div className="flex items-start gap-4">
       {item.image ? (
-        <span
-          aria-hidden="true"
-          className="mt-1 size-16 shrink-0 rounded-md bg-cover bg-center shadow-sm"
-          style={{ backgroundImage: `url(${item.image})` }}
-        />
+        <Dialog>
+          <DialogTrigger asChild>
+            <button
+              type="button"
+              aria-label={`Pokaż większe zdjęcie: ${item.name}`}
+              className="mt-1 size-16 shrink-0 cursor-zoom-in rounded-md bg-cover bg-center shadow-sm transition hover:opacity-85"
+              style={{ backgroundImage: `url(${item.image})` }}
+            />
+          </DialogTrigger>
+          <DialogContent className="max-w-3xl overflow-hidden p-0">
+            <div
+              role="img"
+              aria-label={item.name}
+              className="aspect-[4/3] w-full bg-cover bg-center bg-no-repeat"
+              style={{ backgroundImage: `url(${item.image})` }}
+            />
+            <div className="space-y-1 px-5 pb-5 pt-4">
+              <DialogTitle className="font-serif text-2xl text-zinc-950">
+                {item.name}
+              </DialogTitle>
+              <DialogDescription className="text-sm text-zinc-500">
+                {item.category} · {priceFormatter.format(item.price)}
+              </DialogDescription>
+            </div>
+          </DialogContent>
+        </Dialog>
       ) : null}
       <div className="min-w-0 flex-1">
         <div className="flex items-baseline gap-3">
