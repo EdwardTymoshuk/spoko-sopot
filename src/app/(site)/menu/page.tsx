@@ -3,7 +3,7 @@
 import MaxWidthWrapper from '@/app/components/MaxWidthWrapper'
 import MainContainer from '@/app/components/MainContainer'
 import PageHeaderContainer from '@/app/components/PageHeaderComponent'
-import { MenuDownloadDocument, MenuItemType } from '@/app/types'
+import { MenuDownloadDocument, MenuItemType, MenuOptionGroup } from '@/app/types'
 import {
   drinkMenuItemCategories,
   foodMenuItemCategories,
@@ -39,6 +39,14 @@ const formatMenuUpdatedAt = (value: string | null) => {
     timeStyle: 'short',
     timeZone: 'Europe/Warsaw',
   }).format(date)
+}
+
+const getOptionGroups = (value: MenuItemType['optionGroups']): MenuOptionGroup[] => {
+  if (!Array.isArray(value)) return []
+  return value.filter(
+    (group): group is MenuOptionGroup =>
+      Boolean(group?.name) && Array.isArray(group.options) && group.options.length > 0
+  )
 }
 
 const groupItemsByCategory = (
@@ -174,6 +182,27 @@ const MenuItemRow = ({ item }: { item: MenuItemType }) => (
           <p className="mt-2 max-w-3xl text-sm leading-6 text-zinc-500">
             {item.description}
           </p>
+        ) : null}
+        {getOptionGroups(item.optionGroups).length > 0 ? (
+          <div className="mt-3 space-y-2 border-l-2 border-amber-500/35 pl-3">
+            {getOptionGroups(item.optionGroups).map((group) => (
+              <div key={group.name}>
+                <p className="text-xs font-semibold uppercase tracking-[0.12em] text-zinc-500">
+                  {group.name}{group.required ? ' · wybór' : ''}
+                </p>
+                <div className="mt-1 flex flex-wrap gap-x-4 gap-y-1 text-sm text-zinc-700">
+                  {group.options.map((option) => (
+                    <span key={`${group.name}-${option.label}`}>
+                      {option.label}{' '}
+                      <strong className="font-semibold text-zinc-900">
+                        {priceFormatter.format(option.price)}
+                      </strong>
+                    </span>
+                  ))}
+                </div>
+              </div>
+            ))}
+          </div>
         ) : null}
       </div>
     </div>

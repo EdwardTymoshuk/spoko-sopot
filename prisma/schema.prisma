@@ -21,6 +21,7 @@ model MenuItem {
   isOrderable   Boolean  @default(false)
   isOnMainPage  Boolean  @default(false)
   isArchived    Boolean  @default(false)
+  optionGroups  Json?
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
 }

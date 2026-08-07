@@ -54,17 +54,21 @@ export type MenuItemCategory =
   | 'Piwo bezalkoholowe'
   | 'Piwo beczkowe'
   | 'Piwo smakowe'
+  | 'Regionalne'
   | 'Wina Białe'
   | 'Wina Czerwone'
   | 'Wina Musujące'
   | 'Wina Różowe'
   | 'Drinki'
+  | 'Drinki bezalkoholowe'
   | 'Whisky'
   | 'Rum'
   | 'Gin'
   | 'Tequila'
   | 'Cognac / Brandy'
+  | 'Brandy / Cognac / Likier'
   | 'Wódka'
+  | 'Nalewki'
   | 'Napoje alkoholowe'
   | 'Napoje bezalkoholowe'
   | 'Napoje łekkoprocentowe'
@@ -83,6 +87,16 @@ export interface MenuItemType {
   isOrderable?: boolean
   createdAt: Date
   updatedAt: Date
+  optionGroups?: MenuOptionGroup[] | null
+}
+
+export interface MenuOptionGroup {
+  name: string
+  required: boolean
+  options: Array<{
+    label: string
+    price: number
+  }>
 }
 
 export interface MenuDownloadDocument {
