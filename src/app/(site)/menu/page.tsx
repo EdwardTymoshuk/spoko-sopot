@@ -89,12 +89,12 @@ const buildMenuSections = (items: MenuItemType[]): PublicMenuSection[] => {
       categories: groupItemsByCategory(normalizedItems, foodMenuItemCategories),
     },
     {
-      title: 'Napoje',
-      categories: groupItemsByCategory(normalizedItems, drinkMenuItemCategories),
+      title: 'Pozostałe dania',
+      categories: groupItemsByCategory(normalizedItems, otherCategories),
     },
     {
-      title: 'Pozostałe',
-      categories: groupItemsByCategory(normalizedItems, otherCategories),
+      title: 'Napoje',
+      categories: groupItemsByCategory(normalizedItems, drinkMenuItemCategories),
     },
   ].filter((section) => section.categories.length > 0)
 }
