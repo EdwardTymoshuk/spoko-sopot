@@ -1,3 +1,5 @@
+'use client'
+
 import Link from 'next/link'
 import { FaFacebook, FaInstagram } from 'react-icons/fa'
 import { RestaurantHoursDisplay, useRestaurantContact } from './RestaurantInfo'
