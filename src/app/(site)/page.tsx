@@ -11,8 +11,10 @@ import HeroCarousel from '../components/HeroCarousel'
 import MainContainer from '../components/MainContainer'
 import MaxWidthWrapper from '../components/MaxWidthWrapper'
 import Opinions from '../components/Opinions'
+import { RestaurantHoursDisplay, useRestaurantContact } from '../components/RestaurantInfo'
 
 const Home: React.FC = () => {
+  const restaurant = useRestaurantContact()
   return (
     <MainContainer className="w-full">
       <div className="flex flex-col w-full">
@@ -41,16 +43,15 @@ const Home: React.FC = () => {
               <div className="mt-8 grid gap-4 text-sm text-zinc-600 sm:grid-cols-2">
                 <div className="border-l border-primary/45 pl-4">
                   <p className="font-semibold text-secondary">Adres</p>
-                  <p className="mt-1 flex items-center gap-2">
-                    <FaLocationDot className="text-primary" />
-                    Hestii 3, 81-731 Sopot
+              <p className="mt-1 flex items-center gap-2">
+                <FaLocationDot className="text-primary" />
+                    {restaurant.address}
                   </p>
                 </div>
 
                 <div className="border-l border-primary/45 pl-4">
                   <p className="font-semibold text-secondary">Godziny</p>
-                  <p className="mt-1">Pon-pt: 10:00 - 19:00</p>
-                  <p>Sob-niedz: 8:00 - 19:00</p>
+                  <RestaurantHoursDisplay />
                 </div>
               </div>
 
@@ -60,7 +61,7 @@ const Home: React.FC = () => {
                   size="lg"
                   className="gap-2.5 rounded-lg bg-secondary px-6 font-semibold text-white shadow-none hover:bg-secondary/90"
                 >
-                  <a href="tel:+48530659666">
+                  <a href={`tel:${restaurant.phone.replace(/\s/g, '')}`}>
                     <FiPhoneCall className="h-4 w-4" />
                     Zarezerwuj stolik
                   </a>

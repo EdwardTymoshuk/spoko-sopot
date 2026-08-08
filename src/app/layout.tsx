@@ -1,4 +1,5 @@
 import { MenuProvider } from '@/context/MenuContext'
+import { RestaurantInfoProvider } from '@/app/components/RestaurantInfo'
 import { Analytics } from '@vercel/analytics/react'
 import type { Metadata } from 'next'
 import { Toaster } from 'sonner'
@@ -52,7 +53,9 @@ export default function RootLayout({
     <html lang="pl">
       <body>
         <MenuProvider>
-          {children}
+          <RestaurantInfoProvider>
+            {children}
+          </RestaurantInfoProvider>
           <Toaster position="top-center" richColors />
         </MenuProvider>
         <Analytics />

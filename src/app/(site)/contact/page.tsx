@@ -22,6 +22,7 @@ import { useForm } from 'react-hook-form'
 import { FiClock, FiMail, FiMapPin, FiPhoneCall, FiSend } from 'react-icons/fi'
 import { toast } from 'sonner'
 import { z } from 'zod'
+import { RestaurantHoursDisplay, useRestaurantContact } from '@/app/components/RestaurantInfo'
 
 const contactFormSchema = z.object({
   name: z
@@ -54,6 +55,7 @@ const mapEmbedUrl =
   'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3554.356080609364!2d18.58294595188907!3d54.43213053637157!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x46fd0b6edee7521f%3A0x324a244fefc976ef!2sRestauracja%20Spoko%20Sopot!5e0!3m2!1suk!2spl!4v1721160082108!5m2!1suk!2spl'
 
 const ContactPage = () => {
+  const restaurant = useRestaurantContact()
   const form = useForm<ContactFormData>({
     resolver: zodResolver(contactFormSchema),
     defaultValues: {
@@ -115,25 +117,25 @@ const ContactPage = () => {
 
             <div className="mt-8 grid gap-x-10 gap-y-6 text-sm text-zinc-600 sm:grid-cols-2">
               <a
-                href="tel:+48530659666"
+                href={`tel:${restaurant.phone.replace(/\s/g, '')}`}
                 className="border-l border-primary/45 pl-4 transition-colors hover:text-secondary"
               >
                 <p className="flex items-center gap-2 font-semibold text-secondary">
                   <FiPhoneCall className="text-primary" />
                   Telefon
                 </p>
-                <p className="mt-1">530 659 666</p>
+                <p className="mt-1">{restaurant.phone}</p>
               </a>
 
               <a
-                href="mailto:info@spokosopot.pl"
+                href={`mailto:${restaurant.email}`}
                 className="border-l border-primary/45 pl-4 transition-colors hover:text-secondary"
               >
                 <p className="flex items-center gap-2 font-semibold text-secondary">
                   <FiMail className="text-primary" />
                   Email
                 </p>
-                <p className="mt-1">info@spokosopot.pl</p>
+                <p className="mt-1">{restaurant.email}</p>
               </a>
 
               <div className="border-l border-primary/45 pl-4">
@@ -141,7 +143,7 @@ const ContactPage = () => {
                   <FiMapPin className="text-primary" />
                   Adres
                 </p>
-                <p className="mt-1">Hestii 3, 81-731 Sopot</p>
+                <p className="mt-1">{restaurant.address}</p>
               </div>
 
               <div className="border-l border-primary/45 pl-4">
@@ -149,8 +151,7 @@ const ContactPage = () => {
                   <FiClock className="text-primary" />
                   Godziny
                 </p>
-                <p className="mt-1">Pon-pt: 10:00 - 19:00</p>
-                <p>Sob-niedz: 8:00 - 19:00</p>
+                <RestaurantHoursDisplay />
               </div>
             </div>
           </div>
