@@ -52,6 +52,7 @@ export interface ReservationDraft {
   eventStartTime?: string | null
   eventEndTime?: string | null
   dateGuestsCapacityExceeded?: boolean
+  minOnlineGuests?: number
   adultsCount: number | null
   childrenUnder3Count?: number
   children3to12Count?: number

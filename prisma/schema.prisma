@@ -38,6 +38,8 @@ model Settings {
   restaurantInfo       Json    @default("{}")
   openingHours         Json    @default("[]")
   openingHourOverrides Json    @default("[]")
+  reservationCapacity  Int     @default(40)
+  reservationMinGuests Int     @default(12)
 }
 
 // ─── Reservation domain ───────────────────────────────────────────────────────

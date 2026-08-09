@@ -5,7 +5,8 @@ export const dynamic = 'force-dynamic'
 export const fetchCache = 'force-no-store'
 export const revalidate = 0
 
-const MAX_CONCURRENT_GUESTS = 40
+const DEFAULT_MAX_CONCURRENT_GUESTS = 40
+const DEFAULT_MIN_ONLINE_GUESTS = 12
 const SLOT_MINUTES = 30
 const DAY_START_MINUTES = 10 * 60
 const DAY_END_MINUTES = 23 * 60
@@ -124,14 +125,15 @@ const toIntervalRange = (startTime: string | null, endTime: string | null) => {
 
 const applyReservationToIntervals = (
   intervals: IntervalLoad[],
-  reservation: NormalizedReservation
+  reservation: NormalizedReservation,
+  capacity: number,
 ) => {
   const range = toIntervalRange(reservation.startTime, reservation.endTime)
 
   if (!range && reservation.isExclusive) {
     for (const interval of intervals) {
       interval.isExclusive = true
-      interval.occupiedGuests = MAX_CONCURRENT_GUESTS
+      interval.occupiedGuests = capacity
     }
     return
   }
@@ -144,7 +146,7 @@ const applyReservationToIntervals = (
 
     if (reservation.isExclusive) {
       interval.isExclusive = true
-      interval.occupiedGuests = MAX_CONCURRENT_GUESTS
+      interval.occupiedGuests = capacity
       continue
     }
 
@@ -153,41 +155,41 @@ const applyReservationToIntervals = (
     interval.occupiedGuests = clamp(
       interval.occupiedGuests + reservation.guests,
       0,
-      MAX_CONCURRENT_GUESTS
+      capacity
     )
   }
 }
 
-const buildIntervalsForDate = (reservations: NormalizedReservation[]) => {
+const buildIntervalsForDate = (reservations: NormalizedReservation[], capacity: number) => {
   const intervals = createEmptyIntervals()
   for (const reservation of reservations) {
-    applyReservationToIntervals(intervals, reservation)
+    applyReservationToIntervals(intervals, reservation, capacity)
   }
   return intervals
 }
 
-const summarizeDay = (intervals: IntervalLoad[], requestedGuests: number) => {
+const summarizeDay = (intervals: IntervalLoad[], requestedGuests: number, capacity: number) => {
   const occupiedGuestsPeak = intervals.reduce((max, interval) => {
-    const value = interval.isExclusive ? MAX_CONCURRENT_GUESTS : interval.occupiedGuests
+    const value = interval.isExclusive ? capacity : interval.occupiedGuests
     return Math.max(max, value)
   }, 0)
 
   const hasAvailableSlots = intervals.some((interval) => {
     if (interval.isExclusive) return false
-    return MAX_CONCURRENT_GUESTS - interval.occupiedGuests >= requestedGuests
+    return capacity - interval.occupiedGuests >= requestedGuests
   })
 
   return {
-    occupancyRatio: clamp(occupiedGuestsPeak / MAX_CONCURRENT_GUESTS, 0, 1),
+    occupancyRatio: clamp(occupiedGuestsPeak / capacity, 0, 1),
     occupiedGuestsPeak,
     isBlocked: !hasAvailableSlots,
   }
 }
 
-const mapBlockedSlots = (reason: string): AvailabilitySlot[] =>
+const mapBlockedSlots = (reason: string, capacity: number): AvailabilitySlot[] =>
   SLOT_START_TIMES.map((time) => ({
     time,
-    occupiedGuests: MAX_CONCURRENT_GUESTS,
+    occupiedGuests: capacity,
     remainingCapacity: 0,
     isExclusive: true,
     isBlocked: true,
@@ -200,6 +202,12 @@ export async function GET(req: Request) {
   const requestedGuests = parseRequestedGuests(searchParams.get('guests'))
 
   try {
+    const settings = await prisma.settings.findFirst({
+      select: { reservationCapacity: true, reservationMinGuests: true },
+    })
+    const capacity = Math.max(1, settings?.reservationCapacity ?? DEFAULT_MAX_CONCURRENT_GUESTS)
+    const minGuests = Math.max(1, settings?.reservationMinGuests ?? DEFAULT_MIN_ONLINE_GUESTS)
+
     // ── Manual blocked dates from PostgreSQL ─────────────────────────────────
     const manualBlockedRows = await prisma.calendarAvailability.findMany({
       where: { isBlocked: true },
@@ -214,7 +222,7 @@ export async function GET(req: Request) {
       blockedDays.set(dateKey, {
         reason: row.notes?.trim() || 'Termin zablokowany',
         occupancyRatio: 1,
-        occupiedGuestsPeak: MAX_CONCURRENT_GUESTS,
+        occupiedGuestsPeak: capacity,
       })
     }
 
@@ -269,8 +277,8 @@ export async function GET(req: Request) {
     reservationsByDate.forEach((reservations, dateKey) => {
       if (blockedDays.has(dateKey)) return
 
-      const intervals = buildIntervalsForDate(reservations)
-      const summary = summarizeDay(intervals, requestedGuests)
+      const intervals = buildIntervalsForDate(reservations, capacity)
+      const summary = summarizeDay(intervals, requestedGuests, capacity)
 
       dayMap.set(dateKey, {
         date: dateKey,
@@ -288,18 +296,18 @@ export async function GET(req: Request) {
     let slots: AvailabilitySlot[] = []
     if (selectedDateKey) {
       if (isSeasonBlockedDateKey(selectedDateKey)) {
-        slots = mapBlockedSlots('W lipcu i sierpniu nie przyjmujemy eventów.')
+        slots = mapBlockedSlots('W lipcu i sierpniu nie przyjmujemy eventów.', capacity)
       } else {
         const manualBlockedForDate = blockedDays.get(selectedDateKey)
         if (manualBlockedForDate) {
-          slots = mapBlockedSlots(manualBlockedForDate.reason)
+          slots = mapBlockedSlots(manualBlockedForDate.reason, capacity)
         } else {
           const reservations = reservationsByDate.get(selectedDateKey) ?? []
-          const intervals = buildIntervalsForDate(reservations)
+          const intervals = buildIntervalsForDate(reservations, capacity)
 
           slots = intervals.map((interval, index) => {
-            const occupiedGuests = interval.isExclusive ? MAX_CONCURRENT_GUESTS : interval.occupiedGuests
-            const remainingCapacity = Math.max(0, MAX_CONCURRENT_GUESTS - occupiedGuests)
+            const occupiedGuests = interval.isExclusive ? capacity : interval.occupiedGuests
+            const remainingCapacity = Math.max(0, capacity - occupiedGuests)
             const isBlocked = interval.isExclusive || remainingCapacity < requestedGuests
 
             return {
@@ -323,11 +331,11 @@ export async function GET(req: Request) {
 
     const days = Array.from(dayMap.values()).sort((a, b) => a.date.localeCompare(b.date))
 
-    return NextResponse.json({ days, slots, capacity: MAX_CONCURRENT_GUESTS })
+    return NextResponse.json({ days, slots, capacity, minGuests })
   } catch (error) {
     console.error('Błąd pobierania dostępności:', error)
     return NextResponse.json(
-      { days: [] as AvailabilityDay[], slots: [] as AvailabilitySlot[], capacity: MAX_CONCURRENT_GUESTS },
+      { days: [] as AvailabilityDay[], slots: [] as AvailabilitySlot[], capacity: DEFAULT_MAX_CONCURRENT_GUESTS, minGuests: DEFAULT_MIN_ONLINE_GUESTS },
       { status: 500 }
     )
   }

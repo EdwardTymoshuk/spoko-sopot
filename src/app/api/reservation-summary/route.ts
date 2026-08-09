@@ -4,6 +4,7 @@ import { NextResponse } from 'next/server'
 import nodemailer from 'nodemailer'
 import type SMTPTransport from 'nodemailer/lib/smtp-transport'
 import { generateReservationSummaryPdf } from './pdfTemplate'
+import { validateReservationCapacity } from '@/lib/reservationCapacity'
 
 type SummaryItem = { label: string; value: string }
 type SummarySection = { title: string; items: SummaryItem[] }
@@ -112,6 +113,19 @@ export async function POST(req: Request): Promise<Response> {
     const consentMarketing = body.consentMarketing === true
     const total = typeof body.total === 'number' ? body.total : null
     const sections = Array.isArray(body.sections) ? body.sections : []
+
+    if (eventDateKey && body.reservationData) {
+      const capacityCheck = await validateReservationCapacity(prisma, {
+        dateKey: eventDateKey,
+        startTime: eventStartTime || null,
+        endTime: eventEndTime || null,
+        guests: body.reservationData.adultsCount + body.reservationData.childrenCount,
+        adultGuests: body.reservationData.adultsCount,
+      })
+      if (!capacityCheck.ok) {
+        return NextResponse.json({ error: capacityCheck.reason }, { status: 409 })
+      }
+    }
 
     if (!customerEmail || !isValidEmail(customerEmail)) {
       return NextResponse.json(

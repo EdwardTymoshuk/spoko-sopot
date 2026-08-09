@@ -45,7 +45,7 @@ export const RESERVATION_STEPS = [
       return (
         Boolean(draft.eventDate) &&
         typeof draft.adultsCount === 'number' &&
-        draft.adultsCount >= 12 &&
+        draft.adultsCount >= (draft.minOnlineGuests ?? 12) &&
         start !== null &&
         end !== null &&
         end > start &&

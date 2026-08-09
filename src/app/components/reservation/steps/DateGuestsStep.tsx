@@ -41,6 +41,7 @@ type AvailabilityApiResponse = {
   days?: AvailabilityApiItem[]
   slots?: AvailabilitySlotApiItem[]
   capacity?: number
+  minGuests?: number
 }
 
 const KIDS_MENU_ITEMS = [
@@ -258,6 +259,7 @@ const DateGuestsStep = () => {
   const [availability, setAvailability] = useState<CalendarAvailabilityVM[]>([])
   const [timeSlots, setTimeSlots] = useState<AvailabilitySlotApiItem[]>([])
   const [maxConcurrentGuests, setMaxConcurrentGuests] = useState(40)
+  const [minOnlineGuests, setMinOnlineGuests] = useState(12)
   const [slotsLoaded, setSlotsLoaded] = useState(false)
 
   const adults = draft.adultsCount ?? 10
@@ -397,6 +399,11 @@ const DateGuestsStep = () => {
             ? payload.capacity
             : 40
         )
+        const nextMinGuests = typeof payload.minGuests === 'number' && payload.minGuests > 0
+          ? payload.minGuests
+          : 12
+        setMinOnlineGuests(nextMinGuests)
+        updateDraft('minOnlineGuests', nextMinGuests)
       } catch (error) {
         console.error('Błąd pobierania dostępności kalendarza:', error)
       }
@@ -562,7 +569,7 @@ const DateGuestsStep = () => {
                 Goście dorośli
               </h3>
               <p className="text-sm text-muted-foreground">
-                Rezerwacje online realizujemy od 12 osób dorosłych.
+                Rezerwacje online realizujemy od {minOnlineGuests} osób dorosłych.
               </p>
             </div>
 
@@ -574,9 +581,9 @@ const DateGuestsStep = () => {
             />
 
             <div className="space-y-2">
-              {adults < 12 ? (
+              {adults < minOnlineGuests ? (
                 <div className="rounded-lg border border-destructive/30 bg-destructive/5 p-3 text-sm text-destructive">
-                  Rezerwacje online realizujemy od 12 osób dorosłych. Dla
+                  Rezerwacje online realizujemy od {minOnlineGuests} osób dorosłych. Dla
                   mniejszych grup zapraszamy do kontaktu: 530 659 666.
                 </div>
               ) : adults >= 8 ? (
@@ -585,10 +592,10 @@ const DateGuestsStep = () => {
                 </div>
               ) : null}
 
-              {adults >= 8 && adults < 12 && (
+              {adults >= 8 && adults < minOnlineGuests && (
                 <div className="rounded-lg border border-warning/40 bg-warning/10 px-3 py-2 text-sm text-warning">
                   Serwis 10% doliczamy od 8 osób, ale formularz online wymaga
-                  minimum 12 osób dorosłych.
+                  minimum {minOnlineGuests} osób dorosłych.
                 </div>
               )}
 
