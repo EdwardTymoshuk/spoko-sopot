@@ -1,6 +1,6 @@
 import { MenuProvider } from '@/context/MenuContext'
 import { RestaurantInfoProvider } from '@/app/components/RestaurantInfo'
-import { Analytics } from '@vercel/analytics/react'
+import CookieConsentBanner from '@/app/components/CookieConsentBanner'
 import type { Metadata } from 'next'
 import { Toaster } from 'sonner'
 import './globals.css'
@@ -58,7 +58,7 @@ export default function RootLayout({
           </RestaurantInfoProvider>
           <Toaster position="top-center" richColors />
         </MenuProvider>
-        <Analytics />
+        <CookieConsentBanner />
       </body>
     </html>
   )

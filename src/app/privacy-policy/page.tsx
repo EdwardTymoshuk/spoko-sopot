@@ -1,69 +1,194 @@
-// polityka-prywatnosci.tsx
 import React from 'react'
 import MainContainer from '../components/MainContainer'
 
 const PrivacyPolicy: React.FC = () => {
-	return (
-		<MainContainer className="max-w-3xl mx-auto px-6 pb-8 pt-14">
-			<h1 className="text-3xl font-bold mb-4">Polityka Prywatności</h1>
-			<p>
-				Szanujemy Twoją prywatność i dbamy o ochronę Twoich danych osobowych. Ta polityka prywatności
-				opisuje, jakie dane zbieramy, jak je przetwarzamy i w jakim celu.
-			</p>
+  return (
+    <MainContainer className="max-w-4xl mx-auto px-6 pb-12 pt-14">
+      <article className="max-w-none text-zinc-700 [&_a]:text-primary [&_a]:underline [&_h1]:mb-2 [&_h1]:text-3xl [&_h1]:font-bold [&_h1]:text-zinc-950 [&_h2]:mb-3 [&_h2]:mt-10 [&_h2]:text-2xl [&_h2]:font-semibold [&_h2]:text-zinc-950 [&_li]:mb-1 [&_p]:mb-4 [&_p]:leading-7 [&_section]:border-t [&_section]:border-zinc-200 [&_section]:pt-2 [&_strong]:text-zinc-950 [&_table]:min-w-[760px] [&_table]:border-collapse [&_table]:text-sm [&_td]:border [&_td]:border-zinc-200 [&_td]:p-3 [&_th]:border [&_th]:border-zinc-200 [&_th]:bg-zinc-50 [&_th]:p-3 [&_th]:text-left [&_ul]:mb-4 [&_ul]:list-disc [&_ul]:pl-6">
+        <h1>Polityka prywatności</h1>
+        <p className="text-sm text-zinc-500">Ostatnia aktualizacja: 16.08.2026</p>
 
-			<section className="mt-8">
-				<h2 className="text-2xl font-semibold">1. Dane osobowe</h2>
-				<p>
-					W ramach kontaktu przez formularz na naszej stronie zbieramy jedynie dane niezbędne do
-					obsługi Twojego zapytania. Są to:
-				</p>
-				<ul className="list-disc list-inside">
-					<li>Imię i nazwisko</li>
-					<li>Adres e-mail</li>
-					<li>Numer telefonu (opcjonalnie)</li>
-					<li>Treść wiadomości</li>
-				</ul>
-			</section>
+        <p>
+          Szanujemy Twoją prywatność i dbamy o ochronę Twoich danych osobowych.
+          Niniejsza polityka prywatności opisuje, kto jest administratorem Twoich
+          danych, jakie dane zbieramy, w jakim celu i na jakiej podstawie prawnej
+          je przetwarzamy oraz jakie masz prawa.
+        </p>
 
-			<section className="mt-8">
-				<h2 className="text-2xl font-semibold">2. Wykorzystanie danych</h2>
-				<p>
-					Twoje dane wykorzystujemy wyłącznie w celu odpowiedzi na Twoje zapytanie oraz do prowadzenia
-					dalszej korespondencji, jeśli będzie to konieczne. Dane te nie są udostępniane innym podmiotom.
-					Jeżeli wyrazisz odrębną zgodę marketingową, możemy wykorzystać dane kontaktowe również do
-					przesyłania informacji marketingowych dotyczących oferty restauracji.
-				</p>
-			</section>
+        <section>
+          <h2>1. Administrator danych</h2>
+          <p>Administratorem Twoich danych osobowych jest:</p>
+          <p>
+            <strong>Kawo Sopot s.c.</strong>
+            <br />
+            Hestii 3, 81-731 Sopot
+            <br />
+            NIP: 5851483691
+            <br />
+            E-mail kontaktowy:{' '}
+            <a href="mailto:info@spokosopot.pl">info@spokosopot.pl</a>
+          </p>
+          <p>
+            W sprawach dotyczących ochrony danych osobowych możesz kontaktować się
+            z nami pod powyższym adresem e-mail.
+          </p>
+        </section>
 
-			<section className="mt-8">
-				<h2 className="text-2xl font-semibold">3. Pliki cookies</h2>
-				<p>
-					Nasza strona używa plików cookies, aby poprawić funkcjonowanie witryny i zapewnić jej
-					prawidłowe działanie. Cookies są przechowywane w Twojej przeglądarce i mogą być używane
-					przez nas w celu analizowania ruchu na stronie. Masz możliwość wyrażenia zgody lub odrzucenia
-					plików cookies.
-				</p>
-			</section>
+        <section>
+          <h2>2. Jakie dane zbieramy</h2>
+          <p>
+            W ramach kontaktu przez formularz na naszej stronie zbieramy jedynie
+            dane niezbędne do obsługi Twojego zapytania:
+          </p>
+          <ul>
+            <li>imię i nazwisko,</li>
+            <li>adres e-mail,</li>
+            <li>numer telefonu, jeśli go podasz,</li>
+            <li>treść wiadomości.</li>
+          </ul>
+          <p>
+            W przypadku zapytania o rezerwację lub organizację wydarzenia możemy
+            przetwarzać także dane potrzebne do przygotowania oferty, takie jak
+            termin wydarzenia, liczba gości, typ wydarzenia, wybrane pakiety,
+            dodatki oraz uwagi przekazane w formularzu.
+          </p>
+          <p>
+            Dodatkowo, w związku z korzystaniem ze strony, możemy zbierać dane
+            techniczne za pośrednictwem plików cookies. Szczegóły znajdziesz w
+            punkcie 5.
+          </p>
+        </section>
 
-			<section className="mt-8">
-				<h2 className="text-2xl font-semibold">4. Twoje prawa</h2>
-				<p>
-					Masz prawo do dostępu do swoich danych, ich poprawienia oraz usunięcia. W przypadku pytań
-					lub wniosków dotyczących Twoich danych osobowych, prosimy o kontakt na adres e-mail:
-					<a href="mailto:info@spokosopot.pl" className="text-primary hover:underline"> info@spokosopot.pl</a>.
-				</p>
-			</section>
+        <section>
+          <h2>3. Cel i podstawa prawna przetwarzania danych</h2>
+          <div className="overflow-x-auto">
+            <table>
+              <thead>
+                <tr>
+                  <th>Cel przetwarzania</th>
+                  <th>Podstawa prawna</th>
+                  <th>Okres przechowywania</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>Odpowiedź na zapytanie przesłane przez formularz kontaktowy</td>
+                  <td>Art. 6 ust. 1 lit. b RODO</td>
+                  <td>Do 12 miesięcy od ostatniego kontaktu</td>
+                </tr>
+                <tr>
+                  <td>Przygotowanie i obsługa zapytania rezerwacyjnego</td>
+                  <td>Art. 6 ust. 1 lit. b RODO</td>
+                  <td>Przez czas obsługi zapytania, a następnie do 12 miesięcy</td>
+                </tr>
+                <tr>
+                  <td>Prowadzenie dalszej korespondencji, jeśli jest kontynuowana</td>
+                  <td>Art. 6 ust. 1 lit. f RODO</td>
+                  <td>Do czasu zakończenia korespondencji lub wniesienia sprzeciwu</td>
+                </tr>
+                <tr>
+                  <td>Wysyłka informacji marketingowych o ofercie</td>
+                  <td>Art. 6 ust. 1 lit. a RODO</td>
+                  <td>Do czasu wycofania zgody</td>
+                </tr>
+                <tr>
+                  <td>Statystyki odwiedzin strony</td>
+                  <td>Art. 6 ust. 1 lit. a RODO</td>
+                  <td>Zgodnie z okresem ważności danego cookie, maksymalnie 180 dni</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <p>
+            Dane nie są udostępniane innym podmiotom poza wskazanymi w punkcie 4,
+            chyba że obowiązek taki wynika z przepisów prawa.
+          </p>
+        </section>
 
-			<section className="mt-8">
-				<h2 className="text-2xl font-semibold">5. Zmiany w polityce prywatności</h2>
-				<p>
-					Zastrzegamy sobie prawo do wprowadzania zmian w niniejszej polityce prywatności. Każda
-					zmiana zostanie opublikowana na tej stronie. Zachęcamy do regularnego sprawdzania naszej
-					polityki prywatności, aby być na bieżąco z aktualnymi zasadami ochrony danych.
-				</p>
-			</section>
-		</MainContainer>
-	)
+        <section>
+          <h2>4. Odbiorcy danych</h2>
+          <p>
+            Twoje dane mogą być przetwarzane przez podmioty, którym powierzamy
+            przetwarzanie na podstawie odpowiednich umów, w szczególności:
+          </p>
+          <ul>
+            <li>dostawca hostingu strony: OVHcloud,</li>
+            <li>rejestrator domeny: uti.pl,</li>
+            <li>dostawca skrzynki e-mail obsługującej formularz kontaktowy: OVHcloud,</li>
+            <li>dostawca systemu administracyjnego i bazy danych: OVHcloud,</li>
+            <li>dostawcy narzędzi analitycznych lub marketingowych, jeśli zostaną uruchomione za Twoją zgodą.</li>
+          </ul>
+          <p>
+            Aktualnie statystyki odwiedzin zbieramy we własnym systemie
+            administracyjnym Spoko Sopot. Nie zapisujemy pełnego adresu IP w celach
+            analitycznych. Jeżeli w przyszłości uruchomimy zewnętrzne narzędzia,
+            takie jak Google Analytics albo Meta Pixel, lista dostawców zostanie
+            uzupełniona w tej polityce.
+          </p>
+          <p>
+            Niektóre podmioty techniczne mogą przetwarzać dane poza Europejskim
+            Obszarem Gospodarczym. W takich przypadkach zapewniamy odpowiedni
+            poziom ochrony danych zgodnie z wymogami RODO, w szczególności w oparciu
+            o standardowe klauzule umowne.
+          </p>
+        </section>
+
+        <section>
+          <h2>5. Pliki cookies</h2>
+          <p>Korzystamy z plików cookies w następujących kategoriach:</p>
+          <p>
+            <strong>Wymagane</strong> - zawsze aktywne, ponieważ umożliwiają
+            podstawowe działanie strony, np. zapamiętanie Twoich preferencji
+            cookies. Nie wymagają zgody.
+          </p>
+          <p>
+            <strong>Statystyki</strong> - pomagają nam zobaczyć, co Cię najbardziej
+            interesuje, żebyśmy mogli rozwijać stronę w dobrym kierunku. Aktywowane
+            wyłącznie za Twoją zgodą. Obecnie korzystamy z własnego systemu
+            statystyk, a okres ważności zgody wynosi 180 dni.
+          </p>
+          <p>
+            <strong>Marketingowe</strong> - dzięki nim możemy pokazywać Ci treści
+            i oferty dopasowane do Twoich zainteresowań, zamiast przypadkowych
+            reklam. Aktywowane wyłącznie za Twoją zgodą. Aktualnie nie korzystamy
+            z zewnętrznych narzędzi marketingowych takich jak Meta Pixel.
+          </p>
+          <p>
+            Zgody opcjonalne możesz w każdej chwili zaakceptować, odrzucić lub
+            zmienić w ustawieniach cookies dostępnych na stronie.
+          </p>
+        </section>
+
+        <section>
+          <h2>6. Twoje prawa</h2>
+          <p>W związku z przetwarzaniem Twoich danych osobowych przysługuje Ci prawo do:</p>
+          <ul>
+            <li>dostępu do swoich danych,</li>
+            <li>sprostowania danych,</li>
+            <li>usunięcia danych,</li>
+            <li>ograniczenia przetwarzania,</li>
+            <li>przenoszenia danych,</li>
+            <li>wniesienia sprzeciwu wobec przetwarzania opartego na art. 6 ust. 1 lit. f RODO,</li>
+            <li>cofnięcia zgody w dowolnym momencie, bez wpływu na zgodność z prawem przetwarzania dokonanego przed jej cofnięciem,</li>
+            <li>wniesienia skargi do Prezesa Urzędu Ochrony Danych Osobowych, ul. Stawki 2, 00-193 Warszawa.</li>
+          </ul>
+          <p>
+            W celu realizacji powyższych praw skontaktuj się z nami pod adresem:{' '}
+            <a href="mailto:info@spokosopot.pl">info@spokosopot.pl</a>.
+          </p>
+        </section>
+
+        <section>
+          <h2>7. Zmiany w polityce prywatności</h2>
+          <p>
+            Zastrzegamy sobie prawo do wprowadzania zmian w niniejszej polityce
+            prywatności. Każda zmiana zostanie opublikowana na tej stronie wraz
+            z datą aktualizacji widoczną na górze dokumentu.
+          </p>
+        </section>
+      </article>
+    </MainContainer>
+  )
 }
 
 export default PrivacyPolicy

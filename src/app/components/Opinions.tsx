@@ -31,9 +31,7 @@ const Opinions: React.FC = () => {
   useEffect(() => {
     const fetchGoogleReviews = async () => {
       try {
-        const response = await fetch('/api/google-reviews?limit=6', {
-          cache: 'no-store',
-        })
+        const response = await fetch('/api/google-reviews')
 
         if (!response.ok) return
 

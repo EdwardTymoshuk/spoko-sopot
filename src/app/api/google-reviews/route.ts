@@ -1,4 +1,5 @@
 import { NextResponse } from 'next/server'
+import { OPINIONS } from '@/config'
 
 type GooglePlacesReview = {
   rating?: number
@@ -16,28 +17,41 @@ type GooglePlacesResponse = {
   reviews?: GooglePlacesReview[]
 }
 
-export const dynamic = 'force-dynamic'
-export const revalidate = 0
+export const revalidate = 60 * 60 * 24 * 7
 
 const DEFAULT_LIMIT = 6
 const MAX_LIMIT = 10
+const ONE_WEEK_SECONDS = 60 * 60 * 24 * 7
+const ONE_DAY_SECONDS = 60 * 60 * 24
 
-export async function GET(request: Request) {
+const getFallbackReviews = (limit: number) => {
+  const reviews = OPINIONS.slice(0, limit)
+  const averageRating = reviews.length
+    ? Number((reviews.reduce((sum, review) => sum + review.rating, 0) / reviews.length).toFixed(1))
+    : null
+
+  return {
+    source: 'local_fallback',
+    averageRating,
+    totalReviews: OPINIONS.length,
+    reviews,
+  }
+}
+
+const cacheHeaders = {
+  'Cache-Control': `public, s-maxage=${ONE_WEEK_SECONDS}, stale-while-revalidate=${ONE_DAY_SECONDS}`,
+}
+
+export async function GET() {
   try {
-    const { searchParams } = new URL(request.url)
-    const limitParam = Number(searchParams.get('limit') ?? DEFAULT_LIMIT)
-    const limit = Number.isFinite(limitParam)
-      ? Math.min(Math.max(1, limitParam), MAX_LIMIT)
-      : DEFAULT_LIMIT
+    const limit = Math.min(DEFAULT_LIMIT, MAX_LIMIT)
 
-    const apiKey = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY
+    const apiKey =
+      process.env.GOOGLE_MAPS_API_KEY ?? process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY
     const placeId = process.env.GOOGLE_PLACE_ID
 
     if (!apiKey || !placeId) {
-      return NextResponse.json(
-        { message: 'Missing Google Places configuration' },
-        { status: 500 }
-      )
+      return NextResponse.json(getFallbackReviews(limit), { headers: cacheHeaders })
     }
 
     const endpoint = `https://places.googleapis.com/v1/places/${placeId}?languageCode=pl&regionCode=PL`
@@ -49,16 +63,16 @@ export async function GET(request: Request) {
         'X-Goog-FieldMask':
           'id,displayName,rating,userRatingCount,reviews.rating,reviews.text,reviews.publishTime,reviews.relativePublishTimeDescription,reviews.authorAttribution.displayName',
       },
-      cache: 'no-store',
+      next: {
+        revalidate: ONE_WEEK_SECONDS,
+        tags: ['google-reviews'],
+      },
     })
 
     if (!response.ok) {
       const errorText = await response.text()
       console.error('Google Places API error:', errorText)
-      return NextResponse.json(
-        { message: 'Failed to fetch Google reviews' },
-        { status: 502 }
-      )
+      return NextResponse.json(getFallbackReviews(limit), { headers: cacheHeaders })
     }
 
     const data = (await response.json()) as GooglePlacesResponse
@@ -95,18 +109,11 @@ export async function GET(request: Request) {
         reviews,
       },
       {
-        headers: {
-          'Cache-Control': 'no-store, no-cache, must-revalidate, proxy-revalidate',
-          Expires: '0',
-          Pragma: 'no-cache',
-        },
+        headers: cacheHeaders,
       }
     )
   } catch (error) {
     console.error('Error fetching Google reviews:', error)
-    return NextResponse.json(
-      { message: 'Failed to fetch Google reviews' },
-      { status: 500 }
-    )
+    return NextResponse.json(getFallbackReviews(DEFAULT_LIMIT), { headers: cacheHeaders })
   }
 }

@@ -1,4 +1,4 @@
-import { getMenuCategorySortIndex } from '@/config'
+import { getCanonicalMenuCategory, getMenuCategorySortIndex } from '@/config'
 import { prisma } from '@/lib/prisma'
 import { NextResponse } from 'next/server'
 
@@ -15,7 +15,12 @@ export async function GET() {
       },
     })
 
-    const sortedItems = menuItems.sort((a, b) => {
+    const normalizedItems = menuItems.map((item) => ({
+      ...item,
+      category: getCanonicalMenuCategory(item.category),
+    }))
+
+    const sortedItems = normalizedItems.sort((a, b) => {
       const categoryDiff =
         getMenuCategorySortIndex(a.category) -
         getMenuCategorySortIndex(b.category)

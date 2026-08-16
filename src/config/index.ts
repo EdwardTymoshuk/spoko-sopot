@@ -195,6 +195,7 @@ export const foodMenuItemCategories: MenuItemCategory[] = [
 export const drinkMenuItemCategories: MenuItemCategory[] = [
   'Napoje zimne',
   'Drinki',
+  'Drinki bezalkoholowe',
   'Klasyczne koktaile',
   'Na ciepło',
   'Herbata',
@@ -204,12 +205,15 @@ export const drinkMenuItemCategories: MenuItemCategory[] = [
   'Gin',
   'Tequila',
   'Cognac / Brandy',
+  'Brandy / Cognac / Likier',
   'Wódka',
+  'Nalewki',
   'Napoje alkoholowe',
   'Piwo beczkowe',
   'Piwo butelkowe',
   'Piwo bezalkoholowe',
   'Piwo smakowe',
+  'Regionalne',
   'Wina Białe',
   'Wina Czerwone',
   'Wina Musujące',
@@ -224,6 +228,61 @@ export const allowedCategories: MenuItemCategory[] = [
   ...drinkMenuItemCategories,
   'Inne',
 ]
+
+const normalizeCategoryName = (value: string) =>
+  value
+    .trim()
+    .replace(/\s+/g, ' ')
+    .toLowerCase()
+    .replace(/[()]/g, '')
+
+const categoryAliases: Record<string, MenuItemCategory> = {
+  'dania': 'Dania główne',
+  'ryby i owoce morza': 'Dania rybne',
+  'ryby': 'Dania rybne',
+  'mięsne': 'Dania mięsne',
+  'miesne': 'Dania mięsne',
+  'makarony': 'Makarony/Ravioli',
+  'dania dla najmłodszych': 'Dla dzieci',
+  'dania dla najmlodszych': 'Dla dzieci',
+  'dla najmłodszych': 'Dla dzieci',
+  'dla najmlodszych': 'Dla dzieci',
+  'surówki': 'Dodatki',
+  'surowki': 'Dodatki',
+  'sałatka': 'Przystawki',
+  'salatka': 'Przystawki',
+  'sałatki': 'Przystawki',
+  'salatki': 'Przystawki',
+  'kawy sezonowe': 'Kawa',
+  'kawy sezonowe 0%': 'Kawa',
+  'lemoniady': 'Napoje zimne',
+  'włoskie lemoniady': 'Napoje zimne',
+  'wloskie lemoniady': 'Napoje zimne',
+  'strefa zero': 'Drinki bezalkoholowe',
+  'bezalkoholowe koktajle': 'Drinki bezalkoholowe',
+  'mocktails': 'Drinki bezalkoholowe',
+  'piwo regionalne': 'Regionalne',
+  'piwa regionalne': 'Regionalne',
+  'regionalne': 'Regionalne',
+  'grzaniec': 'Na ciepło',
+  'grzańce': 'Na ciepło',
+  'grzance': 'Na ciepło',
+  'na chłodniejsze wieczory': 'Na ciepło',
+  'na chlodniejsze wieczory': 'Na ciepło',
+  'brandy / cognac / likier': 'Brandy / Cognac / Likier',
+  'brandy | cognac | likier': 'Brandy / Cognac / Likier',
+  'likiery': 'Brandy / Cognac / Likier',
+  'nalewki': 'Nalewki',
+}
+
+export const getCanonicalMenuCategory = (category: string): MenuItemCategory => {
+  const normalizedCategory = normalizeCategoryName(category)
+  const exactCategory = allowedCategories.find(
+    (allowedCategory) => normalizeCategoryName(allowedCategory) === normalizedCategory
+  )
+
+  return exactCategory ?? categoryAliases[normalizedCategory] ?? 'Inne'
+}
 
 export const menuCategoryOrder = new Map(
   allowedCategories.map((category, index) => [category, index])
