@@ -1,8 +1,7 @@
 'use client'
 
 import { OPINIONS } from '@/config'
-import { startTransition, useEffect, useMemo, useState } from 'react'
-import { MongoDBReview } from '../types'
+import { startTransition, useState } from 'react'
 import LoadingButton from './LoadingButton'
 import MaxWidthWrapper from './MaxWidthWrapper'
 import OpinionBlock from './OpinionBlock'
@@ -16,38 +15,9 @@ import {
 
 const Opinions: React.FC = () => {
   const [isLoading, setIsLoading] = useState(false)
-  const [reviews, setReviews] = useState<MongoDBReview[]>(OPINIONS)
-  const [averageRating, setAverageRating] = useState<number | null>(null)
-  const [totalReviews, setTotalReviews] = useState<number | null>(
-    OPINIONS.length
-  )
-
-  const fallbackAverage = useMemo(() => {
-    if (OPINIONS.length === 0) return null
-    const sum = OPINIONS.reduce((acc, review) => acc + review.rating, 0)
-    return Number((sum / OPINIONS.length).toFixed(1))
-  }, [])
-
-  useEffect(() => {
-    const fetchGoogleReviews = async () => {
-      try {
-        const response = await fetch('/api/google-reviews')
-
-        if (!response.ok) return
-
-        const data = await response.json()
-        if (Array.isArray(data.reviews) && data.reviews.length > 0) {
-          setReviews(data.reviews)
-          setAverageRating(data.averageRating ?? null)
-          setTotalReviews(data.totalReviews ?? null)
-        }
-      } catch (error) {
-        console.error('Unable to fetch Google reviews:', error)
-      }
-    }
-
-    fetchGoogleReviews()
-  }, [])
+  const averageRating = OPINIONS.length
+    ? Number((OPINIONS.reduce((sum, review) => sum + review.rating, 0) / OPINIONS.length).toFixed(1))
+    : 0
 
   const navigateToGoogleReviews = () => {
     setIsLoading(true)
@@ -77,17 +47,17 @@ const Opinions: React.FC = () => {
 
           <div className="inline-flex w-fit items-center gap-3 border border-zinc-200 px-4 py-2 text-sm text-zinc-500">
             <span className="font-semibold text-secondary">
-            {averageRating ?? fallbackAverage ?? 0} / 5
+            {averageRating} / 5
           </span>
             <span>
-            Średnia ocena {totalReviews ? `(${totalReviews} opinii)` : ''}
+            Średnia ocena {OPINIONS.length ? `(${OPINIONS.length} opinii)` : ''}
           </span>
           </div>
         </div>
 
         <Carousel className="h-full w-full">
           <CarouselContent className="relative m-0 h-full">
-          {reviews.map((review, index) => (
+          {OPINIONS.map((review, index) => (
               <CarouselItem
                 key={index}
                 className="relative h-full p-3 self-center md:basis-1/2"
