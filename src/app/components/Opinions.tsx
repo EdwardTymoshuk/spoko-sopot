@@ -1,6 +1,6 @@
 'use client'
 
-import { OPINIONS } from '@/config'
+import { GOOGLE_REVIEWS_SNAPSHOT } from '@/config/googleReviewsSnapshot'
 import { startTransition, useState } from 'react'
 import LoadingButton from './LoadingButton'
 import MaxWidthWrapper from './MaxWidthWrapper'
@@ -15,9 +15,7 @@ import {
 
 const Opinions: React.FC = () => {
   const [isLoading, setIsLoading] = useState(false)
-  const averageRating = OPINIONS.length
-    ? Number((OPINIONS.reduce((sum, review) => sum + review.rating, 0) / OPINIONS.length).toFixed(1))
-    : 0
+  const { averageRating, totalReviews, reviews, capturedAt } = GOOGLE_REVIEWS_SNAPSHOT
 
   const navigateToGoogleReviews = () => {
     setIsLoading(true)
@@ -50,16 +48,16 @@ const Opinions: React.FC = () => {
             {averageRating} / 5
           </span>
             <span>
-            Średnia ocena {OPINIONS.length ? `(${OPINIONS.length} opinii)` : ''}
+            Średnia ocena ({totalReviews} opinii, stan na {capturedAt})
           </span>
           </div>
         </div>
 
         <Carousel className="h-full w-full">
           <CarouselContent className="relative m-0 h-full">
-          {OPINIONS.map((review, index) => (
+          {reviews.map((review) => (
               <CarouselItem
-                key={index}
+                key={review._id}
                 className="relative h-full p-3 self-center md:basis-1/2"
               >
                 <OpinionBlock opinion={review} />
